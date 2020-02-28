@@ -124,7 +124,8 @@
             </tr>
             {% for payment in payments.all %}
             <tr>
-                <td class="center"> {{ payment.cardholder_name }} </td>
+                <td class="center"> {{ payment.cardholder_FirstName }} </td>
+                <td> {{ payment.cardholder_LastName}} </td>
                 <td> {{ payment.card_number }} </td>
                 <td> {{ payment.CVV_number }} </td>
             </tr>

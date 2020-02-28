@@ -30,7 +30,7 @@ class Customer(models.Model):
     def __str__(self):
         return self.first_name + ' ' + self.last_name
 
-class Payment (models.Model)
+class Payment (models.Model):
     ##Name on CharField
     cardholder_name = models.CharField(max_length=50)
     #card number
@@ -45,7 +45,7 @@ class Payment (models.Model)
     def __str__(self):
         return self.cardholder_name + " " + self.card_number + " " + self.CVV_number + " " + self.card_expdate
 
-class Food_Style (models.Model)
+class Food_Style (models.Model):
     food_style = models.CharField(max_length=50)
 
     def __str__(self):

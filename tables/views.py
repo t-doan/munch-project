@@ -12,6 +12,4 @@ def home(request):
     'addresses': addresses,
     'items': items,
     'customers': customers,
-    'paymemts': payments,
-    'food styles': food_styles,
     })

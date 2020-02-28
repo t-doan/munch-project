@@ -25,7 +25,7 @@ SECRET_KEY = '4=h#9_h@1-kv_n)&t5+!rbl(vxt!r5xy8&rxs!t)k-pcp1b)-v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['damp-mesa-21852.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['munch-project.herokuapp.com', 'localhost']
 
 
 # Application definition

@@ -112,6 +112,43 @@
         </table>
     </section>
 
+    <section>
+        <caption>
+            <h3 id="named">Payment Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> CardHolder </th>
+                <th scope="col"> Card Number </th>
+                <th scope="col"> CVV </th>
+            </tr>
+            {% for payment in payments.all %}
+            <tr>
+                <td class="center"> {{ payment.cardholder_name }} </td>
+                <td> {{ payment.card_number }} </td>
+                <td> {{ payment.CVV_number }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+
+    <section>
+        <caption>
+            <h3 id="named">Food Style Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> Food Style </th>
+            </tr>
+            {% for food style in food_style.all %}
+            <tr>
+                <td class="center"> {{ food_style.food_style }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
 </article>
 </main>
 

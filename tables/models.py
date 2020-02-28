@@ -29,3 +29,24 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
+
+class Payment (models.Model)
+    ##Name on CharField
+    cardholder_name = models.CharField(max_length=50)
+    #card number
+    card_number = models.IntegerField()
+    #CVV card number
+    CVV_number = models.IntegerField()
+    #zipcode
+    card_zip = models.IntegerField()
+    #Card Expiration Data
+    card_expdate = models.IntegerField()
+
+    def __str__(self):
+        return self.cardholder_name + " " + self.card_number + " " + self.CVV_number + " " + self.card_expdate
+
+class Food_Style (models.Model)
+    food_style = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.food_style

@@ -112,6 +112,191 @@
         </table>
     </section>
 
+    <section>
+        <caption>
+            <h3 id="named">Customer-Address Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> Customer ID </th>
+                <th scope="col"> Address ID </th>
+            </tr>
+            {% for customer_address in customer_addresses.all %}
+            <tr>
+                <td class="center"> {{ customer_address.customer_id }} </td>
+                <td> {{ customer_address.address_id }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+    <section>
+        <caption>
+            <h3 id="named">Customer-Payment Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> Customer ID </th>
+                <th scope="col"> Payment ID </th>
+            </tr>
+            {% for customer_payment in customer_payments.all %}
+            <tr>
+                <td class="center"> {{ customer_payment.customer_id }} </td>
+                <td> {{ customer_payment.payment_id }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+    <section>
+        <caption>
+            <h3 id="named">Customer-Style-Preference Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> Customer ID </th>
+                <th scope="col"> Style ID </th>
+            </tr>
+            {% for customer_style_preference in customer_style_preferences.all %}
+            <tr>
+                <td class="center"> {{ customer_style_preference.customer_id }} </td>
+                <td> {{ customer_style_preference.style_id }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+    <section>
+        <caption>
+            <h3 id="named">Food Style Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> Style Name </th>
+            </tr>
+            {% for food_style in food_styles.all %}
+            <tr>
+                <td class="center"> {{ food_style.style_name }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+    <section>
+        <caption>
+            <h3 id="named">Item-Style Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> Item ID </th>
+                <th scope="col"> Style ID </th>
+            </tr>
+            {% for item_style in item_styles.all %}
+            <tr>
+                <td class="center"> {{ item_style.item_id }} </td>
+                <td> {{ item_style.style_id }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+ <section>
+        <caption>
+            <h3 id="named">Menu Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> Menu ID </th>
+                <th scope="col"> Restaurant ID </th>
+            </tr>
+            {% for menu in menus.all %}
+            <tr>
+                <td class="center"> {{ menu.menu_id }} </td>
+              	<td> {{menu.restaurant_id }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+ <section>
+        <caption>
+            <h3 id="named">Payment Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> Card Number </th>
+                <th scope="col"> Card Pin </th>
+                <th scope="col"> Expiration Date </th>
+            </tr>
+            {% for payment in payments.all %}
+            <tr>
+              	<td class="center"> {{ payment.card_number }} </td>
+                <td> {{ payment.card_pin }} </td>
+              	<td> {{payment.card_expdate }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+    <section>
+        <caption>
+            <h3 id="named">Restaurant Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+              	<th scope="col"> Name </th>
+              	<th scope="col"> Address </th>
+              	<th scope="col"> Phone Number </th>
+            </tr>
+            {% for restaurant in restaurants.all %}
+            <tr>
+                <td class="center"> {{ restaurant.name }} </td>
+              	<td> {{ restaurant.address }} </td>
+              	<td> {{ restaurant.phone_number }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+<section>
+        <caption>
+            <h3 id="named">Restaurant Styles Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+                <th scope="col"> Restaurant ID </th>
+            		<th scope="col"> Style ID </th>
+            </tr>
+            {% for restaurant_style in restaurant_styles.all %}
+            <tr>
+                <td class="center"> {{ restaurant_style.restaurant_id }} </td>
+              	<td> {{ restaurant_style.style_id }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+
+<section>
+        <caption>
+            <h3 id="named">Reviews Table </h3>
+        </caption>
+        <table border="1" margin="10" cellspacing="0" cellpadding="5" >
+            <tr>
+            	<th scope="col"> Text </th>
+              <th scope="col"> Stars </th>
+              <th scope="col"> Customer ID </th>
+              <th scope="col"> Restaurant ID </th>
+            </tr>
+            {% for review in reviews.all %}
+            <tr>
+                <td class="center"> {{ review.text }} </td>
+              	<td> {{ review.stars }} </td>
+              	<td> {{ review.customer_id }} </td>
+              	<td> {{ review.restaurant_id }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
 
 </article>
 </main>

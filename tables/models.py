@@ -29,3 +29,92 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
+
+class Customer_Address(models.Model):
+    address_id = models.IntegerField()
+    customer_id = models.IntegerField()
+
+    def __str__(self):
+        return 'Add. Id: ' + str(self.address_id) + ' Customer Id: ' + str(self.customer_id)
+
+class Customer_Payment(models.Model):
+    payment_id = models.IntegerField()
+    customer_id = models.IntegerField()
+
+    def __str__(self):
+        return 'Payment Id: ' + str(self.payment_id) + ' Customer Id: ' + str(self.customer_id)
+
+class Customer_Style_Preference(models.Model):
+    style_id = models.IntegerField()
+    customer_id = models.IntegerField()
+
+    def __str__(self):
+        return 'Style Id: ' + str(self.style_id) + ' Customer Id: ' + str(self.customer_id)
+
+class Food_Style(models.Model):
+    style_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.style_name
+
+class Restaurant(models.Model):
+    #name
+    name = models.CharField(max_length=50)
+    #address
+    address = models.CharField(max_length=50)
+    #phone_number
+    #max length on the table is 50 but i figure we should change this later
+    phone_number = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name + ' ' + self.address
+
+class Restaurant_Style(models.Model):
+    #restaurant_id
+    restaurant_id = models.IntegerField()
+    #style_id
+    style_id = models.IntegerField()
+
+    def __str__(self):
+        return 'Rest. Id: ' + str(self.restaurant_id) + ' Style Id:' + str(self.style_id)
+
+class Review(models.Model):
+    #text
+    text = models.CharField(max_length=300)
+    #stars
+    stars = models.PositiveSmallIntegerField()
+    #customer_id
+    customer_id = models.IntegerField()
+    #restaurant_id
+    restaurant_id = models.IntegerField()
+
+    def __str__(self):
+        return 'Customer Id: ' + str(self.customer_id) + ' Rest. Id: '
+        + str(self.restaurant_id) + ' ' + str(self.stars) + " stars"
+
+class Item_Style(models.Model):
+    item_id = models.IntegerField()
+    style_id = models.IntegerField()
+
+    def __str__(self):
+        return 'Item Id: ' + str(self.item_id) + ' Style. Id: '
+        + str(self.style_id)
+
+class Menu(models.Model):
+    menu_id = models.IntegerField()
+    restaurant_id = models.IntegerField()
+
+    def __str__(self):
+        return 'Menu Id: ' + str(self.menu_id) + ' Rest. Id: '
+        + str(self.restaurant_id)
+
+class Payment (models.Model):
+    #cardnumber
+    card_number = models.BigIntegerField()
+    #pin number
+    card_pin = models.IntegerField()
+    #Expiration Date
+    card_expdate = models.DateField()
+
+    def __str__(self):
+        return 'Card Num: ' + str(self.card_number)

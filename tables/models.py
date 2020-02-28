@@ -51,11 +51,11 @@ class Customer_Style_Preference(models.Model):
     def __str__(self):
         return 'Style Id: ' + str(self.style_id) + ' Customer Id: ' + str(self.customer_id)
 
-class Food_Style(models.Model):
-    style_name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.style_name
+# class Food_Style(models.Model):
+#     style_name = models.CharField(max_length=50)
+#
+#     def __str__(self):
+#         return self.style_name
 
 class Restaurant(models.Model):
     #name

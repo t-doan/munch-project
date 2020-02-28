@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from .models import (Address, Item, Customer, Customer_Address,
 Customer_Payment, Customer_Style_Preference, #Food_Style,
-Item_Style, Menu, Payment, Restaurant, Restaurant_Style, Review)
+Item_Style, Menu, #Payment,
+Restaurant, Restaurant_Style, Review)
 
 
 # Create your views here.
@@ -33,7 +34,7 @@ def home(request):
 
     'item_styles': item_styles,
     'menus': menus,
-    'payments': payments,
+    # 'payments': payments,
 
     'restaurants': restaurants,
     'restaurant_styles': restaurant_styles,

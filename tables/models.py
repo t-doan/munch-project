@@ -44,7 +44,7 @@ class Payment (models.Model):
     card_expdate = models.IntegerField()
 
     def __str__(self):
-        return self.cardholder_FirstName + " " + self.cardholder_LastName + " " + self.card_number + " " + self.CVV_number + " " + self.card_expdate
+        return self.cardholder_FirstName + " " + self.cardholder_LastName + " " + self.card_number + " " + str(self.CVV_number) + " " + str(self.card_expdate)
 
 class Food_Style (models.Model):
     food_style = models.CharField(max_length=50)

@@ -17,7 +17,7 @@ def home(request):
 
     item_styles = Item_Style.objects
     menus = Menu.objects
-    payments = Payment.objects
+    #payments = Payment.objects
 
     restaurants = Restaurant.objects
     restaurant_styles = Restaurant_Style.objects

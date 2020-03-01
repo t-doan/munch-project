@@ -51,11 +51,11 @@ class Customer_Style_Preference(models.Model):
     def __str__(self):
         return 'Style Id: ' + str(self.style_id) + ' Customer Id: ' + str(self.customer_id)
 
-# class Food_Style(models.Model):
-#     style_name = models.CharField(max_length=50)
-#
-#     def __str__(self):
-#         return self.style_name
+class Food_Style(models.Model):
+    style_name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.style_name
 
 class Restaurant(models.Model):
     #name
@@ -108,13 +108,13 @@ class Menu(models.Model):
         return 'Menu Id: ' + str(self.menu_id) + ' Rest. Id: '
         + str(self.restaurant_id)
 
-# class Payment (models.Model):
-#     #cardnumber
-#     card_number = models.BigIntegerField()
-#     #pin number
-#     card_pin = models.IntegerField()
-#     #Expiration Date
-#     card_expdate = models.DateField()
-#
-#     def __str__(self):
-#         return 'Card Num: ' + str(self.card_number)
+class Payment (models.Model):
+    #cardnumber
+    card_number = models.BigIntegerField()
+    #pin number
+    card_pin = models.IntegerField()
+    #Expiration Date
+    card_expdate = models.DateField()
+
+    def __str__(self):
+        return 'Card Num: ' + str(self.card_number)

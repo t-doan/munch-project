@@ -9,7 +9,7 @@ from decouple import config
 
 from .models import Restaurant
 
-stripe.api_key = config['STRIPE_API_KEY']
+stripe.api_key = config('STRIPE_API_KEY')
 
 # Create your views here.
 def home(request):

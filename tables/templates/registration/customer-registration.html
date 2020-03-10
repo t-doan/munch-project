@@ -1,0 +1,17 @@
+{% extends 'tables/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+
+<div class="container">
+<h1>Sign Up</h1>
+<form method="post">
+    {% csrf_token %}
+
+    <!-- Add form to get info like name, phone number, etc...  -->
+
+    <button type="submit">Complete Sign Up</button>
+</form>
+</div>
+
+
+{% endblock %}

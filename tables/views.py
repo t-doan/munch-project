@@ -18,7 +18,7 @@ def home(request):
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('customersignup')
     template_name = 'registration/signup.html'
 
     def form_valid(self, form):
@@ -27,6 +27,9 @@ class SignUp(generic.CreateView):
         new_user = authenticate(username=username, password=password)
         login(self.request, new_user)
         return valid
+
+def customersignup(request):
+    return render(request, 'registration/customer-registration.html')
 
 def join(request):
     return render(request, 'tables/join.html')

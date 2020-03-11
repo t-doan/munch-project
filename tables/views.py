@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import CustomSignupForm
+from .forms import CustomSignupForm, CustomerForm, AddressForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
@@ -18,7 +18,7 @@ def home(request):
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm
-    success_url = reverse_lazy('customersignup')
+    success_url = reverse_lazy('fillCustomer')
     template_name = 'registration/signup.html'
 
     def form_valid(self, form):
@@ -28,8 +28,41 @@ class SignUp(generic.CreateView):
         login(self.request, new_user)
         return valid
 
-def customersignup(request):
-    return render(request, 'registration/customer-registration.html')
+def fillCustomer(request):
+    # if request.method == 'POST':
+    #     filled_form = PizzaForm(request.POST)
+    #     if filled_form.is_valid():
+    #         created_pizza = filled_form.save()
+    #         created_pizza_pk = created_pizza.id
+    #         note = 'Thanks for ordering! Your %s %s and %s pizza is on its way!' %(filled_form.cleaned_data['size'],
+    #         filled_form.cleaned_data['topping1'],
+    #         filled_form.cleaned_data['topping2'],)
+    #         filled_form = PizzaForm()
+    #     else:
+    #         created_pizza_pk = None
+    #         note = 'Order was not created, please try again'
+    #     return render(request, 'pizza/order.html', {'created_pizza_pk':created_pizza_pk, 'pizzaform':filled_form, 'note':note, 'multiple_form':multiple_form})
+    # else:
+        customer_form = CustomerForm()
+        return render(request, 'registration/customer-registration.html', {'form':customer_form})
+
+def fillAddress(request):
+    # if request.method == 'POST':
+    #     filled_form = PizzaForm(request.POST)
+    #     if filled_form.is_valid():
+    #         created_pizza = filled_form.save()
+    #         created_pizza_pk = created_pizza.id
+    #         note = 'Thanks for ordering! Your %s %s and %s pizza is on its way!' %(filled_form.cleaned_data['size'],
+    #         filled_form.cleaned_data['topping1'],
+    #         filled_form.cleaned_data['topping2'],)
+    #         filled_form = PizzaForm()
+    #     else:
+    #         created_pizza_pk = None
+    #         note = 'Order was not created, please try again'
+    #     return render(request, 'pizza/order.html', {'created_pizza_pk':created_pizza_pk, 'pizzaform':filled_form, 'note':note, 'multiple_form':multiple_form})
+    # else:
+        address_form = AddressForm()
+        return render(request, 'registration/address.html', {'form':address_form})
 
 def join(request):
     return render(request, 'tables/join.html')

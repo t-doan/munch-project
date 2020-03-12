@@ -10,11 +10,12 @@
 <div class="container">
 
   <h3>Popular Restaurants</h3>
-  <ul>
+
+    <ul>
     {% for restaurant in restaurants.all %}
-
-
+        <li>{{ restaurant.name }}</li>
     {% endfor %}
-  </ul>
+    </ul>
+
 </div>
 {% endblock %}

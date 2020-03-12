@@ -30,22 +30,22 @@ class SignUp(generic.CreateView):
 
 def fillCustomer(request):
      if request.method == 'POST':
-    #     filled_form = PizzaForm(request.POST)
-    #     if filled_form.is_valid():
-    #         created_pizza = filled_form.save()
+        filled_form = CustomerForm(request.POST)
+        if filled_form.is_valid():
+            created_customer = filled_form.save(commit=False)
+            created_customer.user = request.user
+            created_customer.save()
+
     #         created_pizza_pk = created_pizza.id
-    #         note = 'Thanks for ordering! Your %s %s and %s pizza is on its way!' %(filled_form.cleaned_data['size'],
-    #         filled_form.cleaned_data['topping1'],
-    #         filled_form.cleaned_data['topping2'],)
-    #         filled_form = PizzaForm()
-    #     else:
-    #         created_pizza_pk = None
+            filled_form = CustomerForm()
+        else:
+            created_customer_pk = None
     #         note = 'Order was not created, please try again'
-        print ("customer post")
+        #print ("customer post")
         address_form = AddressForm()
         return render(request, 'registration/address.html', {'form':address_form})
      else:
-        print ("customer get")
+        #print ("customer get")
         customer_form = CustomerForm()
         return render(request, 'registration/customer-registration.html', {'form':customer_form})
 

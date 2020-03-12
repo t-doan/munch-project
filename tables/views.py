@@ -29,7 +29,7 @@ class SignUp(generic.CreateView):
         return valid
 
 def fillCustomer(request):
-    # if request.method == 'POST':
+     if request.method == 'POST':
     #     filled_form = PizzaForm(request.POST)
     #     if filled_form.is_valid():
     #         created_pizza = filled_form.save()
@@ -41,28 +41,33 @@ def fillCustomer(request):
     #     else:
     #         created_pizza_pk = None
     #         note = 'Order was not created, please try again'
-    #     return render(request, 'pizza/order.html', {'created_pizza_pk':created_pizza_pk, 'pizzaform':filled_form, 'note':note, 'multiple_form':multiple_form})
-    # else:
+        print ("customer post")
+        address_form = AddressForm()
+        return render(request, 'registration/address.html', {'form':address_form})
+     else:
+        print ("customer get")
         customer_form = CustomerForm()
         return render(request, 'registration/customer-registration.html', {'form':customer_form})
 
 def fillAddress(request):
     # if request.method == 'POST':
-    #     filled_form = PizzaForm(request.POST)
-    #     if filled_form.is_valid():
-    #         created_pizza = filled_form.save()
-    #         created_pizza_pk = created_pizza.id
-    #         note = 'Thanks for ordering! Your %s %s and %s pizza is on its way!' %(filled_form.cleaned_data['size'],
-    #         filled_form.cleaned_data['topping1'],
-    #         filled_form.cleaned_data['topping2'],)
-    #         filled_form = PizzaForm()
-    #     else:
-    #         created_pizza_pk = None
-    #         note = 'Order was not created, please try again'
-    #     return render(request, 'pizza/order.html', {'created_pizza_pk':created_pizza_pk, 'pizzaform':filled_form, 'note':note, 'multiple_form':multiple_form})
+        filled_form = AddressForm(request.POST)
+        print ("Address post")
+        if filled_form.is_valid():
+            created_address = filled_form.save()
+        #    created_address_pk = created_address.id
+        #    note = 'Address Saved!'
+            print ('Address saved')
+            filled_form = AddressForm()
+        else:
+            created_address_pk = None
+        #    note = 'Order was not created, please try again'
+            print ('Not valid form')
+        return render(request, 'tables/home.html')
     # else:
-        address_form = AddressForm()
-        return render(request, 'registration/address.html', {'form':address_form})
+    #     print ("Address get")
+    #     address_form = AddressForm()
+    #     return render(request, 'registration/address.html', {'form':address_form})
 
 def join(request):
     return render(request, 'tables/join.html')

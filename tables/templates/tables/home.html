@@ -2,6 +2,8 @@
 {% block content %}
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+  {% load static %}
+  <img scr="{% static 'munch.jpg' %}" class=img-fluid alt="Munch">
   <h1 class="display-4">Munch!</h1>
   <p class="lead">Your next meal is just a click away...</p>
   <a href="{% url 'join' %}"><button type="button" class="btn btn-lg btn-primary">Start Order</button></a>

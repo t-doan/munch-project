@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = ['munch-project.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['munch-project.herokuapp.com', 'localhost', 'munchproject.herokuapp.com']
 
 LOGIN_URL='login'
 LOGIN_REDIRECT_URL = 'home'

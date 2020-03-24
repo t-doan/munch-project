@@ -8,6 +8,7 @@ import stripe
 from decouple import config
 
 from .models import Restaurant
+from .models import Address, AddressForm, Customer
 
 stripe.api_key = config('STRIPE_API_KEY')
 
@@ -33,37 +34,45 @@ def fillCustomer(request):
         filled_form = CustomerForm(request.POST)
         if filled_form.is_valid():
             created_customer = filled_form.save(commit=False)
-            created_customer.user = request.user
+            # created_customer.user = request.user
             created_customer.save()
-
-    #         created_pizza_pk = created_pizza.id
-            filled_form = CustomerForm()
+            created_customer_pk = created_customer.id
+            address_form = AddressForm()
+            return render(request, 'registration/address.html', {'form':address_form, 'created_customer_pk':created_customer_pk})
         else:
-            created_customer_pk = None
-    #         note = 'Order was not created, please try again'
-        #print ("customer post")
-        address_form = AddressForm()
-        return render(request, 'registration/address.html', {'form':address_form})
+            note = 'Form not valid. Please try again'
+            customer_form = CustomerForm()
+            return render(request, 'registration/customer-registration.html', {'form':customer_form, 'note':note})
      else:
         #print ("customer get")
         customer_form = CustomerForm()
         return render(request, 'registration/customer-registration.html', {'form':customer_form})
 
+def edit_customer(request, pk):
+    address = Address.objects.get(pk=pk)
+    form = AddressForm(instance = address)
+    if request.method == 'POST':
+        filled_form = AddressForm(request.POST, instance=address)
+        if filled_form.is_valid():
+            filled_form.save()
+            form = filled_form
+    return render(request, 'registration/edit_customer.html', {'form':customer_form, })
+
 def fillAddress(request):
     # if request.method == 'POST':
         filled_form = AddressForm(request.POST)
-        print ("Address post")
+        # print ("Address post")
         if filled_form.is_valid():
             created_address = filled_form.save()
-        #    created_address_pk = created_address.id
+            created_address_pk = created_address.id
         #    note = 'Address Saved!'
-            print ('Address saved')
+            # print ('Address saved')
             filled_form = AddressForm()
         else:
             created_address_pk = None
         #    note = 'Order was not created, please try again'
-            print ('Not valid form')
-        return render(request, 'tables/home.html')
+            # print ('Not valid form')
+        return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
     # else:
     #     print ("Address get")
     #     address_form = AddressForm()

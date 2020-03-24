@@ -30,6 +30,9 @@ urlpatterns = [
     path('auth/customersignup/address', views.fillAddress, name='fillAddress'),
     path('join', views.join, name='join'),
     #path('jobs/<int:job_id>', jobs.views.detail, name='detail'),
+    # experimental paths for editing stuff
+    path('auth/customersignup/<int:pk>', views.edit_customer, name='edit_customer'),
+    path('auth/customersignup/address/<int:pk>', views.edit_address, name='edit_address'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

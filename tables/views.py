@@ -8,7 +8,7 @@ import stripe
 from decouple import config
 
 from .models import Restaurant
-from .models import Address, AddressForm, Customer
+from .models import Address, Customer
 
 stripe.api_key = config('STRIPE_API_KEY')
 

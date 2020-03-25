@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
-import stripe
+import stripe, datetime
 from decouple import config
 
 from .models import Restaurant
@@ -13,8 +13,13 @@ stripe.api_key = config('STRIPE_API_KEY')
 
 # Create your views here.
 def home(request):
+    #print(request.session)
+    request.session.set_expiry(5256000) #expires in about 2 months
+    #print(request.session.get_expiry_age())
+    cust_id = request.session.get('customer_id', -1)
+    greeting_message = "Your customer id is " + str(cust_id)
     restaurants = Restaurant.objects
-    return render(request, 'tables/home.html', {'restaurants':restaurants})
+    return render(request, 'tables/home.html', {'restaurants':restaurants, 'greeting_message':greeting_message})
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm
@@ -35,17 +40,14 @@ def fillCustomer(request):
             created_customer = filled_form.save(commit=False)
             created_customer.user = request.user
             created_customer.save()
-
-    #         created_pizza_pk = created_pizza.id
+            #adding the new customer_id to the session
+            request.session['customer_id'] = created_customer.id
             filled_form = CustomerForm()
         else:
             created_customer_pk = None
-    #         note = 'Order was not created, please try again'
-        #print ("customer post")
         address_form = AddressForm()
         return render(request, 'registration/address.html', {'form':address_form})
      else:
-        #print ("customer get")
         customer_form = CustomerForm()
         return render(request, 'registration/customer-registration.html', {'form':customer_form})
 

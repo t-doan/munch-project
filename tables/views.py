@@ -8,7 +8,7 @@ import stripe
 from decouple import config
 
 from .models import Restaurant
-from .models import Address, Customer
+from .models import Address, Customer, Customer_Address
 
 stripe.api_key = config('STRIPE_API_KEY')
 
@@ -39,9 +39,9 @@ def fillCustomer(request):
             created_customer = filled_form.save(commit=False)
             created_customer.user = request.user
             created_customer.save()
-            # created_customer_pk = created_customer.id
+            created_customer_pk = created_customer.id
             address_form = AddressForm()
-            return render(request, 'registration/address.html', {'form':address_form,})
+            return render(request, 'registration/address.html', {'form':address_form, 'created_customer_pk':created_customer_pk})
         else:
             note = 'Form not valid. Please try again'
             customer_form = CustomerForm()
@@ -65,21 +65,19 @@ def edit_customer(request):
         return render(request, 'registration/edit_customer.html', {'form':form, 'note':note})
     return render(request, 'registration/edit_customer.html', {'form':form})
 
-
 def fillAddress(request):
-    # if request.method == 'POST':
         filled_form = AddressForm(request.POST)
-        # print ("Address post")
+
         if filled_form.is_valid():
             created_address = filled_form.save()
             created_address_pk = created_address.id
-        #    note = 'Address Saved!'
-            # print ('Address saved')
             filled_form = AddressForm()
+            address = Address.objects.get(id = created_address_pk)
+            customer = Customer.objects.get(user_id=request.user.id)
+            customer_address = Customer_Address(address_id=address, customer_id=customer)
+            customer_address.save()
         else:
             created_address_pk = None
-        #    note = 'Order was not created, please try again'
-            # print ('Not valid form')
         return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
     # else:
     #     print ("Address get")

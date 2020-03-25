@@ -39,9 +39,9 @@ def fillCustomer(request):
             created_customer = filled_form.save(commit=False)
             created_customer.user = request.user
             created_customer.save()
-            created_customer_pk = created_customer.id
+            # created_customer_pk = created_customer.id
             address_form = AddressForm()
-            return render(request, 'registration/address.html', {'form':address_form, 'created_customer_pk':created_customer_pk})
+            return render(request, 'registration/address.html', {'form':address_form,})
         else:
             note = 'Form not valid. Please try again'
             customer_form = CustomerForm()
@@ -50,8 +50,9 @@ def fillCustomer(request):
         customer_form = CustomerForm()
         return render(request, 'registration/customer-registration.html', {'form':customer_form})
 
-def edit_customer(request, pk):
-    customer = Customer.objects.get(pk=pk)
+def edit_customer(request):
+    customer = Customer.objects.get(user_id=request.user.id)
+    print(request.user.id)
     form = CustomerForm(instance = customer)
     if request.method == 'POST':
         filled_form = CustomerForm(request.POST, instance=customer)
@@ -59,7 +60,11 @@ def edit_customer(request, pk):
             filled_form.save()
             form = filled_form
             note = 'Your info has been successfully changed'
-    return render(request, 'registration/edit_customer.html', {'form':customer_form, 'note':note, })
+        else:
+            note = 'There was an error in changing your information'
+        return render(request, 'registration/edit_customer.html', {'form':form, 'note':note})
+    return render(request, 'registration/edit_customer.html', {'form':form})
+
 
 def fillAddress(request):
     # if request.method == 'POST':

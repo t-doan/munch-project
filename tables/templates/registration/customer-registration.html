@@ -4,9 +4,9 @@
 
 <div class="container">
 <h1>Set Up Customer Info</h1>
-<<h2>{{ note }}</h2>
+<h2>{{ note }}</h2>
 {% if created_customer_pk %}
-<a href="{% url 'edit_customer' created_customer_pk %}">Edit Your Information</a> 
+<a href="{% url 'edit_customer' created_customer_pk %}">Edit Your Information</a>
 {% endif %}
 
 <form method="post" action="{% url 'fillCustomer' %}">

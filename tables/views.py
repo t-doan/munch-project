@@ -17,6 +17,9 @@ def home(request):
     restaurants = Restaurant.objects
     return render(request, 'tables/home.html', {'restaurants':restaurants})
 
+def profile(request):
+    return render(request, 'registration/user-profile.html')
+
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm
     success_url = reverse_lazy('fillCustomer')
@@ -34,7 +37,7 @@ def fillCustomer(request):
         filled_form = CustomerForm(request.POST)
         if filled_form.is_valid():
             created_customer = filled_form.save(commit=False)
-            # created_customer.user = request.user
+            created_customer.user = request.user
             created_customer.save()
             created_customer_pk = created_customer.id
             address_form = AddressForm()
@@ -44,19 +47,19 @@ def fillCustomer(request):
             customer_form = CustomerForm()
             return render(request, 'registration/customer-registration.html', {'form':customer_form, 'note':note})
      else:
-        #print ("customer get")
         customer_form = CustomerForm()
         return render(request, 'registration/customer-registration.html', {'form':customer_form})
 
 def edit_customer(request, pk):
-    address = Address.objects.get(pk=pk)
-    form = AddressForm(instance = address)
+    customer = Customer.objects.get(pk=pk)
+    form = CustomerForm(instance = customer)
     if request.method == 'POST':
-        filled_form = AddressForm(request.POST, instance=address)
+        filled_form = CustomerForm(request.POST, instance=customer)
         if filled_form.is_valid():
             filled_form.save()
             form = filled_form
-    return render(request, 'registration/edit_customer.html', {'form':customer_form, })
+            note = 'Your info has been successfully changed'
+    return render(request, 'registration/edit_customer.html', {'form':customer_form, 'note':note, })
 
 def fillAddress(request):
     # if request.method == 'POST':
@@ -77,6 +80,17 @@ def fillAddress(request):
     #     print ("Address get")
     #     address_form = AddressForm()
     #     return render(request, 'registration/address.html', {'form':address_form})
+
+def edit_address(request, pk):
+    address = Address.objects.get(pk=pk)
+    form = AddressForm(instance = address)
+    if request.method == 'POST':
+        filled_form = AddressForm(request.POST, instance=address)
+        if filled_form.is_valid():
+            filled_form.save()
+            form = filled_form
+            note = 'Your info has been successfully changed'
+    return render(request, 'registration/edit_customer.html', {'form':customer_form, 'note':note, })
 
 def join(request):
     return render(request, 'tables/join.html')

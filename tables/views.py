@@ -8,11 +8,8 @@ import stripe
 from decouple import config
 
 from .models import Restaurant
-<<<<<<< HEAD
 from .models import Customer
-=======
 from .models import Address, Customer, Customer_Address
->>>>>>> c6294357d33de2e27c826aee7b640c77bcc6c2d1
 
 stripe.api_key = config('STRIPE_API_KEY')
 
@@ -21,7 +18,6 @@ def home(request):
     restaurants = Restaurant.objects
     return render(request, 'tables/home.html', {'restaurants':restaurants})
 
-<<<<<<< HEAD
 def Popeyes(request):
     customers = Customer.objects
     return render(request, 'tables/Popeyes.html', {'customers':customers})
@@ -41,7 +37,7 @@ def Popeyes(request):
 
 def PapaPizzaPie(request):
     return render(request, 'tables/PapaPizzaPie.html')
-=======
+
 def profile(request):
     customer = Customer.objects.get(user_id=request.user.id)
     customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
@@ -49,7 +45,6 @@ def profile(request):
 
     address = address.city + ", " + address.state
     return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
->>>>>>> c6294357d33de2e27c826aee7b640c77bcc6c2d1
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm

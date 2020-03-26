@@ -73,3 +73,6 @@ def fillAddress(request):
 
 def join(request):
     return render(request, 'tables/join.html')
+
+
+// test

@@ -18,7 +18,12 @@ def home(request):
     return render(request, 'tables/home.html', {'restaurants':restaurants})
 
 def profile(request):
-    return render(request, 'registration/user-profile.html')
+    customer = Customer.objects.get(user_id=request.user.id)
+    customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
+    address = Address.objects.get(pk=customer_address.address_id_id)
+
+    address = address.city + ", " + address.state
+    return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm

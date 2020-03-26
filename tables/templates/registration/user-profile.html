@@ -3,9 +3,11 @@
 
 <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
   {% load static %}
-  
+
 
   <h1 class="display-4">My Profile</h1>
+  <p>{{ customer }}</p>
+  <p>{{ address }}</p>
   <a href="{% url 'edit_customer' %}"><button type="button" class="btn btn-lg btn-primary">Edit Profile Info</button></a>
   <a href="{% url 'edit_address' %}"><button type="button" class="btn btn-lg btn-primary">Edit Address</button></a>
 

@@ -108,7 +108,6 @@ def fillAddress(request):
             created_address_pk = None
         return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
 
-
 def add_address(request, customer_id):
     if request.method == 'POST':
         filled_form = AddressForm(request.POST)

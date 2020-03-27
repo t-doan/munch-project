@@ -7,13 +7,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import stripe
 from decouple import config
 
-from .models import Restaurant
+from .models import Restaurant, Menu, Item
 from .models import Address, Customer, Customer_Address
-from .models import Menu, Item
-
-from .models import Customer
-from .models import Address, Customer, Customer_Address
-
 
 stripe.api_key = config('STRIPE_API_KEY')
 
@@ -31,9 +26,20 @@ def home(request):
 
 def restaurantView(request, restaurant_id):
     restaurant = Restaurant.objects.get(pk = restaurant_id)
-    menu = Menu.objects.get(restaurant_id_id = restaurant.id)
-    items = list(Item.objects.filter(menu_id=menu.id))
-    return render(request, 'tables/restaurant_view.html', {'restaurant':restaurant, 'menu':menu, 'items':items})
+    menu_objs = list(Menu.objects.filter(restaurant_id_id=restaurant.id))
+    menu_items = []
+    menu_names = []
+    for menu in menu_objs:
+        menu_names.append(menu.name)
+        items = list(Item.objects.filter(menu_id=menu.id))
+        menu_items.append(items)
+    context = {
+    'restaurant':restaurant,
+    'menu_names':menu_names,
+    'menu_items':menu_items,
+    'i_amt':range(len(menu_names)),
+    }
+    return render(request, 'tables/restaurant_view.html',context = context)
 
 def profile(request):
     customer = Customer.objects.get(user_id = request.user.id)

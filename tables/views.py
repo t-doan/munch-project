@@ -21,13 +21,9 @@ def home(request):
 
     context = {
     'num_visits': num_visits,
+    'restaurants':restaurants,
     }
     return render (request, 'tables/home.html',context = context)
-    return render(request, 'tables/home.html', {'restaurants':restaurants})
-
-def Popeyes(request):
-    restaurants = Restaurant.objects
-    return render(request, 'tables/Popeyes.html', {'restaurants':restaurants})
 
 def Popeyes(request):
     restaurant = Restaurant.objects.get(name = "Popeyes")
@@ -37,6 +33,14 @@ def Popeyes(request):
 
 def PapaPizzaPie(request):
     return render(request, 'tables/PapaPizzaPie.html')
+
+#MATT: make your changes in this function
+def restaurantView(request, restaurant_id):
+#     restaurant = Restaurant.objects.get(pk = restaurant_id)
+#     menus = Menu.objects.get(restaurant_id_id = restaurant.id))
+#     items = get all of the items from the menu, use a list
+    return render(request, 'tables/PapaPizzaPie.html') #make sure you pass everything
+    #to the html page that you are gonna make (restaurantView.html or something)
 
 def profile(request):
     customer = Customer.objects.get(user_id=request.user.id)

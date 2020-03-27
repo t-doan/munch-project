@@ -4,7 +4,6 @@
 
 <div class="container">
 <h1>Set Up Customer Address</h1>
-<h2>{{ note }}</h2>
 <form method="post" action="{% url 'fillAddress' %}">
     {% csrf_token %}
 

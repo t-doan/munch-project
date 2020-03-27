@@ -114,11 +114,8 @@ def fillAddress(request):
     #     address_form = AddressForm()
     #     return render(request, 'registration/address.html', {'form':address_form})
 
-def edit_address(request):
-    # Have to do this roundabout section to get address_id
-    customer = Customer.objects.get(user_id=request.user.id)
-    customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
-    address = Address.objects.get(pk=customer_address.address_id_id)
+def edit_address(request, address_id):
+    address = Address.objects.get(pk=address_id)
     form = AddressForm(instance = address)
     if request.method == 'POST':
         filled_form = AddressForm(request.POST, instance=address)
@@ -126,8 +123,8 @@ def edit_address(request):
             filled_form.save()
             form = filled_form
             note = 'Your info has been successfully changed'
-            return render(request, 'registration/edit_address.html', {'form':form, 'note':note})
-    return render(request, 'registration/edit_address.html', {'form':form})
+            return render(request, 'registration/edit_address.html', {'form':form, 'note':note, 'address':address})
+    return render(request, 'registration/edit_address.html', {'form':form, 'address':address})
 
 def join(request):
     return render(request, 'tables/join.html')

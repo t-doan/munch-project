@@ -16,7 +16,7 @@
   <p>{{ address.nickname }}:</p>
   <p>&ensp;&ensp;{{ address.street }}, {{ address.city }}</p>
   <p>&ensp;&ensp;{{ address.state }} {{ address.zipcode }}</p>
-  <a href="{% url 'edit_address' %}"><button type="button">Edit Address</button></a>
+  <a href="{% url 'edit_address' address.id %}" ><button type="button">Edit Address</button></a>
   </div>
   {% endfor %}
 {% endblock %}

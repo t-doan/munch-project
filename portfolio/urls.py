@@ -25,7 +25,7 @@ urlpatterns = [
     #path('', customers.views.home, name='home'),
     path('', views.home, name='home'),
     path('Popeyes', views.Popeyes, name='Popeyes'),
-    path('PapaPizzaPie', views.PapaPizzaPie, name='PapaPizzaPie'), 
+    path('PapaPizzaPie', views.PapaPizzaPie, name='PapaPizzaPie'),
     path('auth/', include('django.contrib.auth.urls')),
     path('auth/signup', views.SignUp.as_view(), name='signup'),
     path('auth/customersignup', views.fillCustomer, name='fillCustomer'),
@@ -33,9 +33,9 @@ urlpatterns = [
     path('join', views.join, name='join'),
     #path('jobs/<int:job_id>', jobs.views.detail, name='detail'),
     # experimental paths for editing stuff
-    path('auth/edit_customer', views.edit_customer, name='edit_customer'),
-    path('auth/edit_address', views.edit_address, name='edit_address'),
     path('auth/user-profile', views.profile, name='user-profile'),
+    path('auth/user-profile/edit_customer', views.edit_customer, name='edit_customer'),
+    path('auth/user-profile/address/<int:address_id>', views.edit_address, name='edit_address'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

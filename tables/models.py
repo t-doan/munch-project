@@ -28,7 +28,7 @@ class Menu(models.Model):
     restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Menu Id: ' + str(self.menu_id) + ' Rest. Id: '
+        return 'Menu Id: ' + str(self.id) + ' Rest. Id: '
         + str(self.restaurant_id)
 
 class Item(models.Model):

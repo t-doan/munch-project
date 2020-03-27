@@ -29,7 +29,8 @@ def home(request):
     }
     return render (request, 'tables/home.html',context = context)
 
-restaurant = Restaurant.objects.get(pk = restaurant_id)
+def restaurantView(request, restaurant_id):
+    restaurant = Restaurant.objects.get(pk = restaurant_id)
     menu = Menu.objects.get(restaurant_id_id = restaurant.id)
     items = list(Item.objects.filter(menu_id=menu.id))
     return render(request, 'tables/restaurant_view.html', {'restaurant':restaurant, 'menu':menu, 'items':items})

@@ -8,13 +8,12 @@ import stripe
 from decouple import config
 
 from .models import Restaurant
-<<<<<<< HEAD
 from .models import Address, Customer, Customer_Address
 from .models import Menu, Item
-=======
+
 from .models import Customer
 from .models import Address, Customer, Customer_Address
->>>>>>> 160c4ea94c4403800360b2243840ceaf497ca28e
+
 
 stripe.api_key = config('STRIPE_API_KEY')
 
@@ -38,13 +37,13 @@ def PapaPizzaPie(request):
 
 def profile(request):
     customer = Customer.objects.get(user_id=request.user.id)
-<<<<<<< HEAD
+
     customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
     address = Address.objects.get(pk=customer_address.address_id_id)
 
     address = address.city + ", " + address.state
     return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
-=======
+
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:
@@ -54,7 +53,6 @@ def profile(request):
         for add in addresses:
             print(add.nickname)
     return render(request, 'registration/user-profile.html', {'customer':customer, 'addresses':addresses})
->>>>>>> 160c4ea94c4403800360b2243840ceaf497ca28e
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm

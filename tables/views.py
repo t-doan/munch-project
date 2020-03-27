@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
-import stripe, datetime
+import stripe
 from decouple import config
 
 from .models import Restaurant
@@ -17,7 +17,6 @@ from .models import Address, Customer, Customer_Address
 
 stripe.api_key = config('STRIPE_API_KEY')
 
-# Create your views here.
 def home(request):
     #print(request.session)
     request.session.set_expiry(5256000) #expires in about 2 months
@@ -31,6 +30,7 @@ def home(request):
     context = {
     'num_visits': num_visits,
     'restaurants':restaurants,
+    'greeting_message':greeting_message,
     }
     return render (request, 'tables/home.html',context = context)
 
@@ -163,6 +163,3 @@ def edit_address(request, address_id):
 
 def join(request):
     return render(request, 'tables/join.html')
-
-
-// test

@@ -1,0 +1,31 @@
+{% extends 'tables/base.html' %}
+{% block content %}
+
+<div class="container">
+  {% load static %}
+
+  <h4> {{ note }} </h4>
+  <h3>My Profile</h3>
+  <p>Name: {{ customer.first_name }} {{customer.last_name}}</p>
+  <p>Phone Number: {{ customer.phone_number }}</p>
+  <a href="{% url 'edit_customer' %}"><button type="button">Edit Profile</button></a>
+</div>
+
+  {% for address in addresses %}
+  <br>
+  <div class="container">
+  <p>{{ address.nickname }}:</p>
+  <p>&ensp;&ensp;{{ address.street }}, {{ address.city }}</p>
+  <p>&ensp;&ensp;{{ address.state }} {{ address.zipcode }}</p>
+  <a href="{% url 'edit_address' address.id %}" ><button type="button">Edit Address</button></a>
+  <a href="{% url 'delete_address' address.id %}" ><button type="button">Delete Address</button></a>
+  <br>
+  </div>
+  {% endfor %}
+  <br>
+  <div class="container">
+    {% if addresses|length < 5 %}
+    <a href="{% url 'add_address' customer.id %}" ><button type="button">Add New Address</button></a>
+    {% endif %}
+  </div>
+{% endblock %}

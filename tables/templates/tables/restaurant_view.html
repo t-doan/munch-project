@@ -1,0 +1,18 @@
+{% extends 'tables/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+
+<div class="container">
+<h1>{{ restaurant.name }}</h1>
+<h6>Location: {{ restaurant.address }}</h6>
+<h6>Phone Number: {{ restaurant.phone_number }}</h6>
+{% csrf_token %}
+        <ul>
+            {% for item in items %}
+            <li><b>{{ item.name }}</b> - {{ item.price }}</li>
+            {% endfor %}
+        </ul>
+</div>
+
+
+{% endblock %}

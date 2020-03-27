@@ -24,6 +24,8 @@ urlpatterns = [
     #path('', jobs.views.home, name='home'),
     #path('', customers.views.home, name='home'),
     path('', views.home, name='home'),
+    path('Popeyes', views.Popeyes, name='Popeyes'),
+    path('PapaPizzaPie', views.PapaPizzaPie, name='PapaPizzaPie'), 
     path('auth/', include('django.contrib.auth.urls')),
     path('auth/signup', views.SignUp.as_view(), name='signup'),
     path('auth/customersignup', views.fillCustomer, name='fillCustomer'),

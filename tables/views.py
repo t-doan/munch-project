@@ -8,6 +8,7 @@ import stripe
 from decouple import config
 
 from .models import Restaurant
+from .models import Customer
 from .models import Address, Customer, Customer_Address
 
 stripe.api_key = config('STRIPE_API_KEY')
@@ -16,6 +17,26 @@ stripe.api_key = config('STRIPE_API_KEY')
 def home(request):
     restaurants = Restaurant.objects
     return render(request, 'tables/home.html', {'restaurants':restaurants})
+
+def Popeyes(request):
+    customers = Customer.objects
+    return render(request, 'tables/Popeyes.html', {'customers':customers})
+
+#sample(Seb)
+#def Popeyes(request):
+#    restaurant = Restaurant.objects.get('name' == name of the rest choser)
+#    menu = Menu.objects.get(restaurant_id == restaurant.id)
+#    items = Item.get(menu_id == menu.id) #multiple items, so might need a for loop
+#    return render(request, 'tables/Popeyes.html', {'restaurant':restaurant, 'menu':menu, 'items':item})
+
+#def Popeyes(request):
+#    restaurant = Restaurant.objects.get('name' == name of the rest choser)
+#    menu = Menu.objects.get(restaurant_id == restaurant.id)
+#    items = Item.get(menu_id == menu.id) #multiple items, so might need a for loop
+#    return render(request, 'tables/Popeyes.html', {'restaurant':restaurant, 'menu':menu, 'items':item})
+
+def PapaPizzaPie(request):
+    return render(request, 'tables/PapaPizzaPie.html')
 
 def profile(request):
     customer = Customer.objects.get(user_id=request.user.id)

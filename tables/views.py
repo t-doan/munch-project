@@ -10,6 +10,13 @@ from decouple import config
 from .models import Restaurant
 from .models import Address, Customer, Customer_Address
 from .models import Menu, Item
+<<<<<<< HEAD
+
+from .models import Customer
+from .models import Address, Customer, Customer_Address
+
+=======
+>>>>>>> 63f32e6841d83fe144203c8bd2149f649c6d9255
 
 stripe.api_key = config('STRIPE_API_KEY')
 
@@ -44,6 +51,16 @@ def restaurantView(request, restaurant_id):
 
 def profile(request):
     customer = Customer.objects.get(user_id=request.user.id)
+<<<<<<< HEAD
+
+    customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
+    address = Address.objects.get(pk=customer_address.address_id_id)
+
+    address = address.city + ", " + address.state
+    return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
+
+=======
+>>>>>>> 63f32e6841d83fe144203c8bd2149f649c6d9255
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:

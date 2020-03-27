@@ -113,7 +113,8 @@ def add_address(request, customer_id):
             customer_address = Customer_Address(address_id=address, customer_id=customer)
             customer_address.save()
             note = 'New address successfully added'
-            return render(request, 'registration/user-profile.html', {'note':note})
+            return render(request, 'registration/add_address.html', {'note':note, 'customer_id':customer_id})
+            # return render(request, 'registration/user-profile.html', {'note':note})
         else:
             note = 'Error adding address'
             address_form = AddressForm()

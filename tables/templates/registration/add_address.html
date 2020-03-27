@@ -6,7 +6,7 @@
 <h1>Add Address</h1>
 <h2>{{ note }}</h2>
 
-<form method="post" action="{% url 'user-profile' %}">
+<form method="post" action="{% url 'add_address' customer_id %}">
     {% csrf_token %}
 
         <div class="form-group">

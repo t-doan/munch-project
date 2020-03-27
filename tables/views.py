@@ -29,6 +29,7 @@ def home(request):
     }
     return render (request, 'tables/home.html',context = context)
 
+<<<<<<< HEAD
 def Popeyes(request):
     restaurant = Restaurant.objects.get(name = "Popeyes")
     menu = Menu.objects.get(restaurant_id_id = restaurant.id)
@@ -39,6 +40,8 @@ def PapaPizzaPie(request):
     return render(request, 'tables/PapaPizzaPie.html')
 
 #MATT: make your changes in this function
+=======
+>>>>>>> 91384ceab0d57e78d43d53866dac8e8e10f846a4
 def restaurantView(request, restaurant_id):
 #     restaurant = Restaurant.objects.get(pk = restaurant_id)
 #     menus = Menu.objects.get(restaurant_id_id = restaurant.id))
@@ -47,6 +50,7 @@ def restaurantView(request, restaurant_id):
     #to the html page that you are gonna make (restaurantView.html or something)
 
 def profile(request):
+<<<<<<< HEAD
     customer = Customer.objects.get(user_id=request.user.id)
 
     customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
@@ -55,6 +59,9 @@ def profile(request):
     address = address.city + ", " + address.state
     return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
 
+=======
+    customer = Customer.objects.get(user_id = request.user.id)
+>>>>>>> 91384ceab0d57e78d43d53866dac8e8e10f846a4
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:
@@ -125,6 +132,33 @@ def fillAddress(request):
             created_address_pk = None
         return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
 
+<<<<<<< HEAD
+=======
+
+def add_address(request, customer_id):
+    if request.method == 'POST':
+        filled_form = AddressForm(request.POST)
+
+        if filled_form.is_valid():
+            created_address = filled_form.save()
+            created_address_pk = created_address.id
+            filled_form = AddressForm()
+            address = Address.objects.get(id = created_address_pk)
+            customer = Customer.objects.get(user_id=request.user.id)
+            customer_address = Customer_Address(address_id=address, customer_id=customer)
+            customer_address.save()
+            note = 'New address successfully added'
+            return render(request, 'registration/add_address.html', {'note':note, 'customer_id':customer_id})
+            # return render(request, 'registration/user-profile.html', {'note':note})
+        else:
+            note = 'Error adding address'
+            address_form = AddressForm()
+            return render(request, 'registration/add_address.html', {'customer_id':customer_id, 'note':note, 'form':address_form})
+    else:
+       address_form = AddressForm()
+       return render(request, 'registration/add_address.html', {'customer_id':customer_id, 'form':address_form})
+
+>>>>>>> 91384ceab0d57e78d43d53866dac8e8e10f846a4
 def edit_address(request, address_id):
     address = Address.objects.get(pk=address_id)
     form = AddressForm(instance = address)

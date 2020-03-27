@@ -73,11 +73,13 @@ def fillCustomer(request):
             created_customer.save()
             #adding the new customer_id to the session
             request.session['customer_id'] = created_customer.id
-            filled_form = CustomerForm()
+            created_customer_pk = created_customer.id
+            address_form = AddressForm()
+            return render(request, 'registration/address.html', {'form':address_form, 'created_customer_pk':created_customer_pk})
         else:
-            created_customer_pk = None
-        address_form = AddressForm()
-        return render(request, 'registration/address.html', {'form':address_form})
+            note = 'Form not valid. Please try again'
+            customer_form = CustomerForm()
+            return render(request, 'registration/customer-registration.html', {'form':customer_form, 'note':note})
      else:
         customer_form = CustomerForm()
         return render(request, 'registration/customer-registration.html', {'form':customer_form})

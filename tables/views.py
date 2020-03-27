@@ -8,11 +8,8 @@ import stripe
 from decouple import config
 
 from .models import Restaurant
-<<<<<<< HEAD
-from .models import Customer
-=======
 from .models import Address, Customer, Customer_Address
->>>>>>> c6294357d33de2e27c826aee7b640c77bcc6c2d1
+from .models import Menu, Item
 
 stripe.api_key = config('STRIPE_API_KEY')
 
@@ -21,27 +18,19 @@ def home(request):
     restaurants = Restaurant.objects
     return render(request, 'tables/home.html', {'restaurants':restaurants})
 
-<<<<<<< HEAD
 def Popeyes(request):
-    customers = Customer.objects
-    return render(request, 'tables/Popeyes.html', {'customers':customers})
+    restaurants = Restaurant.objects
+    return render(request, 'tables/Popeyes.html', {'restaurants':restaurants})
 
-#sample(Seb)
-#def Popeyes(request):
-#    restaurant = Restaurant.objects.get('name' == name of the rest choser)
-#    menu = Menu.objects.get(restaurant_id == restaurant.id)
-#    items = Item.get(menu_id == menu.id) #multiple items, so might need a for loop
-#    return render(request, 'tables/Popeyes.html', {'restaurant':restaurant, 'menu':menu, 'items':item})
-
-#def Popeyes(request):
-#    restaurant = Restaurant.objects.get('name' == name of the rest choser)
-#    menu = Menu.objects.get(restaurant_id == restaurant.id)
-#    items = Item.get(menu_id == menu.id) #multiple items, so might need a for loop
-#    return render(request, 'tables/Popeyes.html', {'restaurant':restaurant, 'menu':menu, 'items':item})
+def Popeyes(request):
+    restaurant = Restaurant.objects.get(name = "Popeyes")
+    menu = Menu.objects.get(restaurant_id_id = restaurant.id)
+    item = Item.objects.get(menu_id_id = Menu.objects.get(restaurant_id_id = Restaurant.objects.get(name = "Popeyes").id).id) #multiple items, so might need a for loop
+    return render(request, 'tables/Popeyes.html', {'restaurant':restaurant, 'menu':menu, 'item':item})
 
 def PapaPizzaPie(request):
     return render(request, 'tables/PapaPizzaPie.html')
-=======
+
 def profile(request):
     customer = Customer.objects.get(user_id=request.user.id)
     customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
@@ -49,7 +38,6 @@ def profile(request):
 
     address = address.city + ", " + address.state
     return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
->>>>>>> c6294357d33de2e27c826aee7b640c77bcc6c2d1
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm

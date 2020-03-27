@@ -37,6 +37,7 @@ def restaurantView(request, restaurant_id):
     #to the html page that you are gonna make (restaurantView.html or something)
 
 def profile(request):
+    customer = Customer.objects.get(user_id = request.user.id)
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:

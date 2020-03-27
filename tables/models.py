@@ -25,10 +25,11 @@ class Restaurant(models.Model):
         return self.name + ' at ' + self.address
 
 class Menu(models.Model):
+    name = models.CharField(max_length=50)
     restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Menu Id: ' + str(self.id) + ' Rest. Id: '
+        return 'Menu Name: ' + self.name + ' Menu Id: ' + str(self.id) + ' Rest. Id: '
         + str(self.restaurant_id)
 
 class Item(models.Model):

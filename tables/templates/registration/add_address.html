@@ -6,6 +6,7 @@
 <h1>Add Address</h1>
 <h2>{{ note }}</h2>
 
+{% if form %}
 <form method="post" action="{% url 'add_address' customer_id %}">
     {% csrf_token %}
 
@@ -22,6 +23,6 @@
     <button type="submit">Add Address</button>
 </form>
 </div>
-
+{% endif %}
 
 {% endblock %}

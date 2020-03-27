@@ -29,7 +29,6 @@ def home(request):
     }
     return render (request, 'tables/home.html',context = context)
 
-<<<<<<< HEAD
 def Popeyes(request):
     restaurant = Restaurant.objects.get(name = "Popeyes")
     menu = Menu.objects.get(restaurant_id_id = restaurant.id)
@@ -40,8 +39,6 @@ def PapaPizzaPie(request):
     return render(request, 'tables/PapaPizzaPie.html')
 
 #MATT: make your changes in this function
-=======
->>>>>>> 91384ceab0d57e78d43d53866dac8e8e10f846a4
 def restaurantView(request, restaurant_id):
 #     restaurant = Restaurant.objects.get(pk = restaurant_id)
 #     menus = Menu.objects.get(restaurant_id_id = restaurant.id))
@@ -50,7 +47,6 @@ def restaurantView(request, restaurant_id):
     #to the html page that you are gonna make (restaurantView.html or something)
 
 def profile(request):
-<<<<<<< HEAD
     customer = Customer.objects.get(user_id=request.user.id)
 
     customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
@@ -59,9 +55,7 @@ def profile(request):
     address = address.city + ", " + address.state
     return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
 
-=======
     customer = Customer.objects.get(user_id = request.user.id)
->>>>>>> 91384ceab0d57e78d43d53866dac8e8e10f846a4
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:

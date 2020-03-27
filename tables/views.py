@@ -29,12 +29,10 @@ def home(request):
     }
     return render (request, 'tables/home.html',context = context)
 
-def restaurantView(request, restaurant_id):
-#     restaurant = Restaurant.objects.get(pk = restaurant_id)
-#     menus = Menu.objects.get(restaurant_id_id = restaurant.id))
-#     items = get all of the items from the menu, use a list
-    return render(request, 'tables/PapaPizzaPie.html') #make sure you pass everything
-    #to the html page that you are gonna make (restaurantView.html or something)
+restaurant = Restaurant.objects.get(pk = restaurant_id)
+    menu = Menu.objects.get(restaurant_id_id = restaurant.id)
+    items = list(Item.objects.filter(menu_id=menu.id))
+    return render(request, 'tables/restaurant_view.html', {'restaurant':restaurant, 'menu':menu, 'items':items})
 
 def profile(request):
     customer = Customer.objects.get(user_id = request.user.id)

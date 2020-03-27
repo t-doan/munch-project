@@ -12,10 +12,9 @@
 <div class="container">
 
   <h3>Popular Restaurants</h3>
-
     <ul>
     {% for restaurant in restaurants.all %}
-        <li>{{ restaurant.name }}</li>
+        <li><a href="{% url 'restaurantView' restaurant.id %}">{{ restaurant.name }}</a></li>
     {% endfor %}
     </ul>
 

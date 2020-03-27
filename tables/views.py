@@ -10,16 +10,26 @@ from decouple import config
 from .models import Restaurant
 from .models import Address, Customer, Customer_Address
 from .models import Menu, Item
+<<<<<<< HEAD
 
 from .models import Customer
 from .models import Address, Customer, Customer_Address
 
+=======
+>>>>>>> 63f32e6841d83fe144203c8bd2149f649c6d9255
 
 stripe.api_key = config('STRIPE_API_KEY')
 
 # Create your views here.
 def home(request):
     restaurants = Restaurant.objects
+    num_visits = request.session.get('num_visits', 0)
+    request.session['num_visits'] = num_visits + 1
+
+    context = {
+    'num_visits': num_visits,
+    }
+    return render (request, 'tables/home.html',context = context)
     return render(request, 'tables/home.html', {'restaurants':restaurants})
 
 def Popeyes(request):
@@ -37,6 +47,7 @@ def PapaPizzaPie(request):
 
 def profile(request):
     customer = Customer.objects.get(user_id=request.user.id)
+<<<<<<< HEAD
 
     customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
     address = Address.objects.get(pk=customer_address.address_id_id)
@@ -44,6 +55,8 @@ def profile(request):
     address = address.city + ", " + address.state
     return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
 
+=======
+>>>>>>> 63f32e6841d83fe144203c8bd2149f649c6d9255
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:
@@ -113,16 +126,9 @@ def fillAddress(request):
         else:
             created_address_pk = None
         return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
-    # else:
-    #     print ("Address get")
-    #     address_form = AddressForm()
-    #     return render(request, 'registration/address.html', {'form':address_form})
 
-def edit_address(request):
-    # Have to do this roundabout section to get address_id
-    customer = Customer.objects.get(user_id=request.user.id)
-    customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
-    address = Address.objects.get(pk=customer_address.address_id_id)
+def edit_address(request, address_id):
+    address = Address.objects.get(pk=address_id)
     form = AddressForm(instance = address)
     if request.method == 'POST':
         filled_form = AddressForm(request.POST, instance=address)
@@ -130,8 +136,8 @@ def edit_address(request):
             filled_form.save()
             form = filled_form
             note = 'Your info has been successfully changed'
-            return render(request, 'registration/edit_address.html', {'form':form, 'note':note})
-    return render(request, 'registration/edit_address.html', {'form':form})
+            return render(request, 'registration/edit_address.html', {'form':form, 'note':note, 'address':address})
+    return render(request, 'registration/edit_address.html', {'form':form, 'address':address})
 
 def join(request):
     return render(request, 'tables/join.html')

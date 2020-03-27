@@ -19,6 +19,11 @@ stripe.api_key = config('STRIPE_API_KEY')
 
 # Create your views here.
 def home(request):
+    #print(request.session)
+    request.session.set_expiry(5256000) #expires in about 2 months
+    #print(request.session.get_expiry_age())
+    cust_id = request.session.get('customer_id', -1)
+    greeting_message = "Your customer id is " + str(cust_id)
     restaurants = Restaurant.objects
     num_visits = request.session.get('num_visits', 0)
     request.session['num_visits'] = num_visits + 1
@@ -26,6 +31,7 @@ def home(request):
     context = {
     'num_visits': num_visits,
     'restaurants':restaurants,
+    'greeting_message':greeting_message,
     }
     return render (request, 'tables/home.html',context = context)
 

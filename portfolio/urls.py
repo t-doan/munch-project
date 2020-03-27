@@ -34,8 +34,6 @@ urlpatterns = [
 
     # experimental paths for editing stuff
     path('restaurant/<int:restaurant_id>', views.restaurantView, name='restaurantView'),
-    path('Popeyes', views.Popeyes, name='Popeyes'),
-    path('PapaPizzaPie', views.PapaPizzaPie, name='PapaPizzaPie'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

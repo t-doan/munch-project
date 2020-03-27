@@ -25,15 +25,6 @@ def home(request):
     }
     return render (request, 'tables/home.html',context = context)
 
-def Popeyes(request):
-    restaurant = Restaurant.objects.get(name = "Popeyes")
-    menu = Menu.objects.get(restaurant_id_id = restaurant.id)
-    item = Item.objects.get(menu_id_id = Menu.objects.get(restaurant_id_id = Restaurant.objects.get(name = "Popeyes").id).id) #multiple items, so might need a for loop
-    return render(request, 'tables/Popeyes.html', {'restaurant':restaurant, 'menu':menu, 'item':item})
-
-def PapaPizzaPie(request):
-    return render(request, 'tables/PapaPizzaPie.html')
-
 def restaurantView(request, restaurant_id):
     restaurant = Restaurant.objects.get(pk = restaurant_id)
     menu = Menu.objects.get(restaurant_id_id = restaurant.id)
@@ -41,7 +32,7 @@ def restaurantView(request, restaurant_id):
     return render(request, 'tables/restaurant_view.html', {'restaurant':restaurant, 'menu':menu, 'items':items})
 
 def profile(request):
-    customer = Customer.objects.get(user_id=request.user.id)
+    customer = Customer.objects.get(user_id = request.user.id)
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:

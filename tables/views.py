@@ -8,13 +8,10 @@ import stripe
 from decouple import config
 
 from .models import Restaurant
-<<<<<<< HEAD
 from .models import Address, Customer, Customer_Address
 from .models import Menu, Item
-=======
 from .models import Customer
 from .models import Address, Customer, Customer_Address
->>>>>>> 160c4ea94c4403800360b2243840ceaf497ca28e
 
 stripe.api_key = config('STRIPE_API_KEY')
 

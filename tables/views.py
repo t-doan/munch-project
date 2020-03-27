@@ -122,6 +122,16 @@ def add_address(request, customer_id):
        address_form = AddressForm()
        return render(request, 'registration/add_address.html', {'customer_id':customer_id, 'form':address_form})
 
+def delete_address(request, address_id):
+    address = Address.objects.get(id=address_id)
+    address.delete()
+    customer = Customer.objects.get(user_id = request.user.id)
+    customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
+    addresses = []
+    for cust_add in customer_addresses:
+        addresses.append(Address.objects.get(id = cust_add.address_id_id))
+    return render(request, 'registration/user-profile.html', {'customer':customer, 'addresses':addresses})
+
 def edit_address(request, address_id):
     address = Address.objects.get(pk=address_id)
     form = AddressForm(instance = address)

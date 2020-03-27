@@ -4,21 +4,14 @@
 
 <div class="container">
 <h1>Set Up Customer Info</h1>
-<h2>{{ note }}</h2>
-{% if created_customer_pk %}
-<a href="{% url 'edit_customer' created_customer_pk %}">Edit Your Information</a>
-{% endif %}
-
 <form method="post" action="{% url 'fillCustomer' %}">
     {% csrf_token %}
 
         <div class="form-group">
             {% for field in form %}
-
                 {{ field.errors }}
                 {{ field.label_tag }}
                 {% render_field field class="form-control" %}
-
             {% endfor %}
         </div>
 

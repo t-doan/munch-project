@@ -11,6 +11,10 @@ from .models import Restaurant
 from .models import Address, Customer, Customer_Address
 from .models import Menu, Item
 
+from .models import Customer
+from .models import Address, Customer, Customer_Address
+
+
 stripe.api_key = config('STRIPE_API_KEY')
 
 # Create your views here.
@@ -26,17 +30,21 @@ def home(request):
     return render (request, 'tables/home.html',context = context)
 
 def restaurantView(request, restaurant_id):
-    restaurant = Restaurant.objects.get(pk = restaurant_id)
-    menu = Menu.objects.get(restaurant_id_id = restaurant.id)
-    items = list(Item.objects.filter(menu_id=menu.id))
-    return render(request, 'tables/restaurant_view.html', {'restaurant':restaurant, 'menu':menu, 'items':items})
+#     restaurant = Restaurant.objects.get(pk = restaurant_id)
+#     menus = Menu.objects.get(restaurant_id_id = restaurant.id))
+#     items = get all of the items from the menu, use a list
+    return render(request, 'tables/PapaPizzaPie.html') #make sure you pass everything
+    #to the html page that you are gonna make (restaurantView.html or something)
 
 def profile(request):
-    customer = Customer.objects.get(user_id = request.user.id)
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:
+        print("Filtering through customer addresses. Currently in  " + str(cust_add.address_id_id))
         addresses.append(Address.objects.get(id = cust_add.address_id_id))
+        print("Address list contents: ")
+        for add in addresses:
+            print(add.nickname)
     return render(request, 'registration/user-profile.html', {'customer':customer, 'addresses':addresses})
 
 class SignUp(generic.CreateView):
@@ -113,7 +121,9 @@ def add_address(request, customer_id):
             customer_address = Customer_Address(address_id=address, customer_id=customer)
             customer_address.save()
             note = 'New address successfully added'
-            return render(request, 'registration/user-profile.html', {'note':note})
+            # new_form = AddressForm()
+            return render(request, 'registration/add_address.html', {'note':note, 'customer_id':customer_id})
+            # return render(request, 'registration/user-profile.html', {'note':note})
         else:
             note = 'Error adding address'
             address_form = AddressForm()

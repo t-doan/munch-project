@@ -19,11 +19,15 @@ def home(request):
 
 def profile(request):
     customer = Customer.objects.get(user_id=request.user.id)
-    customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
-    address = Address.objects.get(pk=customer_address.address_id_id)
-
-    address = address.city + ", " + address.state
-    return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
+    customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
+    addresses = []
+    for cust_add in customer_addresses:
+        print("Filtering through customer addresses. Currently in  " + str(cust_add.address_id_id))
+        addresses.append(Address.objects.get(id = cust_add.address_id_id))
+        print("Address list contents: ")
+        for add in addresses:
+            print(add.nickname)
+    return render(request, 'registration/user-profile.html', {'customer':customer, 'addresses':addresses})
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm

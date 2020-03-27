@@ -9,15 +9,7 @@ from decouple import config
 
 from .models import Restaurant
 from .models import Address, Customer, Customer_Address
-<<<<<<< HEAD
 from .models import Menu, Item
-
-from .models import Customer
-from .models import Address, Customer, Customer_Address
-
-=======
-from .models import Menu, Item, Address
->>>>>>> 2c117882201ce8fa2f8c722887152ca68a603db9
 
 stripe.api_key = config('STRIPE_API_KEY')
 
@@ -42,34 +34,18 @@ def Popeyes(request):
 def PapaPizzaPie(request):
     return render(request, 'tables/PapaPizzaPie.html')
 
-#MATT: make your changes in this function
 def restaurantView(request, restaurant_id):
-#     restaurant = Restaurant.objects.get(pk = restaurant_id)
-#     menus = Menu.objects.get(restaurant_id_id = restaurant.id))
-#     items = get all of the items from the menu, use a list
-    return render(request, 'tables/PapaPizzaPie.html') #make sure you pass everything
-    #to the html page that you are gonna make (restaurantView.html or something)
+    restaurant = Restaurant.objects.get(pk = restaurant_id)
+    menu = Menu.objects.get(restaurant_id_id = restaurant.id)
+    items = list(Item.objects.filter(menu_id=menu.id))
+    return render(request, 'tables/restaurant_view.html', {'restaurant':restaurant, 'menu':menu, 'items':items})
 
 def profile(request):
     customer = Customer.objects.get(user_id=request.user.id)
-<<<<<<< HEAD
-
-    customer_address = Customer_Address.objects.get(customer_id_id=customer.id)
-    address = Address.objects.get(pk=customer_address.address_id_id)
-
-    address = address.city + ", " + address.state
-    return render(request, 'registration/user-profile.html', {'customer':customer, 'address':address})
-
-=======
->>>>>>> 2c117882201ce8fa2f8c722887152ca68a603db9
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:
-        print("Filtering through customer addresses. Currently in  " + str(cust_add.address_id_id))
         addresses.append(Address.objects.get(id = cust_add.address_id_id))
-        print("Address list contents: ")
-        for add in addresses:
-            print(add.nickname)
     return render(request, 'registration/user-profile.html', {'customer':customer, 'addresses':addresses})
 
 class SignUp(generic.CreateView):

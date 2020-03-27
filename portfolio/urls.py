@@ -30,6 +30,7 @@ urlpatterns = [
     path('auth/user-profile', views.profile, name='user-profile'),
     path('auth/user-profile/edit_customer', views.edit_customer, name='edit_customer'),
     path('auth/user-profile/address/<int:address_id>', views.edit_address, name='edit_address'),
+    path('auth/user-profile/add-address/<int:customer_id>', views.add_address, name='add_address'),
 
     # experimental paths for editing stuff
     path('restaurant/<int:restaurant_id>', views.restaurantView, name='restaurantView'),

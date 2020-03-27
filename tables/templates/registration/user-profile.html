@@ -4,6 +4,7 @@
 <div class="container">
   {% load static %}
 
+  <h4> {{ note }} </h4>
   <h3>My Profile</h3>
   <p>Name: {{ customer.first_name }} {{customer.last_name}}</p>
   <p>Phone Number: {{ customer.phone_number }}</p>
@@ -19,4 +20,10 @@
   <a href="{% url 'edit_address' address.id %}" ><button type="button">Edit Address</button></a>
   </div>
   {% endfor %}
+  <br>
+  <div class="container">
+    {% if addresses|length < 5 %}
+    <a href="{% url 'add_address' customer.id %}" ><button type="button">Add New Address</button></a>
+    {% endif %}
+  </div>
 {% endblock %}

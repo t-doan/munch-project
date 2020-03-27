@@ -108,6 +108,29 @@ def fillAddress(request):
             created_address_pk = None
         return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
 
+
+def add_address(request, customer_id):
+    if request.method == 'POST':
+        filled_form = AddressForm(request.POST)
+
+        if filled_form.is_valid():
+            created_address = filled_form.save()
+            created_address_pk = created_address.id
+            filled_form = AddressForm()
+            address = Address.objects.get(id = created_address_pk)
+            customer = Customer.objects.get(user_id=request.user.id)
+            customer_address = Customer_Address(address_id=address, customer_id=customer)
+            customer_address.save()
+            note = 'New address successfully added'
+            return render(request, 'registration/user-profile.html', {'note':note})
+        else:
+            note = 'Error adding address'
+            address_form = AddressForm()
+            return render(request, 'registration/add_address.html', {'customer_id':customer_id, 'note':note, 'form':address_form})
+    else:
+       address_form = AddressForm()
+       return render(request, 'registration/add_address.html', {'customer_id':customer_id, 'form':address_form})
+
 def edit_address(request, address_id):
     address = Address.objects.get(pk=address_id)
     form = AddressForm(instance = address)

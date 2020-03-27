@@ -2,10 +2,16 @@
 {% block content %}
 <h1>Popeyes</h1>
 
-<ol>
-{% for customer in customers.all %}
-    <li>{{ customer.first_name }}</li>
+<ul>
+{% for restaurant in restaurants.all %}
+    <li>{{ restaurant.name }}</li>
 {% endfor %}
-</ol>
+</ul>
+
+<ul>
+{% for item in items.all %}
+    <li>{{ item.name }}</li>
+{% endfor %}
+</ul>
 
 {% endblock %}

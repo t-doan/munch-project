@@ -21,15 +21,18 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #path('', jobs.views.home, name='home'),
-    #path('', customers.views.home, name='home'),
     path('', views.home, name='home'),
     path('auth/', include('django.contrib.auth.urls')),
     path('auth/signup', views.SignUp.as_view(), name='signup'),
     path('auth/customersignup', views.fillCustomer, name='fillCustomer'),
     path('auth/customersignup/address', views.fillAddress, name='fillAddress'),
     path('join', views.join, name='join'),
-    #path('jobs/<int:job_id>', jobs.views.detail, name='detail'),
+    path('auth/user-profile', views.profile, name='user-profile'),
+    path('auth/user-profile/edit_customer', views.edit_customer, name='edit_customer'),
+    path('auth/user-profile/address/<int:address_id>', views.edit_address, name='edit_address'),
+    path('auth/user-profile/add-address/<int:customer_id>', views.add_address, name='add_address'),
+    path('restaurant/<int:restaurant_id>', views.restaurantView, name='restaurantView'),
+    path('auth/user-profile/delete/<int:address_id>', views.delete_address, name='delete_address'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

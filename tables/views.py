@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import CustomSignupForm, CustomerForm, AddressForm
+from .forms import CustomSignupForm, CustomerForm, AddressForm, CuisineForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
@@ -51,12 +51,13 @@ def profile(request):
         print("Address list contents: ")
         for add in addresses:
             print(add.nickname)
-    return render(request, 'customer/user-profile.html', {'customer':customer, 'addresses':addresses})
+    cuisine_form = CuisineForm()
+    return render(request, 'account/user-profile.html', {'customer':customer, 'addresses':addresses, 'form':cuisine_form})
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm
     success_url = reverse_lazy('fillCustomer')
-    template_name = 'customer/signup.html'
+    template_name = 'registration/signup.html'
 
     def form_valid(self, form):
         valid = super(SignUp, self).form_valid(form)
@@ -74,14 +75,14 @@ def fillCustomer(request):
             created_customer.save()
             created_customer_pk = created_customer.id
             address_form = AddressForm()
-            return render(request, 'customer/address.html', {'form':address_form, 'created_customer_pk':created_customer_pk})
+            return render(request, 'registration/address.html', {'form':address_form, 'created_customer_pk':created_customer_pk})
         else:
             note = 'Form not valid. Please try again'
             customer_form = CustomerForm()
-            return render(request, 'customer/customer-registration.html', {'form':customer_form, 'note':note})
+            return render(request, 'registration/customer-registration.html', {'form':customer_form, 'note':note})
      else:
         customer_form = CustomerForm()
-        return render(request, 'customer/customer-registration.html', {'form':customer_form})
+        return render(request, 'registration/customer-registration.html', {'form':customer_form})
 
 def edit_customer(request):
     customer = Customer.objects.get(user_id=request.user.id)
@@ -95,8 +96,8 @@ def edit_customer(request):
             note = 'Your info has been successfully changed'
         else:
             note = 'There was an error in changing your information'
-        return render(request, 'customer/edit_customer.html', {'form':form, 'note':note})
-    return render(request, 'customer/edit_customer.html', {'form':form})
+        return render(request, 'account/edit_customer.html', {'form':form, 'note':note})
+    return render(request, 'account/edit_customer.html', {'form':form})
 
 def fillAddress(request):
         filled_form = AddressForm(request.POST)
@@ -128,15 +129,15 @@ def add_address(request, customer_id):
             customer_address.save()
             note = 'New address successfully added'
             # new_form = AddressForm()
-            return render(request, 'customer/add_address.html', {'note':note, 'customer_id':customer_id})
+            return render(request, 'account/add_address.html', {'note':note, 'customer_id':customer_id})
             # return render(request, 'registration/user-profile.html', {'note':note})
         else:
             note = 'Error adding address'
             address_form = AddressForm()
-            return render(request, 'customer/add_address.html', {'customer_id':customer_id, 'note':note, 'form':address_form})
+            return render(request, 'account/add_address.html', {'customer_id':customer_id, 'note':note, 'form':address_form})
     else:
        address_form = AddressForm()
-       return render(request, 'customer/add_address.html', {'customer_id':customer_id, 'form':address_form})
+       return render(request, 'account/add_address.html', {'customer_id':customer_id, 'form':address_form})
 
 def delete_address(request, address_id):
     address = Address.objects.get(id=address_id)
@@ -146,7 +147,7 @@ def delete_address(request, address_id):
     addresses = []
     for cust_add in customer_addresses:
         addresses.append(Address.objects.get(id = cust_add.address_id_id))
-    return render(request, 'customer/user-profile.html', {'customer':customer, 'addresses':addresses})
+    return render(request, 'account/user-profile.html', {'customer':customer, 'addresses':addresses})
 
 def edit_address(request, address_id):
     address = Address.objects.get(pk=address_id)
@@ -157,8 +158,8 @@ def edit_address(request, address_id):
             filled_form.save()
             form = filled_form
             note = 'Your info has been successfully changed'
-            return render(request, 'customer/edit_address.html', {'form':form, 'note':note, 'address':address})
-    return render(request, 'customer/edit_address.html', {'form':form, 'address':address})
+            return render(request, 'account/edit_address.html', {'form':form, 'note':note, 'address':address})
+    return render(request, 'account/edit_address.html', {'form':form, 'address':address})
 
 def join(request):
     return render(request, 'tables/join.html')

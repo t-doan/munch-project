@@ -1,8 +1,10 @@
 {% extends 'tables/base.html' %}
 {% block content %}
 
+{% load widget_tweaks %}
+
 <div class="container">
-  {% load static %}
+  {% csrf_token %}
 
   <h4> {{ note }} </h4>
   <h3>My Profile</h3>
@@ -22,10 +24,27 @@
   <br>
   </div>
   {% endfor %}
+
+<div class="container">
+    <form class="" action="{% url 'edit_customer' %}" method="get">
+  {{ form }}
+  <input type="submit" name="" value="Get Pizzas">
+</form>
+</div>
+
+  <!-- {% for food_style in food_styles %}
+  <br>
+  <div class="">
+      <p>{{ food_style.style_name }}</p>
+      <br>
+  </div>
+  {% endfor %} -->
+
   <br>
   <div class="container">
     {% if addresses|length < 5 %}
     <a href="{% url 'add_address' customer.id %}" ><button type="button">Add New Address</button></a>
     {% endif %}
   </div>
+
 {% endblock %}

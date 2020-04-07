@@ -27,7 +27,11 @@
 <br>
 <div class="container">
     <form class="" action="{% url 'edit_customer' %}" method="get">
-  {{ form }}
+        <ul>
+        {% for cuisine in form %}
+            <li>{{ cuisine }}</li>
+        {% endfor %}
+        </ul>
   <input type="submit" name="" value="Get Pizzas">
 </form>
 </div>

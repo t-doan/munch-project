@@ -13,7 +13,7 @@
     <ul>
         {% for item in menu_items|index:i %}
         <li><b>{{ item.name }}</b> - ${{ item.price }}</li>
-        <img src="{{ item.image.url }}" ></img>
+        <img src="{{ item.image.url }}" height="300"></img>
         {% endfor %}
     </ul>
 {% endfor %}

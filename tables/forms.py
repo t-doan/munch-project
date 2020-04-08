@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Customer, Address, Customer_Address, Cuisine
+from .models import Customer, Address, Customer_Address
 from django_select2.forms import Select2MultipleWidget
 
 class CustomSignupForm(UserCreationForm):
@@ -19,8 +19,3 @@ class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
         fields = ('nickname','street', 'city', 'state', 'zipcode',)
-
-class CuisineForm(forms.Form):
-    cuisines = forms.ModelMultipleChoiceField(queryset=Cuisine.objects.all(), widget=forms.CheckboxSelectMultiple)
-# class CuisineForm(forms.Form):
-#     cuisines = forms.ModelMultipleChoiceField(queryset=Cuisine.objects.all(), widget=Select2MultipleWidget)

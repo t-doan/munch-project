@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import CustomSignupForm, CustomerForm, AddressForm, CuisineForm
+from .forms import CustomSignupForm, CustomerForm, AddressForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
@@ -8,7 +8,7 @@ import stripe
 from decouple import config
 
 from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine
-from .models import Address, Customer, Customer_Address
+from .models import Address, Customer, Customer_Address, Restaurant_Cuisine
 
 stripe.api_key = config('STRIPE_API_KEY')
 
@@ -33,11 +33,20 @@ def restaurantView(request, restaurant_id):
         menu_names.append(menu.name)
         items = list(Item.objects.filter(menu_id=menu.id))
         menu_items.append(items)
+    rest_cuisines = list(Restaurant_Cuisine.objects.filter(restaurant_id_id=restaurant.id))
+    if len(rest_cuisines) == 0:
+        cuisines_str = ""
+    else:
+        cuisines_str = "Cuisines:"
+        for rest_cuis in rest_cuisines:
+            cuisines_str = cuisines_str + " " + Cuisine.objects.get(id = rest_cuis.cuisine_id_id).name + ","
+        cuisines_str = cuisines_str[:len(cuisines_str)-1]
     context = {
     'restaurant':restaurant,
     'menu_names':menu_names,
     'menu_items':menu_items,
     'i_amt':range(len(menu_names)),
+    'cuisines_str':cuisines_str
     }
     return render(request, 'tables/restaurant_view.html',context = context)
 

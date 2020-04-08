@@ -7,7 +7,8 @@
 <h1>{{ restaurant.name }}</h1>
 <h6>Location: {{ restaurant.address }}</h6>
 <h6>Phone Number: {{ restaurant.phone_number }}</h6>
-{% csrf_token %}
+<h6>{{ cuisines_str }}</h6>
+<br><br><br>
 {% for i in i_amt %}
     <h3>{{ menu_names|index:i }}</h3>
     <ul>

@@ -1,0 +1,37 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+body {
+  background: orange;
+}
+
+/* base.html
+================================================*/
+.base-box {
+  background: #FB3600; /* rbg(251,54,0) orange*/
+}
+.base-box a {
+  background: black;
+  color: #E2E2E2; /* white grey */
+  padding: 5px 10px;
+  border-radius: 10px;
+}
+.base-box a:hover {
+  font-weight: bold;
+  text-decoration: none;
+}
+.base-box h5 a {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 200%;
+}
+
+/* home.html
+================================================*/
+.pricing-header {
+  background-image: url(../images/homepage.jpg);
+  background-size: cover;
+  padding-right: 100px;
+}

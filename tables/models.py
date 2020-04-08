@@ -37,6 +37,7 @@ class Item(models.Model):
     price = models.DecimalField(decimal_places=2,max_digits=8)
     menu_id = models.ForeignKey(Menu,on_delete=models.CASCADE)
     is_spicy = models.BooleanField()
+    image = models.ImageField(upload_to='images/', default='/static/NoImageFound.jpg')
 
     def __str__(self):
         return self.name + " from menu: " + str(self.menu_id)

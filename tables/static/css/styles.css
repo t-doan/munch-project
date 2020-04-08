@@ -14,6 +14,7 @@ body {
   background: #FB3600; /* rbg(251,54,0) orange*/
 }
 .base-box a {
+  font-family: 'Abril Fatface', cursive;
   background: black;
   color: #E2E2E2; /* white grey */
   padding: 5px 10px;
@@ -30,8 +31,96 @@ body {
 
 /* home.html
 ================================================*/
-.pricing-header {
+.dashboard .pricing-header {
   background-image: url(../images/homepage.jpg);
   background-size: cover;
-  padding-right: 100px;
+  margin: 0;
+}
+.dashboard .pricing-header p {
+  font-family: 'Playball', cursive;
+  font-size: 50px;
+  font-weight: bold;
+  margin-top: 250px;
+}
+.dashboard .pricing-header button {
+  font-family: 'Abril Fatface', cursive;
+  margin-bottom: 20px;
+}
+.dashboard .pricing-header button:hover {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* user-profile.html
+================================================*/
+.profile > .container {
+  border-bottom: 1px dashed #343434;
+  padding: 25px 0;
+}
+.profile > .container:last-of-type {
+  border-bottom: none;
+}
+.profile .container h3 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+.profile .container button {
+  font-family: 'Abril Fatface', cursive;
+}
+
+/* signup.html
+================================================*/
+.signup h2 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+
+/* login.html
+================================================*/
+.log-in h1 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+
+/* edit_customer.html
+================================================*/
+.edit-customer h1 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+
+/* edit_address.html
+================================================*/
+.edit-address h1 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+
+/* add_address.html
+================================================*/
+.add-address h1 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+
+/* address.html
+================================================*/
+.address h1 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+
+/* customer_registration.html
+================================================*/
+.customer-registration h1 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
 }

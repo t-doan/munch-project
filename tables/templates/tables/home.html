@@ -1,23 +1,26 @@
 {% extends 'tables/base.html' %}
 {% block content %}
 
-<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-  <p class="lead">Your next meal is just a click away...</p>
-  <a href="{% url 'join' %}"><button type="button" class="btn btn-lg btn-primary">Start Order</button></a>
+<div class="dashboard">
+  <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <p class="lead">Your next meal is just a click away...</p>
+    <a href="{% url 'join' %}"><button type="button" class="btn btn-lg btn-primary">Start Order</button></a>
+  </div>
+
+  <div class="container">
+    <h3>Popular Restaurants</h3>
+      <ul>
+      {% for restaurant in restaurants.all %}
+          <li><a href="{% url 'restaurantView' restaurant.id %}">{{ restaurant.name }}</a></li>
+      {% endfor %}
+      </ul>
+  </div>
+  <br><br>
+  <div class="container">
+    <h2> Visitor Counts </h2>
+  <p>You have visited this page {{ num_visits }}{% if num_visits == 1 %} time{% else %} times{% endif %}.</p>
+  </div>
+  <br><br><br><br>
 </div>
 
-<div class="container">
-  <h3>Popular Restaurants</h3>
-    <ul>
-    {% for restaurant in restaurants.all %}
-        <li><a href="{% url 'restaurantView' restaurant.id %}">{{ restaurant.name }}</a></li>
-    {% endfor %}
-    </ul>
-</div>
-<br><br>
-<div class="container">
-  <h2> Visitor Counts </h2>
-<p>You have visited this page {{ num_visits }}{% if num_visits == 1 %} time{% else %} times{% endif %}.</p>
-</div>
-<br><br><br><br>
 {% endblock %}

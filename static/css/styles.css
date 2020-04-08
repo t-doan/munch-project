@@ -33,5 +33,7 @@ body {
 .pricing-header {
   background-image: url(../images/homepage.jpg);
   background-size: cover;
-  padding-right: 100px;
+}
+.pricing-header p {
+  margin-top: 150px;
 }

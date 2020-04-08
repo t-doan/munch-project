@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import stripe
 from decouple import config
 
-from .models import Restaurant, Menu, Item
+from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine
 from .models import Address, Customer, Customer_Address
 
 stripe.api_key = config('STRIPE_API_KEY')
@@ -46,13 +46,12 @@ def profile(request):
     customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer.id))
     addresses = []
     for cust_add in customer_addresses:
-        print("Filtering through customer addresses. Currently in  " + str(cust_add.address_id_id))
         addresses.append(Address.objects.get(id = cust_add.address_id_id))
-        print("Address list contents: ")
-        for add in addresses:
-            print(add.nickname)
-    cuisine_form = CuisineForm()
-    return render(request, 'account/user-profile.html', {'customer':customer, 'addresses':addresses, 'form':cuisine_form})
+    cust_cuisines = list(Customer_Cuisine.objects.filter(customer_id_id=customer.id))
+    cuisines = []
+    for cust_cuis in cust_cuisines:
+        cuisines.append(Cuisine.objects.get(id = cust_cuis.cuisine_id_id))
+    return render(request, 'account/user-profile.html', {'customer':customer, 'addresses':addresses, 'cuisines':cuisines})
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm
@@ -86,7 +85,6 @@ def fillCustomer(request):
 
 def edit_customer(request):
     customer = Customer.objects.get(user_id=request.user.id)
-    print(request.user.id)
     form = CustomerForm(instance = customer)
     if request.method == 'POST':
         filled_form = CustomerForm(request.POST, instance=customer)
@@ -160,6 +158,31 @@ def edit_address(request, address_id):
             note = 'Your info has been successfully changed'
             return render(request, 'account/edit_address.html', {'form':form, 'note':note, 'address':address})
     return render(request, 'account/edit_address.html', {'form':form, 'address':address})
+
+def edit_cuisine(request, customer_id):
+    customer = Customer.objects.get(id=customer_id)
+    if request.method == 'POST':
+        print(request.POST)
+        all_cuisines = Cuisine.objects.all()
+        for item in all_cuisines:
+            if request.POST.get('c' + str(item.id)) == 'clicked':
+                if not Customer_Cuisine.objects.filter(customer_id_id=customer.id, cuisine_id_id=item.id).exists():
+                    new_cust_cuisine = Customer_Cuisine(customer_id_id=customer.id, cuisine_id_id=item.id)
+                    new_cust_cuisine.save()
+            else:
+                if Customer_Cuisine.objects.filter(customer_id_id=customer.id, cuisine_id_id=item.id).exists():
+                    old_cust_cuisine = Customer_Cuisine.objects.filter(customer_id_id=customer.id, cuisine_id_id=item.id)
+                    old_cust_cuisine.delete()
+        # return render(request, 'account/edit_cuisine.html')
+    non_cuisines = list(Cuisine.objects.all())
+    cust_cuisines = list(Customer_Cuisine.objects.filter(customer_id_id=customer.id))
+    cuisines = []
+    for cust_cuis in cust_cuisines:
+        cuisines.append(Cuisine.objects.get(id = cust_cuis.cuisine_id_id))
+    for cuisine in non_cuisines:
+        if cuisine in cuisines:
+            non_cuisines.remove(cuisine)
+    return render(request, 'account/edit_cuisine.html', {'customer':customer, 'non_cuisines':non_cuisines, 'cuisines':cuisines});
 
 def join(request):
     return render(request, 'tables/join.html')

@@ -13,42 +13,37 @@
   <a href="{% url 'edit_customer' %}"><button type="button">Edit Profile</button></a>
 </div>
 
-  {% for address in addresses %}
-  <br>
   <div class="container">
+  <br>
+  <h3>My Addresses</h3>
+  {% for address in addresses %}
   <p>{{ address.nickname }}:</p>
   <p>&ensp;&ensp;{{ address.street }}, {{ address.city }}</p>
   <p>&ensp;&ensp;{{ address.state }} {{ address.zipcode }}</p>
   <a href="{% url 'edit_address' address.id %}" ><button type="button">Edit Address</button></a>
   <a href="{% url 'delete_address' address.id %}" ><button type="button">Delete Address</button></a>
-  <br>
-  </div>
+  <br><br>
   {% endfor %}
-<br>
-<div class="container">
-    <form class="" action="{% url 'edit_customer' %}" method="get">
-        <ul>
-        {% for cuisine in form %}
-            <li>{{ cuisine }}</li>
-        {% endfor %}
-        </ul>
-  <input type="submit" name="" value="Get Pizzas">
-</form>
-</div>
-
-  <!-- {% for food_style in food_styles %}
-  <br>
-  <div class="">
-      <p>{{ food_style.style_name }}</p>
-      <br>
   </div>
-  {% endfor %} -->
 
-  <br>
   <div class="container">
     {% if addresses|length < 5 %}
     <a href="{% url 'add_address' customer.id %}" ><button type="button">Add New Address</button></a>
     {% endif %}
   </div>
+<br>
+  <div class="container">
+    <h3>My Favorite Cuisines</h3>
+    {% if cuisines|length < 1 %}
+    <p>None</p>
+    {% endif %}
+    <ul>
+        {% for item in cuisines %}
+        <li>{{ item.name }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'edit_cuisine' customer.id %}" ><button type="button">Edit Cuisine Preferences</button></a>
+  </div>
+  <br><br><br><br>
 
 {% endblock %}

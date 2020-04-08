@@ -2,21 +2,21 @@
 {% block content %}
 {% load widget_tweaks %}
 
-<div class="container">
-<h1>Edit Address</h1>
-<h2>{{ note }}</h2>
+<div class="container edit-address">
+  <h1>Edit Address</h1>
+  <h2>{{ note }}</h2>
 
-<form method="post" action="{% url 'edit_address' address.id %}">
-    {% csrf_token %}
-        <div class="form-group">
-            {% for field in form %}
-                {{ field.errors }}
-                {{ field.label_tag }}
-                {% render_field field class="form-control" %}
-            {% endfor %}
-        </div>
-    <button type="submit">Accept Changes</button>
-</form>
+  <form method="post" action="{% url 'edit_address' address.id %}">
+      {% csrf_token %}
+          <div class="form-group">
+              {% for field in form %}
+                  {{ field.errors }}
+                  {{ field.label_tag }}
+                  {% render_field field class="form-control" %}
+              {% endfor %}
+          </div>
+      <button type="submit">Accept Changes</button>
+  </form>
 </div>
 
 

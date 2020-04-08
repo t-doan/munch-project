@@ -1,17 +1,16 @@
 {% extends 'tables/base.html' %}
 {% block content %}
 
-{% load widget_tweaks %}
+<div class="profile">
+  <div class="container">
+    {% load static %}
 
-<div class="container">
-  {% csrf_token %}
-
-  <h4> {{ note }} </h4>
-  <h3>My Profile</h3>
-  <p>Name: {{ customer.first_name }} {{customer.last_name}}</p>
-  <p>Phone Number: {{ customer.phone_number }}</p>
-  <a href="{% url 'edit_customer' %}"><button type="button">Edit Profile</button></a>
-</div>
+    <h4> {{ note }} </h4>
+    <h3>My Profile</h3>
+    <p>Name: {{ customer.first_name }} {{customer.last_name}}</p>
+    <p>Phone Number: {{ customer.phone_number }}</p>
+    <a href="{% url 'edit_customer' %}"><button type="button">Edit Profile</button></a>
+  </div>
 
   <div class="container">
   <br>

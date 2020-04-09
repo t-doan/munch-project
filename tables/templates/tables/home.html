@@ -29,16 +29,6 @@
           </div>
       </div>
   </div>
-
-  <div class="container">
-    <h3>Popular Restaurants</h3>
-      <ul>
-      {% for restaurant in restaurants.all %}
-          <li><a href="{% url 'restaurantView' restaurant.id %}">{{ restaurant.name }}</a></li>
-          <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
-      {% endfor %}
-      </ul>
-  </div>
   <br><br>
   <div class="container">
     <h2> Visitor Counts </h2>

@@ -12,6 +12,23 @@
       <img src="{% static 'images/homepage2.jpg' %}" class="img-fluid" alt="Munch">
     </div>
   </div>
+  <h3>Popular Restaurants</h3>
+  <div class="album py-5">
+      <div class="container">
+          <div class="row">
+              {% for restaurant in restaurants.all %}
+              <div class="col-md-4">
+                  <div class="card mb-4 box-shadow">
+                      <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
+                      <div class="card-body">
+                          <p class="card-text">{{ restaurant.name }}</p>
+                      </div>
+                  </div>
+              </div>
+              {% endfor %}
+          </div>
+      </div>
+  </div>
 
   <div class="container">
     <h3>Popular Restaurants</h3>

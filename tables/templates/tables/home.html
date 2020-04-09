@@ -12,16 +12,18 @@
       <img src="{% static 'images/homepage2.jpg' %}" class="img-fluid" alt="Munch">
     </div>
   </div>
-  <h3>Popular Restaurants</h3>
+
   <div class="album py-5">
       <div class="container">
+          <h3>Popular Restaurants</h3>
+          <br>
           <div class="row">
               {% for restaurant in restaurants.all %}
               <div class="col-md-4">
                   <div class="card mb-4 box-shadow">
                       <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
                       <div class="card-body">
-                          <p class="card-text">{{ restaurant.name }}</p>
+                          <p class="card-text"><a href="{% url 'restaurantView' restaurant.id %}">{{ restaurant.name }}</a></p>
                       </div>
                   </div>
               </div>
@@ -29,11 +31,10 @@
           </div>
       </div>
   </div>
-  <br><br>
-  <div class="container">
+  <!-- <div class="container">
     <h2> Visitor Counts </h2>
   <p>You have visited this page {{ num_visits }}{% if num_visits == 1 %} time{% else %} times{% endif %}.</p>
-  </div>
+  </div> -->
   <br><br><br><br>
 </div>
 

@@ -20,6 +20,7 @@ class Restaurant(models.Model):
     #phone_number
     #max length on the table is 50 but i figure we should change this later
     phone_number = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='images/', default='/static/NoImageFound.jpg')
 
     def __str__(self):
         return self.name + ' at ' + self.address

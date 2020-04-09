@@ -18,6 +18,7 @@
       <ul>
       {% for restaurant in restaurants.all %}
           <li><a href="{% url 'restaurantView' restaurant.id %}">{{ restaurant.name }}</a></li>
+          <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
       {% endfor %}
       </ul>
   </div>

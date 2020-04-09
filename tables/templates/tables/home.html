@@ -2,9 +2,15 @@
 {% block content %}
 
 <div class="dashboard">
-  <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-    <p class="lead">Your next meal is just a click away...</p>
-    <a href="{% url 'join' %}"><button type="button" class="btn btn-lg btn-primary">Start Order</button></a>
+  <div class="pricing-header text-center">
+    <div class="ordering">
+      <p class="lead">Your next meal is just a click away...</p>
+      <a href="{% url 'join' %}"><button type="button" class="btn btn-lg btn-primary">Start Order</button></a>
+    </div>
+    <div class="ordering">
+      {% load static %}
+      <img src="{% static 'images/homepage2.jpg' %}" class="img-fluid" alt="Munch">
+    </div>
   </div>
 
   <div class="container">

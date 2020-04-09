@@ -31,24 +31,51 @@ body {
 
 /* home.html
 ================================================*/
-.dashboard .pricing-header {
-  background-image: url(../images/homepage.jpg);
-  background-size: cover;
-  margin: 0;
+@media (min-width: 800px) {
+  .dashboard .pricing-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .dashboard .pricing-header p {
+    font-size: 50px;
+    margin: 20px;
+    margin-top: 40px;
+  }
+  .dashboard .pricing-header .ordering {
+    background-color: white;
+    flex: 1 1 50%;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 799px) {
+  .dashboard .pricing-header img {
+    opacity: 0.3;
+  }
+  .dashboard .pricing-header .ordering:first-of-type {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .dashboard .pricing-header p {
+    font-size: 25px;
+    color: white;
+  }
 }
 .dashboard .pricing-header p {
   font-family: 'Playball', cursive;
-  font-size: 50px;
   font-weight: bold;
-  margin-top: 250px;
+  text-align: center;
 }
 .dashboard .pricing-header button {
   font-family: 'Abril Fatface', cursive;
-  margin-bottom: 20px;
 }
 .dashboard .pricing-header button:hover {
   font-weight: bold;
   text-decoration: none;
+}
+.dashboard .container {
+  margin-top: 20px;
 }
 
 /* user-profile.html

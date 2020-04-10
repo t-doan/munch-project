@@ -50,6 +50,7 @@ body {
 @media (max-width: 799px) {
   .dashboard .pricing-header img {
     opacity: 0.3;
+    z-index: 0;
   }
   .dashboard .pricing-header .ordering:first-of-type {
     position: absolute;
@@ -60,6 +61,9 @@ body {
   .dashboard .pricing-header p {
     font-size: 25px;
     color: white;
+  }
+  .dashboard .pricing-header {
+    z-index: 1;
   }
 }
 .dashboard .pricing-header p {

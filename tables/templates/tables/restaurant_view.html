@@ -4,29 +4,28 @@
 {% load index %}
 
 <div class="container">
-    <h1>{{ restaurant.name }}</h1>
-    <h6>Location: {{ restaurant.address }}</h6>
-    <h6>Phone Number: {{ restaurant.phone_number }}</h6>
-    <h6>{{ cuisines_str }}</h6>
-    <br>
-    {% for i in i_amt %}
-        <h3>{{ menu_names|index:i }}</h3>
-        <div class="album py-5">
-            <div class="container">
-                <div class="row">
-                    {% for item in menu_items|index:i %}
-                    <div class="col-md-4">
-                        <div class="card mb-4 box-shadow">
-                            <img class="card-img-top" src="{{ item.image.url }}" height="200"></img>
-                            <div class="card-body">
-                                <p class="card-text"><b>{{ item.name }}</b> - ${{ item.price }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
+  <h1>{{ restaurant.name }}</h1>
+  <h6>Location: {{ restaurant.address }}</h6>
+  <h6>Phone Number: {{ restaurant.phone_number }}</h6>
+  <h6>{{ cuisines_str }}</h6><br>
+  {% for i in i_amt %}
+  <h3>{{ menu_names|index:i }}</h3>
+  <div class="album py-5">
+    <div class="container">
+      <div class="row">
+        {% for item in menu_items|index:i %}
+        <div class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="{{ item.image.url }}" height="200"></img>
+            <div class="card-body">
+              <p class="card-text"><b>{{ item.name }}</b> - ${{ item.price }}</p>
             </div>
+          </div>
         </div>
-    {% endfor %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 {% endblock %}

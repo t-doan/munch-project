@@ -1,8 +1,8 @@
 from django.contrib import admin
 from .models import (Address, Item, Customer, Customer_Address,
- Customer_Payment, Customer_Cuisine, Cuisine,
- Item_Cuisine, Menu, Payment, Restaurant, Restaurant_Cuisine, Review)
- # Customer_Style_Preference, Food_Style, Item_Style, Restaurant_Style)
+Customer_Payment, Customer_Cuisine, Cuisine,
+Item_Cuisine, Menu, Payment, Restaurant, Restaurant_Cuisine, Review)
+# Customer_Style_Preference, Food_Style, Item_Style, Restaurant_Style)
 
 # Register your models here.
 admin.site.register(Address)

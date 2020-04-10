@@ -3,24 +3,24 @@
 {% load widget_tweaks %}
 
 <div class="container">
-<h1>Edit Cuisine Favorites</h1>
-<form class="" action="{% url 'edit_cuisine' customer.id %}" method="post">
+  <h1>Edit Cuisine Favorites</h1>
+  <form class="" action="{% url 'edit_cuisine' customer.id %}" method="post">
     {% csrf_token %}
     <h4>Favorites</h4>
     <ul>
-        {% for item in cuisines %}
-        <li><input type="checkbox" name="c{{ item.id }}" value="clicked" checked> {{ item.name }}</li>
-        {% endfor %}
+      {% for item in cuisines %}
+      <li><input type="checkbox" name="c{{ item.id }}" value="clicked" checked> {{ item.name }}</li>
+      {% endfor %}
     </ul>
     <h4>Cuisines</h4>
     <ul>
-        {% for item in non_cuisines %}
-        <li><input type="checkbox" name="c{{ item.id }}" value="clicked"> {{ item.name }}</li>
-        {% endfor %}
+      {% for item in non_cuisines %}
+      <li><input type="checkbox" name="c{{ item.id }}" value="clicked"> {{ item.name }}</li>
+      {% endfor %}
     </ul>
     <button type="submit" class="standardButton">Save Changes</button>
     <a href="{% url 'user-profile' %}" ><button type="button" class="standardButton">Go Back to Profile</button></a>
-</form>
+  </form>
 
 </div>
 <br><br><br><br>

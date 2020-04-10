@@ -5,19 +5,19 @@
 <div class="container address">
   <h1>Set Up Customer Address</h1>
   <form method="post" action="{% url 'fillAddress' %}">
-      {% csrf_token %}
+    {% csrf_token %}
 
-          <div class="form-group">
-              {% for field in form %}
+    <div class="form-group">
+      {% for field in form %}
 
-                  {{ field.errors }}
-                  {{ field.label_tag }}
-                  {% render_field field class="form-control" %}
+      {{ field.errors }}
+      {{ field.label_tag }}
+      {% render_field field class="form-control" %}
 
-              {% endfor %}
-          </div>
+      {% endfor %}
+    </div>
 
-      <button type="submit">Complete Sign Up</button>
+    <button type="submit">Complete Sign Up</button>
   </form>
 </div>
 

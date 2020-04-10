@@ -13,16 +13,16 @@
   </div>
 
   <div class="container">
-  <br>
-  <h3>My Address(es)</h3>
-  {% for address in addresses %}
-  <p class="boldfont">{{ address.nickname }}:</p>
-  <p class="boldfont">&ensp;&ensp;{{ address.street }}, {{ address.city }}</p>
-  <p class="boldfont">&ensp;&ensp;{{ address.state }} {{ address.zipcode }}</p>
-  <a class="leftAlignButton" href="{% url 'edit_address' address.id %}" ><button type="button">Edit Address</button></a>
-  <a class="leftAlignButton" href="{% url 'delete_address' address.id %}" ><button type="button">Delete Address</button></a>
-  <br><br>
-  {% endfor %}
+    <br>
+    <h3>My Address(es)</h3>
+    {% for address in addresses %}
+    <p class="boldfont">{{ address.nickname }}:</p>
+    <p class="boldfont">&ensp;&ensp;{{ address.street }}, {{ address.city }}</p>
+    <p class="boldfont">&ensp;&ensp;{{ address.state }} {{ address.zipcode }}</p>
+    <a class="leftAlignButton" href="{% url 'edit_address' address.id %}" ><button type="button">Edit Address</button></a>
+    <a class="leftAlignButton" href="{% url 'delete_address' address.id %}" ><button type="button">Delete Address</button></a>
+    <br><br>
+    {% endfor %}
   </div>
 
   <div class="container">
@@ -30,19 +30,19 @@
     <a class="leftAlignButton" href="{% url 'add_address' customer.id %}" ><button type="button">Add New Address</button></a>
     {% endif %}
   </div>
-<br>
+  <br>
   <div class="container">
     <h3>My Favorite Cuisines</h3>
     {% if cuisines|length < 1 %}
     <p class="boldfont">None</p>
     {% endif %}
     <ul class="boldfont">
-        {% for item in cuisines %}
-        <li>{{ item.name }}</li>
-        {% endfor %}
+      {% for item in cuisines %}
+      <li>{{ item.name }}</li>
+      {% endfor %}
     </ul>
     <a class="leftAlignButton" href="{% url 'edit_cuisine' customer.id %}" ><button type="button">Edit Cuisine Preferences</button></a>
   </div>
   <br><br><br><br>
 
-{% endblock %}
+  {% endblock %}

@@ -14,25 +14,22 @@ from .models import Address, Customer, Customer_Address, Restaurant_Cuisine
 stripe.api_key = config('STRIPE_API_KEY')
 gmaps = googlemaps.Client(key=config('GOOGLE_API_KEY'))
 
-# Create your views here.
 def home(request):
-    # TEST CODE FOR GOOGLE MAPS API
-    my_dist = gmaps.distance_matrix('1331 E Louisa Ave, West Covina', '521 Timberline Dr, Azusa', units='imperial')['rows'][0]['elements'][0]
-    print(my_dist)
-    print(type(my_dist))
-    # dist_dict = my_dist['distance']
-    dist_text = my_dist['distance']['text']
-    print(dist_text)
-    ####
-    restaurants = Restaurant.objects
-    # num_visits = request.session.get('num_visits', 0)
-    # request.session['num_visits'] = num_visits + 1
+    return render (request, 'tables/home.html')
 
+def load_dashboard(request):
+    address_str = request.POST.get('search_address')
+    print(address_str)
+    # Need to loop through each restaurant
+    my_dist = gmaps.distance_matrix(address_str, '521 Timberline Dr, Azusa', units='imperial')['rows'][0]['elements'][0]
+    dist_text = my_dist['distance']['text']
+    print('Distance:' + dist_text)
+    restaurants = Restaurant.objects
     context = {
-    # 'num_visits': num_visits,
     'restaurants':restaurants,
     }
-    return render (request, 'tables/home.html',context = context)
+    return render(request, 'tables/dashboard.html', context = context)
+
 
 def restaurantView(request, restaurant_id):
     restaurant = Restaurant.objects.get(pk = restaurant_id)
@@ -181,7 +178,6 @@ def edit_address(request, address_id):
 def edit_cuisine(request, customer_id):
     customer = Customer.objects.get(id=customer_id)
     if request.method == 'POST':
-        print(request.POST)
         all_cuisines = Cuisine.objects.all()
         for item in all_cuisines:
             if request.POST.get('c' + str(item.id)) == 'clicked':

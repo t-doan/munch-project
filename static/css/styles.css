@@ -5,7 +5,7 @@ html {
   box-sizing: inherit;
 }
 body {
-  background: blue;
+  background: orange;
 }
 
 /* base.html
@@ -42,7 +42,7 @@ body {
     margin-top: 40px;
   }
   .dashboard .pricing-header .ordering {
-    background-color: white;
+    background-color: #E2E2E2; /* rbg(251,54,0) orange*/
     flex: 1 1 50%;
     flex-wrap: wrap;
   }
@@ -82,18 +82,23 @@ body {
 ================================================*/
 .profile > .container {
   border-bottom: 5px solid #343434;
-  padding: 25px 0;
+  padding: 40px 40px;
 }
 .profile > .container:last-of-type {
   border-bottom: none;
 }
 .profile .container h3 {
   font-family: 'Lobster', cursive;
-  font-size: 40px;
+  font-size: 50px;
   text-align: center;
+  text-decoration: underline;
 }
 .profile .container button {
   font-family: 'Abril Fatface', cursive;
+  background-color: orange;
+  border-style: solid;
+  border-color: black;
+  color: black;
 }
 
 /* signup.html
@@ -150,4 +155,34 @@ body {
   font-family: 'Lobster', cursive;
   font-size: 40px;
   text-align: center;
+}
+
+/* text styling
+================================================*/
+.boldfont {
+  font-family: 'Georgia';
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.underline {
+  font-family: 'Lobster';
+  font-size: 60px;
+  text-decoration: underline;
+  text-align: center;
+}
+
+/* button styling
+================================================*/
+.leftAlignButton {
+  display: flex; justify-content: flex-end;
+  padding: 10px;
+}
+
+.standardButton {
+  font-family: 'Abril Fatface', cursive;
+  background-color: orange;
+  border-style: solid;
+  border-color: black;
+  color: black;
 }

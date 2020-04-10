@@ -42,7 +42,7 @@ body {
     margin-top: 40px;
   }
   .dashboard .pricing-header .ordering {
-    background-color: white;
+    background-color: #E2E2E2; /* rbg(251,54,0) orange*/
     flex: 1 1 50%;
     flex-wrap: wrap;
   }

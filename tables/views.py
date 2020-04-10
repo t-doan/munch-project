@@ -5,15 +5,25 @@ from django.views import generic
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 import stripe
+import googlemaps
 from decouple import config
 
 from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine
 from .models import Address, Customer, Customer_Address, Restaurant_Cuisine
 
 stripe.api_key = config('STRIPE_API_KEY')
+gmaps = googlemaps.Client(key=config('GOOGLE_API_KEY'))
 
 # Create your views here.
 def home(request):
+    # TEST CODE FOR GOOGLE MAPS API
+    my_dist = gmaps.distance_matrix('1331 E Louisa Ave, West Covina', '521 Timberline Dr, Azusa', units='imperial')['rows'][0]['elements'][0]
+    print(my_dist)
+    print(type(my_dist))
+    # dist_dict = my_dist['distance']
+    dist_text = my_dist['distance']['text']
+    print(dist_text)
+    ####
     restaurants = Restaurant.objects
     # num_visits = request.session.get('num_visits', 0)
     # request.session['num_visits'] = num_visits + 1

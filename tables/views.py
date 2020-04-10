@@ -20,16 +20,19 @@ def home(request):
 def load_dashboard(request):
     address_str = request.POST.get('search_address')
     print(address_str)
-    # Need to loop through each restaurant
-    my_dist = gmaps.distance_matrix(address_str, '521 Timberline Dr, Azusa', units='imperial')['rows'][0]['elements'][0]
-    dist_text = my_dist['distance']['text']
-    print('Distance:' + dist_text)
-    restaurants = Restaurant.objects
+    restaurants = Restaurant.objects.all()
+    restaurant_dists = {}
+    for restaurant in restaurants:
+        my_dist = gmaps.distance_matrix(address_str, restaurant.address, units='imperial')['rows'][0]['elements'][0]
+        print(my_dist)
+        restaurant_dists[restaurant.name + ' text'] = my_dist['distance']['text'] + 'les'
+        restaurant_dists[restaurant.name + ' value'] = my_dist['distance']['value']
+    print(restaurant_dists)
     context = {
     'restaurants':restaurants,
+    'restaurant_dists':restaurant_dists,
     }
     return render(request, 'tables/dashboard.html', context = context)
-
 
 def restaurantView(request, restaurant_id):
     restaurant = Restaurant.objects.get(pk = restaurant_id)

@@ -8,7 +8,7 @@
       <form action="{% url 'load_dashboard' %}" method="post">
         {% csrf_token %}
         <label for="search_address"><p>Start your Food Journey</p></label><br>
-        <input type="text" name="search_address" value="" placeholder="Enter street address or zipcode" size="30">
+        <input type="text" name="search_address" value="" placeholder="Enter address or zipcode" size="30">
         <input type="submit" name="enter_address_btn" value="Find Food" class="standardButton">
       </form>
     </div>

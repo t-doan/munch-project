@@ -1,16 +1,22 @@
 {% extends 'tables/base.html' %}
 {% block content %}
+{% load index %}
 
 <div class="album py-5">
   <div class="container">
-    <h3 class="underline">Popular Restaurants</h3><br>
+    <h3 class="underline">Restaurants near you</h3><br>
     <div class="row">
-      {% for restaurant in restaurants.all %}
+      {% for restaurant in restaurants %}
       <div class="col-md-4">
         <div class="card mb-4 box-shadow">
           <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
           <div class="card-body">
             <p class="card-text"><a href="{% url 'restaurantView' restaurant.id %}">{{ restaurant.name }}</a></p>
+            <p>About
+              {% with restaurant.name|addstr:' text' as restaurant_name %}
+              {{ restaurant_dists|get_item:restaurant_name }}
+              {% endwith %}
+               away</p>
           </div>
         </div>
       </div>

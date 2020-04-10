@@ -5,7 +5,7 @@ html {
   box-sizing: inherit;
 }
 body {
-  background: orange;
+  background: blue;
 }
 
 /* base.html
@@ -81,7 +81,7 @@ body {
 /* user-profile.html
 ================================================*/
 .profile > .container {
-  border-bottom: 1px dashed #343434;
+  border-bottom: 5px solid #343434;
   padding: 25px 0;
 }
 .profile > .container:last-of-type {

@@ -7,41 +7,41 @@
 
     <h4> {{ note }} </h4>
     <h3>My Profile</h3>
-    <p>Name: {{ customer.first_name }} {{customer.last_name}}</p>
-    <p>Phone Number: {{ customer.phone_number }}</p>
-    <a href="{% url 'edit_customer' %}"><button type="button">Edit Profile</button></a>
+    <p class="boldfont">Name: {{ customer.first_name }} {{customer.last_name}}</p>
+    <p class="boldfont">Phone Number: {{ customer.phone_number }}</p>
+    <a class="leftAlignButton" href="{% url 'edit_customer' %}"><button type="button">Edit Profile</button></a>
   </div>
 
   <div class="container">
   <br>
-  <h3>My Addresses</h3>
+  <h3>My Address(es)</h3>
   {% for address in addresses %}
-  <p>{{ address.nickname }}:</p>
-  <p>&ensp;&ensp;{{ address.street }}, {{ address.city }}</p>
-  <p>&ensp;&ensp;{{ address.state }} {{ address.zipcode }}</p>
-  <a href="{% url 'edit_address' address.id %}" ><button type="button">Edit Address</button></a>
-  <a href="{% url 'delete_address' address.id %}" ><button type="button">Delete Address</button></a>
+  <p class="boldfont">{{ address.nickname }}:</p>
+  <p class="boldfont">&ensp;&ensp;{{ address.street }}, {{ address.city }}</p>
+  <p class="boldfont">&ensp;&ensp;{{ address.state }} {{ address.zipcode }}</p>
+  <a class="leftAlignButton" href="{% url 'edit_address' address.id %}" ><button type="button">Edit Address</button></a>
+  <a class="leftAlignButton" href="{% url 'delete_address' address.id %}" ><button type="button">Delete Address</button></a>
   <br><br>
   {% endfor %}
   </div>
 
   <div class="container">
     {% if addresses|length < 5 %}
-    <a href="{% url 'add_address' customer.id %}" ><button type="button">Add New Address</button></a>
+    <a class="leftAlignButton" href="{% url 'add_address' customer.id %}" ><button type="button">Add New Address</button></a>
     {% endif %}
   </div>
 <br>
   <div class="container">
     <h3>My Favorite Cuisines</h3>
     {% if cuisines|length < 1 %}
-    <p>None</p>
+    <p class="boldfont">None</p>
     {% endif %}
-    <ul>
+    <ul class="boldfont">
         {% for item in cuisines %}
         <li>{{ item.name }}</li>
         {% endfor %}
     </ul>
-    <a href="{% url 'edit_cuisine' customer.id %}" ><button type="button">Edit Cuisine Preferences</button></a>
+    <a class="leftAlignButton" href="{% url 'edit_cuisine' customer.id %}" ><button type="button">Edit Cuisine Preferences</button></a>
   </div>
   <br><br><br><br>
 

@@ -18,8 +18,8 @@
         <li><input type="checkbox" name="c{{ item.id }}" value="clicked"> {{ item.name }}</li>
         {% endfor %}
     </ul>
-    <button type="submit">Save Changes</button>
-    <a href="{% url 'user-profile' %}" ><button type="button">Go Back to Profile</button></a>
+    <button type="submit" class="standardButton">Save Changes</button>
+    <a href="{% url 'user-profile' %}" ><button type="button" class="standardButton">Go Back to Profile</button></a>
 </form>
 
 </div>

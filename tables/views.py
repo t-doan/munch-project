@@ -202,5 +202,11 @@ def edit_cuisine(request, customer_id):
             non_cuisines.remove(cuisine)
     return render(request, 'account/edit_cuisine.html', {'customer':customer, 'non_cuisines':non_cuisines, 'cuisines':cuisines});
 
+def cart(request):
+    return render(request, 'tables/cart.html')
+
+def checkout(request):
+    return render(request, 'tables/checkout.html')
+
 def join(request):
     return render(request, 'tables/join.html')

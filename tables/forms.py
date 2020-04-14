@@ -24,15 +24,13 @@ class OrderInfoForm(forms.Form):
     # Name
     first_name = forms.CharField(label='First Name', max_length=15)
     last_name = forms.CharField(label='Last Name', max_length=15)
-
     # Billing Address
-    billing_street = models.CharField(max_length=50)
-    billing_city = models.CharField(max_length=50)
-    billing_state = models.CharField(max_length=50)
-    billing_zipcode = models.CharField(max_length=15)
-
+    billing_street = forms.CharField(max_length=50)
+    billing_city = forms.CharField(max_length=50)
+    billing_state = forms.CharField(max_length=50)
+    billing_zipcode = forms.CharField(max_length=15)
     # Order / Delivery Address
-    delivery_street = models.CharField(max_length=50)
-    delivery_city = models.CharField(max_length=50)
-    delivery_state = models.CharField(max_length=50)
-    delivery_zipcode = models.CharField(max_length=15)
+    delivery_street = forms.CharField(max_length=50)
+    delivery_city = forms.CharField(max_length=50)
+    delivery_state = forms.CharField(max_length=50)
+    delivery_zipcode = forms.CharField(max_length=15)

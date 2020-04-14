@@ -208,5 +208,8 @@ def cart(request):
 def checkout(request):
     return render(request, 'tables/checkout.html')
 
+def confirmation(request):
+    return render(request, 'tables/confirmation.html')
+
 def join(request):
     return render(request, 'tables/join.html')

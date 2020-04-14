@@ -36,7 +36,10 @@ urlpatterns = [
     path('auth/user-profile/edit_cuisine/<int:customer_id>', views.edit_cuisine, name='edit_cuisine'),
     path('dashboard', views.load_dashboard, name='load_dashboard'),
     path('cart', views.cart, name='cart'),
+<<<<<<< HEAD
     path('checkout', views.checkout, name='checkout')
+=======
+>>>>>>> e4197e465ee0c9963f06918b73eef48442b00246
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

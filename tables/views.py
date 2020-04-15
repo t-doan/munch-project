@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .forms import CustomSignupForm, CustomerForm, AddressForm
+from .forms import CustomSignupForm, CustomerForm, AddressForm, OrderInfoForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
@@ -206,7 +206,11 @@ def cart(request):
     return render(request, 'tables/cart.html')
 
 def checkout(request):
-    return render(request, 'tables/checkout.html')
+    form = OrderInfoForm()
+    context = {
+    'form': form,
+    }
+    return render(request, 'tables/checkout.html', context = context)
 
 def confirmation(request):
     return render(request, 'tables/confirmation.html')

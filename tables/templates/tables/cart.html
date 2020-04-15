@@ -1,4 +1,45 @@
 {% extends 'tables/base.html' %}
 {% block content %}
 
+<div class="container cart-page">
+  <h2>My Munch Cart</h2>
+  <div class="categories">
+    <div class="category"><b>Item</b></div>
+    <div class="category"><b>Quantity</b></div>
+    <div class="category"><b>Total Price</b></div>
+  </div>
+
+  <br>
+
+    <a href="#">Restaurant Name (Click to add other item from this restaurant)</a>
+    <div class="categories item-list">
+      <div class="category name"><a>Item Name</a></div>
+      <div class="category">
+        <a>- 0 +</a>
+      </div>
+      <div class="category money"><a>$money</a></div>
+    </div>
+    <div class="categories item-list">
+      <div class="category name"><a>Option/Choice/Add-on: bla bla bla</a></div>
+      <div class="category"></div>
+      <div class="category money"><a>+$money</a></div>
+    </div>
+    <a action="#">Click to add note</a>
+
+  <div class="bottom-cart">
+    <br>
+    <a onclick="onButtonClick()">Click to add note</a>
+    <input class="hide" type="text" id="textInput">
+    <div><b>Subtotal: $money</b></div>
+    <div><b>Tax (9%): +$money</b></div>
+    <div><b>Total: $money</b></div>
+  </div>
+
+  <br>
+  <p align="right">
+    <a href="#"><button>Save Changes</button></a>
+    <a href="{% url 'checkout' %}"><button>Save and Checkout</button></a>
+  </p>
+</div>
+
 {% endblock %}

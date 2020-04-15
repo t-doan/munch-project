@@ -30,7 +30,9 @@
     <a class="btn btn-outline-primary" href="{% url 'signup' %}">Sign up</a>
     {% endif %}
   </div>
-
+  <div class="shopping-cart">
+    <a href="{% url 'cart' %}"><button>Edit Cart</button></a>
+  </div>
   {% block content %}
   {% endblock %}
   {{ form.media.js }}

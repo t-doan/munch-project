@@ -224,26 +224,6 @@ body {
   opacity: 0.7;
 }
 
-.restaurant-view input{
-  font-family: 'Abril Fatface', cursive;
-  background-color: orange;
-  border-style: solid;
-  border-color: black;
-  width: 15%;
-  text-align: center;
-}
-
-.restaurant-view label {
-  font-family: 'Abril Fatface', cursive;
-  background-color: orange;
-  border-style: solid;
-  border-color: black;
-}
-
-.restaurant-view p .orange {
-  background-color: orange;
-}
-
 /* cart.html
 ================================================*/
 .cart-page h2 {

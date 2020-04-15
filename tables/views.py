@@ -219,7 +219,8 @@ def confirmation(request):
     OrderNumber = OrderNumber + 1
     deliveryEmployee = "Name: " + deliveryEmployeeName + " Contact: " + deliveryEmployeePhone
     context = {
-    'deliveryEmployee': deliveryEmployee,
+    'deliveryEmployeeName': deliveryEmployeeName,
+    'deliveryEmployeePhone': deliveryEmployeePhone,
     'OrderNumber': OrderNumber
     }
     return render(request, 'tables/confirmation.html', context = context)

@@ -241,6 +241,9 @@ body {
   margin-left: 20px;
   text-align: left;
 }
+.cart-page .categories .add-on {
+  margin-left: 40px;
+}
 .cart-page .categories {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
@@ -249,18 +252,27 @@ body {
   text-decoration: none;
   color: pink;
 }
+.cart-page .notes {
+  margin-left: 40px;
+}
 .cart-page .bottom-cart div {
   display: grid;
   grid-column: 1fr;
   text-align: right;
 }
-.cart-page .bottom-cart .hide {
+.cart-page .bottom-cart {
+  border-bottom: 5px solid #343434;
+  border-top: 5px solid #343434;
+  padding: 10px 0;
+}
+.cart-page function onButtonClick() {
+  document.getElementById('textInput').className="show";
+  document.getElementById('buttonPower').className="hide";
+}
+.cart-page .hide {
   display: none;
 }
-.cart-page .bottom-cart function onButtonClick() {
-  document.getElementById('textInput').className="show";
-}
-.cart-page .bottom-cart .show {
+.cart-page .show {
   display: block;
 }
 .cart-page button {

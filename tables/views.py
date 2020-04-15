@@ -213,15 +213,15 @@ def checkout(request):
     return render(request, 'tables/checkout.html', context = context)
 
 def confirmation(request):
-        deliveryEmployeeName = "John Doe"
-        deliveryEmployeePhone = "2291824093"
-        OrderNumber = 0
-        OrderNumber = OrderNumber + 1
-        deliveryEmployee = "Name: " + deliveryEmployeeName + " Contact: " + deliveryEmployeePhone
-        context = {
-        'deliveryEmployee': deliveryEmployee,
-        'OrderNumber': OrderNumber
-        }
+    deliveryEmployeeName = "John Doe"
+    deliveryEmployeePhone = "2291824093"
+    OrderNumber = 0
+    OrderNumber = OrderNumber + 1
+    deliveryEmployee = "Name: " + deliveryEmployeeName + " Contact: " + deliveryEmployeePhone
+    context = {
+    'deliveryEmployee': deliveryEmployee,
+    'OrderNumber': OrderNumber
+    }
     return render(request, 'tables/confirmation.html', context = context)
 
 def join(request):

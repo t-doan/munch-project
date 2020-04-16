@@ -217,7 +217,6 @@ def confirmation(request):
     deliveryEmployeePhone = "2291824093"
     OrderNumber = 0
     OrderNumber = OrderNumber + 1
-    deliveryEmployee = "Name: " + deliveryEmployeeName + " Contact: " + deliveryEmployeePhone
     context = {
     'deliveryEmployeeName': deliveryEmployeeName,
     'deliveryEmployeePhone': deliveryEmployeePhone,

@@ -2,6 +2,7 @@
 {% block content %}
 {% load widget_tweaks %}
 {% load index %}
+{% load static %}
 
 <div class="container restaurant-view">
   <h1>{{ restaurant.name }}</h1>
@@ -19,7 +20,11 @@
             <img class="card-img-top" src="{{ item.image.url }}" height="200"></img>
             <div class="card-body">
               <p class="card-text"><b>{{ item.name }}</b> - ${{ item.price }}</p>
-              <p><button>Add to Cart</button></p>
+              <button class="show" id="btn{{ item.id }}" onclick="clickAddToCart('{{ item.id }}')">Add to Cart</button>
+              <div class="quantity-line">
+                <div><button class="hide" id="btn-confirm{{ item.id }}" onclick="confirm('{{ item.id }}')">Confirm Amount</button></div>
+                <div><input class="hide" type="number" id="quantity{{ item.id }}" name="quantity" min="1" max="20"></div>
+              </div>
               <a>
             </div>
           </div>
@@ -30,4 +35,19 @@
   </div>
   {% endfor %}
 </div>
+
+<!-- <button>Click Me</button>
+<div id="expand"></div>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("body").click('#hide', function(e) {
+    console.log('clicked');
+    $("#expand").append("<button>Click me next</button>");
+    alert("You clicked a button!");
+  });
+});
+
+</script> -->
 {% endblock %}

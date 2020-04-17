@@ -37,7 +37,9 @@ urlpatterns = [
     path('dashboard', views.load_dashboard, name='load_dashboard'),
     path('cart', views.cart, name='cart'),
     path('checkout', views.checkout, name='checkout'),
-    path('confirmation', views.confirmation, name='confirmation')
+    path('confirmation', views.confirmation, name='confirmation'),
+    path('add_to_cart/<int:id>/', views.add_to_cart, name='add_to_cart'),
+
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

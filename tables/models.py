@@ -38,6 +38,11 @@ class Item(models.Model):
     def __str__(self):
         return self.name + " from menu: " + str(self.menu_id)
 
+    # def get_add_to_cart_url(self):
+    #     return reverse("core:add-to-cart", kwargs={
+    #         'id': self.id
+    #     })
+
 class Customer(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
     first_name = models.CharField(max_length=50)
@@ -112,10 +117,27 @@ class Item_Cuisine(models.Model):
         + str(self.cuisine_id)
 
 class OrderItem(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
 
     def __str__(self):
         return self.item.name
+
+    def get_total_item_price(self):
+        return self.quantity * self.item.price
+
+    def get_total_discount_item_price(self):
+        return self.quantity * self.item.discount_price
+
+    def get_amount_saved(self):
+        return self.get_total_item_price() - self.get_total_discount_item_price()
+
+    def get_final_price(self):
+        if self.item.discount_price:
+            return self.get_total_discount_item_price()
+        return self.get_total_item_price()
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)

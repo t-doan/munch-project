@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import (Address, Item, Customer, Customer_Address,
 Customer_Payment, Customer_Cuisine, Cuisine,
-Item_Cuisine, Menu, Payment, Restaurant, Restaurant_Cuisine, Review)
+Item_Cuisine, Menu, Payment, Restaurant, Restaurant_Cuisine, Review,
+Order, OrderItem)
 # Customer_Style_Preference, Food_Style, Item_Style, Restaurant_Style)
 
 # Register your models here.
@@ -22,3 +23,5 @@ admin.site.register(Restaurant)
 # admin.site.register(Restaurant_Style)
 admin.site.register(Restaurant_Cuisine)
 admin.site.register(Review)
+admin.site.register(Order)
+admin.site.register(OrderItem)

@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from .forms import CustomSignupForm, CustomerForm, AddressForm, OrderInfoForm
 from django.urls import reverse_lazy
 from django.views import generic
@@ -209,9 +210,36 @@ def edit_cuisine(request, customer_id):
 def cart(request):
     return render(request, 'tables/cart.html')
 
+@login_required
 def add_to_cart(request, id):
     item = get_object_or_404(Item, id=id)
-    order_item = OrderItem.objects.get_or_create()
+    customer = Customer.objects.get(user_id = request.user.id)
+    order_item = OrderItem.objects.get_or_create(
+        item = item,
+        customer = customer,
+        ordered = False
+    )
+    order_qs = Order.objects.filter(customer=customer, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.items.filter(item__id=item.id).exists():
+            order_item.quantity += 1
+            order_item.save()
+            messages.info(request, "This item quantity was updated.")
+            return redirect("tables:restaurant_view")
+        else:
+            order.items.add(order_item)
+            messages.info(request, "This item was added to your cart.")
+            return redirect("tables:restaurant_view")
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            customer=customer,
+            ordered_date=ordered_date)
+        order.items.add(order_item)
+        messages.info(request, "This item was added to your cart.")
+        return redirect("tables:restaurant_view")
 
 def checkout(request):
     form = OrderInfoForm()

@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, user_passes_test
 import stripe
 import googlemaps
+import json
 from decouple import config
 
 from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine
@@ -51,12 +52,15 @@ def restaurantView(request, restaurant_id):
         for rest_cuis in rest_cuisines:
             cuisines_str = cuisines_str + " " + Cuisine.objects.get(id = rest_cuis.cuisine_id_id).name + ","
         cuisines_str = cuisines_str[:len(cuisines_str)-1]
+    chosen_items = { "name" : "John" }
+
     context = {
     'restaurant':restaurant,
     'menu_names':menu_names,
     'menu_items':menu_items,
     'i_amt':range(len(menu_names)),
-    'cuisines_str':cuisines_str
+    'cuisines_str':cuisines_str,
+    'chosen_items': json.dumps(chosen_items),
     }
     return render(request, 'tables/restaurant_view.html',context = context)
 

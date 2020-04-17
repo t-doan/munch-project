@@ -9,7 +9,7 @@ import googlemaps
 import json
 from decouple import config
 
-from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine
+from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine, Order, OrderItem
 from .models import Address, Customer, Customer_Address, Restaurant_Cuisine
 
 stripe.api_key = config('STRIPE_API_KEY')
@@ -208,6 +208,10 @@ def edit_cuisine(request, customer_id):
 
 def cart(request):
     return render(request, 'tables/cart.html')
+
+def add_to_cart(request, id):
+    item = get_object_or_404(Item, id=id)
+    order_item = OrderItem.objects.get_or_create()
 
 def checkout(request):
     form = OrderInfoForm()

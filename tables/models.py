@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
 class Address(models.Model):
     nickname = models.CharField(max_length=50)
     street = models.CharField(max_length=50)
@@ -111,3 +110,19 @@ class Item_Cuisine(models.Model):
     def __str__(self):
         return 'Item Id: ' + str(self.item_id) + ' Cuisine. Id: '
         + str(self.cuisine_id)
+
+class OrderItem(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.item.name
+
+class Order(models.Model):
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
+    items = models.ManyToManyField(OrderItem)
+    start_date = models.DateTimeField(auto_now_add=True)
+    ordered_date = models.DateTimeField()
+    ordered = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.customer.first_name + " " + str(self.start_date)

@@ -20,9 +20,9 @@
             <img class="card-img-top" src="{{ item.image.url }}" height="200"></img>
             <div class="card-body">
               <p class="card-text"><b>{{ item.name }}</b> - ${{ item.price }}</p>
-              <p><button>Add to Cart</button></p>
+              <!-- <p><button>Add to Cart</button></p>
               <label for="quantity">Quantity (between 1 and 20)</label>
-              <input type="number" id="quantity" name="quantity" min="1" max="20">
+              <input type="number" id="quantity" name="quantity" min="1" max="20"> -->
               <button class="show" id="btn{{ item.id }}" onclick="clickAddToCart('{{ item.id }}')">Add to Cart</button>
               <div class="quantity-line">
                 <div><button class="hide" id="btn-confirm{{ item.id }}" onclick="confirm('{{ item.id }}')">Confirm Amount</button></div>

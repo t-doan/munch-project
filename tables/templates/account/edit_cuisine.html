@@ -4,6 +4,55 @@
 
 <div class="container">
   <h1>Edit Cuisine Favorites</h1>
+  <style>
+    .buttonCancel {
+      background-color:rgba(190, 0, 0, 1);
+      border: black;
+      color: white;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration:none;
+      font-size: 15px;
+      transition-duration: 0.4s;
+      display: inline-block;
+      margin: 4px 1px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: sans-serif;
+      font-style: normal;
+      font-weight: bold;
+      float: left;
+    }
+    .buttonCancel:hover{
+      background-color:rgba(255, 0, 0, 1);
+      border: black;
+      color: white;
+    }
+    .buttonSave {
+      background-color:rgba(0, 145, 0, 1);
+      border: black;
+      color: white;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration:none;
+      font-size: 15px;
+      transition-duration: 0.4s;
+      display: inline-block;
+      margin: 4px 1px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: sans-serif;
+      font-style: normal;
+      font-weight: bold;
+      float: left;
+    }
+    .buttonSave:hover{
+      background-color:rgba(0, 255, 0, 1);
+      border: black;
+      color: white;
+    }
+  </style>
+
   <form class="" action="{% url 'edit_cuisine' customer.id %}" method="post">
     {% csrf_token %}
     <h4>Favorites</h4>
@@ -18,8 +67,8 @@
       <li><input type="checkbox" name="c{{ item.id }}" value="clicked"> {{ item.name }}</li>
       {% endfor %}
     </ul>
-    <button type="submit" class="standardButton">Save Changes</button>
-    <a href="{% url 'user-profile' %}" ><button type="button" class="standardButton">Go Back to Profile</button></a>
+    <a href="{% url 'user-profile' %}" ><button type="button" class="buttonCancel">Go Back to Profile</button></a>
+    <button type="submit" class="buttonSave">Save Changes</button>
   </form>
 
 </div>

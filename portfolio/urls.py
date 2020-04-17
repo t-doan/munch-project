@@ -37,7 +37,13 @@ urlpatterns = [
     path('dashboard', views.load_dashboard, name='load_dashboard'),
     path('cart', views.cart, name='cart'),
     path('checkout', views.checkout, name='checkout'),
-    path('confirmation', views.confirmation, name='confirmation')
+    path('confirmation', views.confirmation, name='confirmation'),
+    # new branch stuff below
+    path('add-to-cart/<int:item_id>/', views.add_to_cart, name="add_to_cart"),
+    path('item/delete/<int:item_id>/', views.delete_from_cart, name="delete_item"),
+    # url(r'^add-to-cart/(?P<item_id>[-\w]+)/$', add_to_cart, name="add_to_cart"),
+    # url(r'^item/delete/(?P<item_id>[-\w]+)/$', delete_from_cart, name='delete_item'),
+
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

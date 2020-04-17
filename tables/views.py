@@ -226,3 +226,36 @@ def confirmation(request):
 
 def join(request):
     return render(request, 'tables/join.html')
+
+# new branch stuff below
+@login_required()
+def add_to_cart(request, **kwargs):
+    # get the user profile
+    user_profile = get_object_or_404(Customer, user=request.user)
+    # filter products by id
+    item = Item.objects.filter(id=kwargs.get('item_id', "")).first()
+
+    # create orderItem of the selected product
+    order_item, status = CartItem.objects.get_or_create(item=item)
+    # create order associated with the user
+    user_order, status = Cart.objects.get_or_create(owner=user_profile, is_ordered=False)
+    user_order.items.add(order_item)
+    if status:
+        # generate a reference code
+        user_order.ref_code = generate_order_id()
+        user_order.save()
+
+    # show confirmation message and redirect back to the same page
+    messages.info(request, "item added to cart")
+    # return redirect(reverse('restaurantView'))
+    return render(request, 'tables/restaurant_view.html')
+
+
+@login_required()
+def delete_from_cart(request, item_id):
+    item_to_delete = CartItem.objects.filter(pk=item_id)
+    if item_to_delete.exists():
+        item_to_delete[0].delete()
+        messages.info(request, "Item has been deleted")
+    # return redirect(reverse('checkout'))
+    return render(request, 'tables/checkout.html')

@@ -20,12 +20,13 @@
             <img class="card-img-top" src="{{ item.image.url }}" height="200"></img>
             <div class="card-body">
               <p class="card-text"><b>{{ item.name }}</b> - ${{ item.price }}</p>
-              <button class="show" id="btn{{ item.id }}" onclick="clickAddToCart('{{ item.id }}')">Add to Cart</button>
-              <div class="quantity-line">
-                <div><button class="hide" id="btn-confirm{{ item.id }}" onclick="confirm('{{ item.id }}')">Confirm Amount</button></div>
-                <div><input class="hide" type="number" id="quantity{{ item.id }}" name="quantity" min="1" max="20"></div>
-              </div>
-              <a>
+              <a href="{% url 'add_to_cart' item.id %}" class="btn btn-warning">Add to Cart</a>
+              <!-- <button class="show" id="btn{{ item.id }}" onclick="clickAddToCart('{{ item.id }}')">Add to Cart</button> -->
+              <!-- <div class="quantity-line"> -->
+                <!-- <div><button class="hide" id="btn-confirm{{ item.id }}" onclick="confirm('{{ item.id }}')">Confirm Amount</button></div> -->
+                <!-- <div><input class="hide" type="number" id="quantity{{ item.id }}" name="quantity" min="1" max="20"></div> -->
+              <!-- </div> -->
+              <!-- <a> -->
             </div>
           </div>
         </div>
@@ -35,6 +36,8 @@
   </div>
   {% endfor %}
 </div>
+
+ <!-- <a href="{% url 'shopping_cart:add_to_cart' object.id %}" class="btn btn-warning">Add to Cart</a> -->
 
 <!-- <button>Click Me</button>
 <div id="expand"></div>

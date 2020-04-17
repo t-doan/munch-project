@@ -223,18 +223,32 @@ body {
 .restaurant-view button:hover {
   opacity: 0.7;
 }
-
-.restaurant-view input {
+.restaurant-view button {
+  border: none;
+  outline: 0;
+  padding: 12px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+  font-family: 'Abril Fatface', cursive;
+  font-size: 18px;
+}
+.restaurant-view .hide {
+  display: none;
+}
+.restaurant-view label {
   font-family: 'Abril Fatface', cursive;
   background-color: orange;
   border-style: solid;
   border-color: black;
-  width: 15%;
-  text-align: center;
 }
-
-.restaurant_view label {
-  font-family: 'Abril Fatface', cursive;
+.restaurant-view .quantity-line {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+}
+.restaurant-view p .orange {
   background-color: orange;
 }
 
@@ -279,21 +293,10 @@ body {
   border-top: 5px solid #343434;
   padding: 10px 0;
 }
-.cart-page function onButtonClick() {
-  document.getElementById('textInput').className="show";
-  document.getElementById('buttonPower').className="hide";
-}
-.cart-page .hide {
-  display: none;
-}
-.cart-page .show {
-  display: block;
-}
 .cart-page button {
   font-family: 'Abril Fatface', cursive;
   font-size: 18px;
 }
-
 .cart-page input {
   font-family: 'Abril Fatface', cursive;
   background-color: orange;
@@ -302,8 +305,10 @@ body {
   width: 15%;
   text-align: center;
 }
-
 .cart-page label {
   font-family: 'Abril Fatface', cursive;
   background-color: orange;
+}
+.cart-page .hide {
+  display: none;
 }

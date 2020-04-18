@@ -13,37 +13,31 @@ class Address(models.Model):
         return self.street + " " + self.city
 
 class Restaurant(models.Model):
-    #name
     name = models.CharField(max_length=50)
-    #address
     address = models.CharField(max_length=50)
-    #phone_number
-    #max length on the table is 50 but i figure we should change this later
     phone_number = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='images/', default='/static/NoImageFound.jpg')
 
     def __str__(self):
         return self.name + ' at ' + self.address
+
 
 class Menu(models.Model):
     name = models.CharField(max_length=50)
     restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
 
     def __str__(self):
-<<<<<<< HEAD
-        return 'Menu Name: ' + self.name + ' Menu Id: ' + str(self.id) + ' Rest. Id: '
-=======
-        return 'Menu Id: ' + str(self.id) + ' Rest. Id: '
->>>>>>> 6b638557c76f28fefa4f7db2a50922af7afac547
-        + str(self.restaurant_id)
+        return ('Menu: ' + str(self.id)+ ' ' + self.name + ' || Restaurant: ' + self.restaurant_id.name)
 
 class Item(models.Model):
     name = models.CharField(max_length=50)
     price = models.DecimalField(decimal_places=2,max_digits=8)
     menu_id = models.ForeignKey(Menu,on_delete=models.CASCADE)
     is_spicy = models.BooleanField()
+    image = models.ImageField(upload_to='images/', default='/static/NoImageFound.jpg')
 
     def __str__(self):
-        return self.name + " from menu: " + str(self.menu_id)
+        return self.name + " from " + str(self.menu_id)
 
 class Customer(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
@@ -63,11 +57,8 @@ class Customer_Address(models.Model):
         return 'Address: ' + str(self.address_id) + ' Customer: ' + str(self.customer_id)
 
 class Payment (models.Model):
-    #cardnumber
     card_number = models.BigIntegerField()
-    #pin number
     card_pin = models.IntegerField()
-    #Expiration Date
     card_expdate = models.DateField()
 
     def __str__(self):
@@ -79,28 +70,6 @@ class Customer_Payment(models.Model):
 
     def __str__(self):
         return 'Payment Id: ' + str(self.payment_id) + ' Customer Id: ' + str(self.customer_id)
-
-class Food_Style(models.Model):
-    style_name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.style_name
-
-class Customer_Style_Preference(models.Model):
-    style_id = models.ForeignKey(Food_Style,on_delete=models.CASCADE)
-    customer_id = models.ForeignKey(Customer,on_delete=models.CASCADE)
-
-    def __str__(self):
-        return 'Style Id: ' + str(self.style_id) + ' Customer Id: ' + str(self.customer_id)
-
-class Restaurant_Style(models.Model):
-    #restaurant_id
-    restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
-    #style_id
-    style_id = models.ForeignKey(Food_Style,on_delete=models.CASCADE)
-
-    def __str__(self):
-        return 'Rest. Id: ' + str(self.restaurant_id) + ' Style Id:' + str(self.style_id)
 
 class Review(models.Model):
     #text
@@ -116,10 +85,59 @@ class Review(models.Model):
         return 'Customer Id: ' + str(self.customer_id) + ' Rest. Id: '
         + str(self.restaurant_id) + ' ' + str(self.stars) + " stars"
 
-class Item_Style(models.Model):
-    item_id = models.ForeignKey(Item,on_delete=models.CASCADE)
-    style_id = models.ForeignKey(Food_Style,on_delete=models.CASCADE)
+class Cuisine(models.Model):
+    name = models.CharField(max_length=50)
 
     def __str__(self):
-        return 'Item Id: ' + str(self.item_id) + ' Style. Id: '
-        + str(self.style_id)
+        return self.name
+
+class Customer_Cuisine(models.Model):
+    cuisine_id = models.ForeignKey(Cuisine,on_delete=models.CASCADE)
+    customer_id = models.ForeignKey(Customer,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Cuisine Id: ' + str(self.cuisine_id) + ' Customer Id: ' + str(self.customer_id)
+
+class Restaurant_Cuisine(models.Model):
+    #restaurant_id
+    restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
+    #style_id
+    cuisine_id = models.ForeignKey(Cuisine,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Rest. Id: ' + str(self.restaurant_id) + ' Style Id:' + str(self.cuisine_id)
+
+class Item_Cuisine(models.Model):
+    item_id = models.ForeignKey(Item,on_delete=models.CASCADE)
+    cuisine_id = models.ForeignKey(Cuisine,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Item Id: ' + str(self.item_id) + ' Cuisine. Id: '
+        + str(self.cuisine_id)
+
+class OrderItem(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    ordered = models.BooleanField(default=False)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+
+    def __str__(self):
+        return self.item.name
+
+
+class Order(models.Model):
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
+    start_date = models.DateTimeField(auto_now_add=True)
+    ordered_date = models.DateTimeField()
+    ordered = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.customer.first_name + " " + str(self.start_date)
+
+class Order_OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Order Cust.: ' + str(self.order.customer) + ' OrderItem Id: '
+        + str(self.order_item.item)

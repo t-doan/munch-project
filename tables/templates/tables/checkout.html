@@ -1,4 +1,21 @@
 {% extends 'tables/base.html' %}
 {% block content %}
+{% load widget_tweaks %}
 
+<div class="container">
+  <h1>Checkout</h1>
+
+  <form method="post" action="{% url 'confirmation' %}">
+    {% csrf_token %}
+    <div class="form-group">
+      {% for field in form %}
+      {{ field.errors }}
+      {{ field.label_tag }}
+      {% render_field field class="form-control" %}
+      {% endfor %}
+    </div>
+    <button type="submit" class="standardButton">Confirm Purchase</button>
+  </form>
+</div>
+<br><br><br><br>
 {% endblock %}

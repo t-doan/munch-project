@@ -2,19 +2,19 @@
 {% block content %}
 {% load widget_tweaks %}
 
-<div class="container">
-    <h2>Sign up</h2>
-      <form method="post">
-        {% csrf_token %}
+<div class="container signup">
+  <h2>Sign up</h2>
+  <form method="post">
+    {% csrf_token %}
 
-            {% for field in form %}
-                <div class="form-group">
-                    {{ field.errors }}
-                    {{ field.label_tag }}
-                    {% render_field field class="form-control" %}
-                </div>
-            {% endfor %}
-        <button type="submit">Next</button>
-      </form>
+    {% for field in form %}
+    <div class="form-group">
+      {{ field.errors }}
+      {{ field.label_tag }}
+      {% render_field field class="form-control" %}
     </div>
-    {% endblock %}
+    {% endfor %}
+    <button type="submit">Next</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,18 +1,59 @@
 {% extends 'tables/base.html' %}
 {% block content %}
 {% load widget_tweaks %}
+{% load index %}
+{% load static %}
 
-<div class="container">
-<h1>{{ restaurant.name }}</h1>
-<h6>Location: {{ restaurant.address }}</h6>
-<h6>Phone Number: {{ restaurant.phone_number }}</h6>
-{% csrf_token %}
-        <ul>
-            {% for item in items %}
-            <li><b>{{ item.name }}</b> - {{ item.price }}</li>
-            {% endfor %}
-        </ul>
+<div class="container restaurant-view">
+  <h1>{{ restaurant.name }}</h1>
+  <h6>Location: {{ restaurant.address }}</h6>
+  <h6>Phone Number: {{ restaurant.phone_number }}</h6>
+  <h6>{{ cuisines_str }}</h6><br>
+  {% for i in i_amt %}
+  <h3>{{ menu_names|index:i }}</h3>
+  <div class="album py-5">
+    <div class="container">
+      <div class="row">
+        {% for item in menu_items|index:i %}
+        <div class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="{{ item.image.url }}" height="200"></img>
+            <div class="card-body">
+              <p class="card-text"><b>{{ item.name }}</b> - ${{ item.price }}</p>
+              <!-- <p><button>Add to Cart</button></p>
+              <label for="quantity">Quantity (between 1 and 20)</label>
+              <input type="number" id="quantity" name="quantity" min="1" max="20"> -->
+              <!-- <button class="show" id="btn{{ item.id }}" onclick="clickAddToCart('{{ item.id }}')">Add to Cart</button>
+              <div class="quantity-line">
+                <div><button class="hide" id="btn-confirm{{ item.id }}" onclick="confirm('{{ item.id }}')">Confirm Amount</button></div>
+                <div><input class="hide" type="number" id="quantity{{ item.id }}" name="quantity" value="1" min="1" max="20"></div>
+              </div> -->
+              <a href="{% url 'add_to_cart' item.id %}" class="btn btn-primary btn-md my-0 p">
+                Add to cart
+              <i class="fas fa-shopping-cart ml-1"></i>
+            </a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
+<!-- {{ chosen_items }}
+<button>Click Me</button>
+<div id="expand"></div> -->
 
-
+<script type="text/javascript" src="{% static 'js/addtocart.js' %}"></script>
+<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $("body").click('#hide', function(e) {
+    console.log('clicked');
+    $("#expand").append("<button>Click me next</button>");
+    alert("You clicked a button!");
+  });
+});
+</script> -->
 {% endblock %}

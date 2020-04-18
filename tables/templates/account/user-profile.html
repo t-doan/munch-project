@@ -1,0 +1,128 @@
+{% extends 'tables/base.html' %}
+{% block content %}
+
+<div class="profile">
+  <div class="container">
+    {% load static %}
+
+    <h4> {{ note }} </h4>
+    <h3>My Profile</h3>
+    <p class="boldfont">Name: {{ customer.first_name }} {{customer.last_name}}</p>
+    <p class="boldfont">Phone Number: {{ customer.phone_number }}</p>
+    <a class="leftAlignButton" href="{% url 'edit_customer' %}">
+      <button type="button"
+      style="
+        background-color:rgb(0, 0, 0);
+        border: black;
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration:none;
+        font-size: 18px;
+        transition-duration: 0.4s;
+        display: inline-block;
+        margin: 4px 1px;
+        cursor: pointer;
+        border-radius: 6px;
+        font-family: sans-serif;
+        font-style: normal;
+        font-weight: bold;"
+      >Edit Profile</button></a>
+
+  </div>
+
+  <div class="container">
+    <br>
+    <h3>My Address(es)</h3>
+    {% for address in addresses %}
+    <p class="boldfont">{{ address.nickname }}:</p>
+    <p class="boldfont">&ensp;&ensp;{{ address.street }}, {{ address.city }}</p>
+    <p class="boldfont">&ensp;&ensp;{{ address.state }} {{ address.zipcode }}</p>
+    <a class="leftAlignButton" href="{% url 'edit_address' address.id %}" ><button type="button" style="
+      background-color:rgb(0, 0, 0);
+      border: black;
+      color: white;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration:none;
+      font-size: 18px;
+      transition-duration: 0.4s;
+      display: inline-block;
+      margin: 4px 1px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: sans-serif;
+      font-style: normal;
+      font-weight: bold;">Edit Address</button></a>
+    <a class="leftAlignButton" href="{% url 'delete_address' address.id %}" ><button type="button" style="
+      background-color:rgb(255, 0, 0);
+      border: black;
+      color: white;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration:none;
+      font-size: 18px;
+      transition-duration: 0.4s;
+      display: inline-block;
+      margin: 4px 1px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: sans-serif;
+      font-style: normal;
+      font-weight: bold;">Delete Address</button></a>
+    <br><br>
+    {% endfor %}
+  </div>
+
+  <div class="container">
+    {% if addresses|length < 5 %}
+    <a class="leftAlignButton" href="{% url 'add_address' customer.id %}" ><button type="button" style="
+      background-color:rgba(0, 200, 0, 1);
+      border: black;
+      color: white;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration:none;
+      font-size: 18px;
+      transition-duration: 0.4s;
+      display: inline-block;
+      margin: 4px 1px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: sans-serif;
+      font-style: normal;
+      font-weight: bold;">Add New Address</button></a>
+    {% endif %}
+  </div>
+  <br>
+
+  <div class="container">
+    <h3>My Favorite Cuisines</h3>
+    {% if cuisines|length < 1 %}
+    <p class="boldfont">None</p>
+    {% endif %}
+    <ul class="boldfont">
+      {% for item in cuisines %}
+      <li>{{ item.name }}</li>
+      {% endfor %}
+    </ul>
+    <a class="leftAlignButton" href="{% url 'edit_cuisine' customer.id %}" ><button type="button" style="
+      background-color:rgb(0, 0, 0);
+      border: black;
+      color: white;
+      padding: 5px 10px;
+      text-align: center;
+      text-decoration:none;
+      font-size: 18px;
+      transition-duration: 0.4s;
+      display: inline-block;
+      margin: 4px 1px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-family: sans-serif;
+      font-style: normal;
+      font-weight: bold;">Edit Cuisine Preferences</button></a>
+  </div>
+  <br><br><br><br>
+
+  {% endblock %}

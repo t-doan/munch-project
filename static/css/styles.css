@@ -28,20 +28,6 @@ body {
   font-family: 'Luckiest Guy', cursive;
   font-size: 200%;
 }
-.shopping-cart button {
-  position: fixed;
-	width: 60px;
-	height: 60px;
-	bottom: 40px;
-	right: 40px;
-	background-color: #FF5A5F;
-	color: white;
-	border-radius: 50px;
-	text-align: center;
-	box-shadow: 2px 2px 3px #999;
-  font-family: 'Abril Fatface', cursive;
-  font-size: 18px;
-}
 
 /* home.html
 ================================================*/

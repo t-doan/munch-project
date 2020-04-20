@@ -123,6 +123,9 @@ class OrderItem(models.Model):
     def __str__(self):
         return str(self.customer) + ": " + str(self.quantity) + " " + self.item.name
 
+    def get_total_item_price(self):
+        return self.quantity * self.item.price
+
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
@@ -132,6 +135,22 @@ class Order(models.Model):
 
     def __str__(self):
         return self.customer.first_name + " " + str(self.start_date)
+
+    def get_total(self):
+        total = 0
+        order_orderitems = list(Order_OrderItem.objects.filter(order=self))
+        for order_orderitem in order_orderitems:
+            order_item = order_orderitem.order_item
+            total += order_item.get_total_item_price()
+        return total
+
+    def get_total_quantity(self):
+        total = 0
+        order_orderitems = list(Order_OrderItem.objects.filter(order=self))
+        for order_orderitem in order_orderitems:
+            order_item = order_orderitem.order_item
+            total += order_item.quantity
+        return total
 
 class Order_OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

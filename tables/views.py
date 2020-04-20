@@ -217,24 +217,15 @@ def add_to_cart(request, id, restaurant_id):
     item = get_object_or_404(Item, id=id)
     customer = Customer.objects.get(user_id = request.user.id)
     quantity = int(request.POST['quantity'+ str(item.id)])
-    print()
-    print(request.POST)
     order_item, created = OrderItem.objects.get_or_create(
         item = item,
         customer = customer,
         ordered = False,
     )
-    print(customer)
-    print(order_item)
-    print(item)
-
     order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
     if order_qs.exists():
         if created == True:
             order = order_qs[0]
-            print(order_qs)
-            print(order)
-            print()
             order_item.quantity = quantity
             order_item.save()
             new_order_orderitem = Order_OrderItem(order=order, order_item=order_item)

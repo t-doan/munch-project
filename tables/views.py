@@ -227,7 +227,7 @@ def add_to_cart(request, id):
     order = Order.objects.filter(customer=customer, ordered=False)
     print(order)
     if order.exists():
-        possible_order_orderitems = list(Order_OrderItem.objects.filter(order=order))
+        possible_order_orderitems = list(Order_OrderItem.objects.filter(order__in=order))
         print(possible_order_orderitems)
         for order_orderitem in possible_order_orderitems:
             order_item = order_orderitem.order_item

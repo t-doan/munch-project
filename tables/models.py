@@ -82,8 +82,8 @@ class Review(models.Model):
     restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Customer Id: ' + str(self.customer_id) + ' Rest. Id: '
-        + str(self.restaurant_id) + ' ' + str(self.stars) + " stars"
+        return ('Customer Id: ' + str(self.customer_id) + ' Rest. Id: '
+        + str(self.restaurant_id) + ' ' + str(self.stars) + " stars")
 
 class Cuisine(models.Model):
     name = models.CharField(max_length=50)
@@ -112,8 +112,7 @@ class Item_Cuisine(models.Model):
     cuisine_id = models.ForeignKey(Cuisine,on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Item Id: ' + str(self.item_id) + ' Cuisine. Id: '
-        + str(self.cuisine_id)
+        return 'Item Id: ' + str(self.item_id) + ' Cuisine. Id: ' + str(self.cuisine_id)
 
 class OrderItem(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -122,7 +121,7 @@ class OrderItem(models.Model):
     quantity = models.IntegerField(default=1)
 
     def __str__(self):
-        return self.item.name
+        return str(self.customer) + ": " + str(self.quantity) + " " + self.item.name
 
 
 class Order(models.Model):
@@ -139,5 +138,4 @@ class Order_OrderItem(models.Model):
     order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Order Cust.: ' + str(self.order.customer) + ' OrderItem Id: '
-        + str(self.order_item.item)
+        return 'Order Cust: ' + str(self.order.customer) + ' OrderItem: ' + str(self.order_item)

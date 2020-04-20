@@ -37,6 +37,10 @@ def load_dashboard(request):
     return render(request, 'tables/dashboard.html', context = context)
 
 def restaurantView(request, restaurant_id):
+    context = load_restaurant_view(restaurant_id)
+    return render(request, 'tables/restaurant_view.html',context = context)
+
+def load_restaurant_view(restaurant_id):
     restaurant = Restaurant.objects.get(pk = restaurant_id)
     menu_objs = list(Menu.objects.filter(restaurant_id_id=restaurant.id))
     menu_items = []
@@ -53,7 +57,6 @@ def restaurantView(request, restaurant_id):
         for rest_cuis in rest_cuisines:
             cuisines_str = cuisines_str + " " + Cuisine.objects.get(id = rest_cuis.cuisine_id_id).name + ","
         cuisines_str = cuisines_str[:len(cuisines_str)-1]
-    chosen_items = { "name" : "John" }
 
     context = {
     'restaurant':restaurant,
@@ -61,9 +64,9 @@ def restaurantView(request, restaurant_id):
     'menu_items':menu_items,
     'i_amt':range(len(menu_names)),
     'cuisines_str':cuisines_str,
-    'chosen_items': json.dumps(chosen_items),
+    'message':""
     }
-    return render(request, 'tables/restaurant_view.html',context = context)
+    return context
 
 def profile(request):
     customer = Customer.objects.get(user_id = request.user.id)
@@ -135,7 +138,6 @@ def fillAddress(request):
         else:
             created_address_pk = None
         return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
-
 
 def add_address(request, customer_id):
     if request.method == 'POST':
@@ -211,43 +213,49 @@ def cart(request):
     return render(request, 'tables/cart.html')
 
 @login_required
-def add_to_cart(request, id):
+def add_to_cart(request, id, restaurant_id):
     item = get_object_or_404(Item, id=id)
     customer = Customer.objects.get(user_id = request.user.id)
-    order_item, exist = OrderItem.objects.get_or_create(
+    quantity = int(request.POST['quantity'+ str(item.id)])
+    print()
+    print(request.POST)
+    order_item, created = OrderItem.objects.get_or_create(
         item = item,
         customer = customer,
-        ordered = False
+        ordered = False,
     )
-    print()
     print(customer)
-    print(order_item.quantity)
+    print(order_item)
     print(item)
-    print()
-    order = Order.objects.filter(customer=customer, ordered=False)
-    print(order)
-    if order.exists():
-        possible_order_orderitems = list(Order_OrderItem.objects.filter(order__in=order))
-        print(possible_order_orderitems)
-        for order_orderitem in possible_order_orderitems:
-            order_item = order_orderitem.order_item
-            if order_item.item == item:
-                order_item.quantity += 1
-                order_item.save()
-                return render(request, 'tables/cart.html')
-            else:
-                new_order_orderitem = Order_OrderItem(order_item=order_item, order=order)
-                new_order_orderitem.save()
-                return render(request, 'tables/cart.html')
+
+    order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+    if order_qs.exists():
+        if created == True:
+            order = order_qs[0]
+            print(order_qs)
+            print(order)
+            print()
+            order_item.quantity = quantity
+            order_item.save()
+            new_order_orderitem = Order_OrderItem(order=order, order_item=order_item)
+            new_order_orderitem.save()
+        else:
+            order_item.quantity += quantity
+            order_item.save()
     else:
+        # order does not exist, create order
         ordered_date = timezone.now()
         order = Order.objects.create(
             customer=customer,
             ordered_date=ordered_date
         )
+        order_item.quantity = quantity
+        order_item.save()
         new_order_orderitem = Order_OrderItem(order_item=order_item, order=order)
         new_order_orderitem.save()
-        return render(request, 'tables/cart.html')
+    context = load_restaurant_view(restaurant_id)
+    context['message'] = "Cart updated."
+    return render(request, 'tables/restaurant_view.html',context = context)
 
 def checkout(request):
     form = OrderInfoForm()

@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import stripe
 import googlemaps
 import json
+from django.http import HttpRequest
 from decouple import config
 
 from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine, Order, OrderItem, Order_OrderItem
@@ -266,6 +267,11 @@ def confirmation(request):
     'OrderNumber': OrderNumber
     }
     return render(request, 'tables/confirmation.html', context = context)
+
+def base(request):
+    order = Order.objects.get(customer_id=request.user.id)
+    num_of_items = order.get_total_quantity()
+    return render(request, 'tables/base.html', {'num_of_items':num_of_items)
 
 def join(request):
     return render(request, 'tables/join.html')

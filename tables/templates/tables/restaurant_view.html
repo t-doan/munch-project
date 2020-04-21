@@ -5,6 +5,7 @@
 {% load static %}
 
 <div class="container restaurant-view">
+  <h2>{{ message }}</h2><br>
   <h1>{{ restaurant.name }}</h1>
   <h6>Location: {{ restaurant.address }}</h6>
   <h6>Phone Number: {{ restaurant.phone_number }}</h6>
@@ -21,11 +22,13 @@
             <div class="card-body">
               <p class="card-text"><b>{{ item.name }}</b> - ${{ item.price }}</p>
               <button class="show" id="btn{{ item.id }}" onclick="clickAddToCart('{{ item.id }}')">Add to Cart</button>
-              <div class="quantity-line">
-                <div><button class="hide" id="btn-confirm{{ item.id }}" onclick="confirm('{{ item.id }}')">Confirm Amount</button></div>
-                <div><input class="hide" type="number" id="quantity{{ item.id }}" name="quantity" value="1" min="1" max="20"></div>
-              </div>
-              <a>
+              <form class="" action="{% url 'add_to_cart' item.id restaurant.id %}" method="post">
+                {% csrf_token %}
+                <div class="quantity-line">
+                  <div><button class="hide" id="btn-confirm{{ item.id }}" onclick="confirm('{{ item.id }}')">Confirm Amount</button></div>
+                  <div><input class="hide" type="number" id="quantity{{ item.id }}" name="quantity{{ item.id }}" value="1" min="1" max="20"></div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -35,20 +38,6 @@
   </div>
   {% endfor %}
 </div>
-<!-- {{ chosen_items }}
-<button>Click Me</button>
-<div id="expand"></div> -->
 
 <script type="text/javascript" src="{% static 'js/addtocart.js' %}"></script>
-<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-  $("body").click('#hide', function(e) {
-    console.log('clicked');
-    $("#expand").append("<button>Click me next</button>");
-    alert("You clicked a button!");
-  });
-});
-
-</script> -->
 {% endblock %}

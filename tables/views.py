@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils import timezone
 from .forms import CustomSignupForm, CustomerForm, AddressForm, OrderInfoForm
 from django.urls import reverse_lazy
 from django.views import generic
@@ -9,7 +10,7 @@ import googlemaps
 import json
 from decouple import config
 
-from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine
+from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine, Order, OrderItem, Order_OrderItem
 from .models import Address, Customer, Customer_Address, Restaurant_Cuisine
 
 stripe.api_key = config('STRIPE_API_KEY')
@@ -36,6 +37,10 @@ def load_dashboard(request):
     return render(request, 'tables/dashboard.html', context = context)
 
 def restaurantView(request, restaurant_id):
+    context = load_restaurant_view(restaurant_id)
+    return render(request, 'tables/restaurant_view.html',context = context)
+
+def load_restaurant_view(restaurant_id):
     restaurant = Restaurant.objects.get(pk = restaurant_id)
     menu_objs = list(Menu.objects.filter(restaurant_id_id=restaurant.id))
     menu_items = []
@@ -52,7 +57,6 @@ def restaurantView(request, restaurant_id):
         for rest_cuis in rest_cuisines:
             cuisines_str = cuisines_str + " " + Cuisine.objects.get(id = rest_cuis.cuisine_id_id).name + ","
         cuisines_str = cuisines_str[:len(cuisines_str)-1]
-    chosen_items = { "name" : "John" }
 
     context = {
     'restaurant':restaurant,
@@ -60,9 +64,9 @@ def restaurantView(request, restaurant_id):
     'menu_items':menu_items,
     'i_amt':range(len(menu_names)),
     'cuisines_str':cuisines_str,
-    'chosen_items': json.dumps(chosen_items),
+    'message':""
     }
-    return render(request, 'tables/restaurant_view.html',context = context)
+    return context
 
 def profile(request):
     customer = Customer.objects.get(user_id = request.user.id)
@@ -134,7 +138,6 @@ def fillAddress(request):
         else:
             created_address_pk = None
         return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
-
 
 def add_address(request, customer_id):
     if request.method == 'POST':
@@ -208,6 +211,42 @@ def edit_cuisine(request, customer_id):
 
 def cart(request):
     return render(request, 'tables/cart.html')
+
+@login_required
+def add_to_cart(request, id, restaurant_id):
+    item = get_object_or_404(Item, id=id)
+    customer = Customer.objects.get(user_id = request.user.id)
+    quantity = int(request.POST['quantity'+ str(item.id)])
+    order_item, created = OrderItem.objects.get_or_create(
+        item = item,
+        customer = customer,
+        ordered = False,
+    )
+    order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+    if order_qs.exists():
+        if created == True:
+            order = order_qs[0]
+            order_item.quantity = quantity
+            order_item.save()
+            new_order_orderitem = Order_OrderItem(order=order, order_item=order_item)
+            new_order_orderitem.save()
+        else:
+            order_item.quantity += quantity
+            order_item.save()
+    else:
+        # order does not exist, create order
+        ordered_date = timezone.now()
+        order = Order.objects.create(
+            customer=customer,
+            ordered_date=ordered_date
+        )
+        order_item.quantity = quantity
+        order_item.save()
+        new_order_orderitem = Order_OrderItem(order_item=order_item, order=order)
+        new_order_orderitem.save()
+    context = load_restaurant_view(restaurant_id)
+    context['message'] = "Cart updated."
+    return render(request, 'tables/restaurant_view.html',context = context)
 
 def checkout(request):
     form = OrderInfoForm()

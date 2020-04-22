@@ -25,8 +25,7 @@ class Menu(models.Model):
     restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Menu Name: ' + self.name + ' Menu Id: ' + str(self.id) + ' Rest. Id: '
-        + str(self.restaurant_id)
+        return ('Menu: ' + str(self.id)+ ' ' + self.name + ' || Restaurant: ' + self.restaurant_id.name)
 
 class Item(models.Model):
     name = models.CharField(max_length=50)
@@ -37,11 +36,6 @@ class Item(models.Model):
 
     def __str__(self):
         return self.name + " from menu: " + str(self.menu_id)
-
-    # def get_add_to_cart_url(self):
-    #     return reverse("core:add-to-cart", kwargs={
-    #         'id': self.id
-    #     })
 
 class Customer(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
@@ -82,8 +76,8 @@ class Review(models.Model):
     restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Customer Id: ' + str(self.customer_id) + ' Rest. Id: '
-        + str(self.restaurant_id) + ' ' + str(self.stars) + " stars"
+        return ('Customer Id: ' + str(self.customer_id) + ' Rest. Id: '
+        + str(self.restaurant_id) + ' ' + str(self.stars) + " stars")
 
 
 class Cuisine(models.Model):
@@ -100,9 +94,7 @@ class Customer_Cuisine(models.Model):
         return 'Cuisine Id: ' + str(self.cuisine_id) + ' Customer Id: ' + str(self.customer_id)
 
 class Restaurant_Cuisine(models.Model):
-    #restaurant_id
     restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
-    #style_id
     cuisine_id = models.ForeignKey(Cuisine,on_delete=models.CASCADE)
 
     def __str__(self):
@@ -113,8 +105,7 @@ class Item_Cuisine(models.Model):
     cuisine_id = models.ForeignKey(Cuisine,on_delete=models.CASCADE)
 
     def __str__(self):
-        return 'Item Id: ' + str(self.item_id) + ' Cuisine. Id: '
-        + str(self.cuisine_id)
+        return 'Item Id: ' + str(self.item_id) + ' Cuisine. Id: ' + str(self.cuisine_id)
 
 class OrderItem(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -123,28 +114,40 @@ class OrderItem(models.Model):
     quantity = models.IntegerField(default=1)
 
     def __str__(self):
-        return self.item.name
+        return str(self.customer) + ": " + str(self.quantity) + " " + self.item.name
 
     def get_total_item_price(self):
         return self.quantity * self.item.price
 
-    def get_total_discount_item_price(self):
-        return self.quantity * self.item.discount_price
-
-    def get_amount_saved(self):
-        return self.get_total_item_price() - self.get_total_discount_item_price()
-
-    def get_final_price(self):
-        if self.item.discount_price:
-            return self.get_total_discount_item_price()
-        return self.get_total_item_price()
 
 class Order(models.Model):
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
-    items = models.ManyToManyField(OrderItem)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
 
     def __str__(self):
         return self.customer.first_name + " " + str(self.start_date)
+
+    def get_total(self):
+        total = 0
+        order_orderitems = list(Order_OrderItem.objects.filter(order=self))
+        for order_orderitem in order_orderitems:
+            order_item = order_orderitem.order_item
+            total += order_item.get_total_item_price()
+        return total
+
+    def get_total_quantity(self):
+        total = 0
+        order_orderitems = list(Order_OrderItem.objects.filter(order=self))
+        for order_orderitem in order_orderitems:
+            order_item = order_orderitem.order_item
+            total += order_item.quantity
+        return total
+
+class Order_OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Order Cust: ' + str(self.order.customer) + ' OrderItem: ' + str(self.order_item)

@@ -1,0 +1,52 @@
+/* home.html
+================================================*/
+@media (min-width: 800px) {
+  .dashboard .pricing-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .dashboard .pricing-header p {
+    font-size: 50px;
+    margin: 20px;
+    margin-top: 40px;
+  }
+  .dashboard .pricing-header .ordering {
+    background-color: #E2E2E2; /* rbg(251,54,0) orange*/
+    flex: 1 1 50%;
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 799px) {
+  .dashboard .pricing-header img {
+    opacity: 0.3;
+    z-index: 0;
+  }
+  .dashboard .pricing-header .ordering:first-of-type {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .dashboard .pricing-header p {
+    font-size: 25px;
+    color: white;
+  }
+  .dashboard .pricing-header {
+    z-index: 1;
+  }
+}
+.dashboard .pricing-header p {
+  font-family: 'Playball', cursive;
+  font-weight: bold;
+  text-align: center;
+}
+.dashboard .pricing-header button {
+  font-family: 'Abril Fatface', cursive;
+}
+.dashboard .pricing-header button:hover {
+  font-weight: bold;
+  text-decoration: none;
+}
+.dashboard .container {
+  margin-top: 20px;
+}

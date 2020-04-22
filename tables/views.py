@@ -8,9 +8,10 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import stripe
 import googlemaps
 import json
+from django.http import HttpRequest
 from decouple import config
 
-from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine, Order, OrderItem
+from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine, Order, OrderItem, Order_OrderItem
 from .models import Address, Customer, Customer_Address, Restaurant_Cuisine
 
 stripe.api_key = config('STRIPE_API_KEY')
@@ -37,6 +38,10 @@ def load_dashboard(request):
     return render(request, 'tables/dashboard.html', context = context)
 
 def restaurantView(request, restaurant_id):
+    context = load_restaurant_view(restaurant_id)
+    return render(request, 'tables/restaurant_view.html',context = context)
+
+def load_restaurant_view(restaurant_id):
     restaurant = Restaurant.objects.get(pk = restaurant_id)
     menu_objs = list(Menu.objects.filter(restaurant_id_id=restaurant.id))
     menu_items = []
@@ -53,7 +58,6 @@ def restaurantView(request, restaurant_id):
         for rest_cuis in rest_cuisines:
             cuisines_str = cuisines_str + " " + Cuisine.objects.get(id = rest_cuis.cuisine_id_id).name + ","
         cuisines_str = cuisines_str[:len(cuisines_str)-1]
-    chosen_items = { "name" : "John" }
 
     context = {
     'restaurant':restaurant,
@@ -61,9 +65,9 @@ def restaurantView(request, restaurant_id):
     'menu_items':menu_items,
     'i_amt':range(len(menu_names)),
     'cuisines_str':cuisines_str,
-    'chosen_items': json.dumps(chosen_items),
+    'message':""
     }
-    return render(request, 'tables/restaurant_view.html',context = context)
+    return context
 
 def profile(request):
     customer = Customer.objects.get(user_id = request.user.id)
@@ -135,7 +139,6 @@ def fillAddress(request):
         else:
             created_address_pk = None
         return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
-
 
 def add_address(request, customer_id):
     if request.method == 'POST':
@@ -211,35 +214,40 @@ def cart(request):
     return render(request, 'tables/cart.html')
 
 @login_required
-def add_to_cart(request, id):
+def add_to_cart(request, id, restaurant_id):
     item = get_object_or_404(Item, id=id)
     customer = Customer.objects.get(user_id = request.user.id)
-    order_item = OrderItem.objects.get_or_create(
+    quantity = int(request.POST['quantity'+ str(item.id)])
+    order_item, created = OrderItem.objects.get_or_create(
         item = item,
         customer = customer,
-        ordered = False
+        ordered = False,
     )
-    order_qs = Order.objects.filter(customer=customer, ordered=False)
+    order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
     if order_qs.exists():
-        order = order_qs[0]
-        # check if the order item is in the order
-        if order.items.filter(item__id=item.id).exists():
-            order_item.quantity += 1
+        if created == True:
+            order = order_qs[0]
+            order_item.quantity = quantity
             order_item.save()
-            messages.info(request, "This item quantity was updated.")
-            return redirect("tables:restaurant_view")
+            new_order_orderitem = Order_OrderItem(order=order, order_item=order_item)
+            new_order_orderitem.save()
         else:
-            order.items.add(order_item)
-            messages.info(request, "This item was added to your cart.")
-            return redirect("tables:restaurant_view")
+            order_item.quantity += quantity
+            order_item.save()
     else:
+        # order does not exist, create order
         ordered_date = timezone.now()
         order = Order.objects.create(
             customer=customer,
-            ordered_date=ordered_date)
-        order.items.add(order_item)
-        messages.info(request, "This item was added to your cart.")
-        return redirect("tables:restaurant_view")
+            ordered_date=ordered_date
+        )
+        order_item.quantity = quantity
+        order_item.save()
+        new_order_orderitem = Order_OrderItem(order_item=order_item, order=order)
+        new_order_orderitem.save()
+    context = load_restaurant_view(restaurant_id)
+    context['message'] = "Cart updated."
+    return render(request, 'tables/restaurant_view.html',context = context)
 
 def checkout(request):
     form = OrderInfoForm()
@@ -259,6 +267,11 @@ def confirmation(request):
     'OrderNumber': OrderNumber
     }
     return render(request, 'tables/confirmation.html', context = context)
+
+def base(request):
+    order = Order.objects.get(customer_id=request.user.id)
+    num_of_items = order.get_total_quantity()
+    return render(request, 'tables/base.html', {'num_of_items':num_of_items})
 
 def join(request):
     return render(request, 'tables/join.html')

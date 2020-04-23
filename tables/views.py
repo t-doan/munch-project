@@ -18,7 +18,10 @@ stripe.api_key = config('STRIPE_API_KEY')
 gmaps = googlemaps.Client(key=config('GOOGLE_API_KEY'))
 
 def home(request):
-    return render (request, 'tables/home.html')
+    context = {
+    'num_of_items': getCartSize(request),
+    }
+    return render (request, 'tables/home.html', context=context)
 
 def load_dashboard(request):
     address_str = request.POST.get('search_address')
@@ -34,11 +37,13 @@ def load_dashboard(request):
     context = {
     'restaurants':restaurants,
     'restaurant_dists':restaurant_dists,
+    'num_of_items': getCartSize(request),
     }
     return render(request, 'tables/dashboard.html', context = context)
 
 def restaurantView(request, restaurant_id):
     context = load_restaurant_view(restaurant_id)
+    context['num_of_items'] = getCartSize(request)
     return render(request, 'tables/restaurant_view.html',context = context)
 
 def load_restaurant_view(restaurant_id):
@@ -58,14 +63,13 @@ def load_restaurant_view(restaurant_id):
         for rest_cuis in rest_cuisines:
             cuisines_str = cuisines_str + " " + Cuisine.objects.get(id = rest_cuis.cuisine_id_id).name + ","
         cuisines_str = cuisines_str[:len(cuisines_str)-1]
-
     context = {
     'restaurant':restaurant,
     'menu_names':menu_names,
     'menu_items':menu_items,
     'i_amt':range(len(menu_names)),
     'cuisines_str':cuisines_str,
-    'message':""
+    'message':"",
     }
     return context
 
@@ -79,7 +83,13 @@ def profile(request):
     cuisines = []
     for cust_cuis in cust_cuisines:
         cuisines.append(Cuisine.objects.get(id = cust_cuis.cuisine_id_id))
-    return render(request, 'account/user-profile.html', {'customer':customer, 'addresses':addresses, 'cuisines':cuisines})
+    context = {
+    'customer': customer,
+    'addresses': addresses,
+    'cuisines': cuisines,
+    'num_of_items': getCartSize(request)
+    }
+    return render(request, 'account/user-profile.html', context=context)
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm
@@ -94,7 +104,10 @@ class SignUp(generic.CreateView):
         return valid
 
 def fillCustomer(request):
-     if request.method == 'POST':
+    context = {
+    'num_of_items': getCartSize(request),
+    }
+    if request.method == 'POST':
         filled_form = CustomerForm(request.POST)
         if filled_form.is_valid():
             created_customer = filled_form.save(commit=False)
@@ -102,18 +115,27 @@ def fillCustomer(request):
             created_customer.save()
             created_customer_pk = created_customer.id
             address_form = AddressForm()
-            return render(request, 'registration/address.html', {'form':address_form, 'created_customer_pk':created_customer_pk})
+            context['form'] = address_form
+            context['created_customer_pk'] = created_customer_pk
+            return render(request, 'registration/address.html', context=context)
         else:
             note = 'Form not valid. Please try again'
             customer_form = CustomerForm()
-            return render(request, 'registration/customer-registration.html', {'form':customer_form, 'note':note})
-     else:
+            context['form'] = customer_form
+            context['note'] = note
+            return render(request, 'registration/customer-registration.html', context=context)
+    else:
         customer_form = CustomerForm()
-        return render(request, 'registration/customer-registration.html', {'form':customer_form})
+        context['form'] = customer_form
+        return render(request, 'registration/customer-registration.html', context=context)
 
 def edit_customer(request):
     customer = Customer.objects.get(user_id=request.user.id)
     form = CustomerForm(instance = customer)
+    context = {
+    'num_of_items': getCartSize(request),
+    'form': form
+    }
     if request.method == 'POST':
         filled_form = CustomerForm(request.POST, instance=customer)
         if filled_form.is_valid():
@@ -122,12 +144,13 @@ def edit_customer(request):
             note = 'Your info has been successfully changed'
         else:
             note = 'There was an error in changing your information'
-        return render(request, 'account/edit_customer.html', {'form':form, 'note':note})
-    return render(request, 'account/edit_customer.html', {'form':form})
+        context['note'] = note
+        context['form'] = form
+        return render(request, 'account/edit_customer.html', context=context)
+    return render(request, 'account/edit_customer.html', context=context)
 
 def fillAddress(request):
         filled_form = AddressForm(request.POST)
-
         if filled_form.is_valid():
             created_address = filled_form.save()
             created_address_pk = created_address.id
@@ -138,12 +161,19 @@ def fillAddress(request):
             customer_address.save()
         else:
             created_address_pk = None
-        return render(request, 'tables/home.html', {'created_address_pk':created_address_pk})
+        context = {
+        'created_address_pk':created_address_pk,
+        'num_of_items': getCartSize(request)
+        }
+        return render(request, 'tables/home.html', context=context)
 
 def add_address(request, customer_id):
+    context = {
+    'customer_id':customer_id,
+    'num_of_items': getCartSize(request)
+    }
     if request.method == 'POST':
         filled_form = AddressForm(request.POST)
-
         if filled_form.is_valid():
             created_address = filled_form.save()
             created_address_pk = created_address.id
@@ -153,16 +183,18 @@ def add_address(request, customer_id):
             customer_address = Customer_Address(address_id=address, customer_id=customer)
             customer_address.save()
             note = 'New address successfully added'
-            # new_form = AddressForm()
-            return render(request, 'account/add_address.html', {'note':note, 'customer_id':customer_id})
-            # return render(request, 'registration/user-profile.html', {'note':note})
+            context['note'] = note
+            return render(request, 'account/add_address.html', context=context)
         else:
             note = 'Error adding address'
             address_form = AddressForm()
-            return render(request, 'account/add_address.html', {'customer_id':customer_id, 'note':note, 'form':address_form})
+            context['note'] = note
+            context['form'] = address_form
+            return render(request, 'account/add_address.html', context=context)
     else:
        address_form = AddressForm()
-       return render(request, 'account/add_address.html', {'customer_id':customer_id, 'form':address_form})
+       context['form'] = address_form
+       return render(request, 'account/add_address.html', context=context)
 
 def delete_address(request, address_id):
     address = Address.objects.get(id=address_id)
@@ -172,19 +204,37 @@ def delete_address(request, address_id):
     addresses = []
     for cust_add in customer_addresses:
         addresses.append(Address.objects.get(id = cust_add.address_id_id))
-    return render(request, 'account/user-profile.html', {'customer':customer, 'addresses':addresses})
+    num_of_items = getCartSize(request)
+    context = {
+    'num_of_items': num_of_items,
+    'customer':customer,
+    'addresses':addresses
+    }
+    return render(request, 'account/user-profile.html', context=context)
 
 def edit_address(request, address_id):
     address = Address.objects.get(pk=address_id)
     form = AddressForm(instance = address)
+    num_of_items = getCartSize(request)
     if request.method == 'POST':
         filled_form = AddressForm(request.POST, instance=address)
         if filled_form.is_valid():
             filled_form.save()
             form = filled_form
             note = 'Your info has been successfully changed'
-            return render(request, 'account/edit_address.html', {'form':form, 'note':note, 'address':address})
-    return render(request, 'account/edit_address.html', {'form':form, 'address':address})
+            context = {
+            'num_of_items': num_of_items,
+            'form':form,
+            'note':note,
+            'address':address
+            }
+            return render(request, 'account/edit_address.html', context=context)
+    context = {
+    'num_of_items': num_of_items,
+    'form':form,
+    'address':address
+    }
+    return render(request, 'account/edit_address.html', context=context)
 
 def edit_cuisine(request, customer_id):
     customer = Customer.objects.get(id=customer_id)
@@ -208,10 +258,21 @@ def edit_cuisine(request, customer_id):
     for cuisine in non_cuisines:
         if cuisine in cuisines:
             non_cuisines.remove(cuisine)
-    return render(request, 'account/edit_cuisine.html', {'customer':customer, 'non_cuisines':non_cuisines, 'cuisines':cuisines});
+    num_of_items = getCartSize(request)
+    context = {
+    'num_of_items': num_of_items,
+    'customer':customer,
+    'non_cuisines':non_cuisines,
+    'cuisines':cuisines
+    }
+    return render(request, 'account/edit_cuisine.html', context=context)
 
 def cart(request):
-    return render(request, 'tables/cart.html')
+    num_of_items = getCartSize(request)
+    context = {
+    'num_of_items': num_of_items
+    }
+    return render(request, 'tables/cart.html', context=context)
 
 @login_required
 def add_to_cart(request, id, restaurant_id):
@@ -247,11 +308,15 @@ def add_to_cart(request, id, restaurant_id):
         new_order_orderitem.save()
     context = load_restaurant_view(restaurant_id)
     context['message'] = "Cart updated."
+    num_of_items = getCartSize(request)
+    context['num_of_items'] = num_of_items
     return render(request, 'tables/restaurant_view.html',context = context)
 
 def checkout(request):
     form = OrderInfoForm()
+    num_of_items = getCartSize(request)
     context = {
+    'num_of_items': num_of_items,
     'form': form,
     }
     return render(request, 'tables/checkout.html', context = context)
@@ -268,10 +333,16 @@ def confirmation(request):
     }
     return render(request, 'tables/confirmation.html', context = context)
 
-def base(request):
-    order = Order.objects.get(customer_id=request.user.id)
-    num_of_items = order.get_total_quantity()
-    return render(request, 'tables/base.html', {'num_of_items':num_of_items})
+def getCartSize(request):
+    num_of_items = -1
+    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
+    if customer_exists:
+        customer = Customer.objects.get(user_id = request.user.id)
+        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            num_of_items = order.get_total_quantity()
+    return num_of_items
 
 def join(request):
     return render(request, 'tables/join.html')

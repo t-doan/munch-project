@@ -13,9 +13,16 @@
 
     <a href="#">Restaurant Name (Click to add other item from this restaurant)</a>
     <div class="categories item-list">
-      <div class="category name"><a>Item Name</a></div>
+      {% for order_item in order_items %}
+      <div class="category name"><a>{{ order_item.item.name }}</a></div>
+      <div class="category"><input type="number" id="quantity" name="quantity" value="{{ order_item.quantity }}" min="1" max="20"></div>
+      <div class="category money"><a>${{ order_item.item.price }}</a></div>
+      {% endfor %}
+
+
+      <!-- <div class="category name"><a>Item Name</a></div>
       <div class="category"><input type="number" id="quantity" name="quantity" min="1" max="20"></div>
-      <div class="category money"><a>$money</a></div>
+      <div class="category money"><a>$money</a></div> -->
     </div>
     <div class="categories item-list">
       <div class="category name add-on"><a>Option/Choice/Add-on: bla bla bla</a></div>
@@ -32,7 +39,7 @@
   <input class="hide" type="text" id="textbox" onsubmit="enterInstructionNote()">
 
   <div class="bottom-cart">
-    <div><b>Subtotal: $money</b></div>
+    <div><b>Subtotal: ${{ order_total_price }}</b></div>
     <div><b>Tax (9%): +$money</b></div>
     <div><b>Total: $money</b></div>
   </div>

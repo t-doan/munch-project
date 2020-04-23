@@ -118,6 +118,7 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    #note = models.CharField(max_length=500)
 
     def __str__(self):
         return str(self.customer) + ": " + str(self.quantity) + " " + self.item.name
@@ -135,6 +136,7 @@ class Order(models.Model):
         'Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
     billing_address = models.ForeignKey(
         'Address', related_name='billing_address', on_delete=models.SET_NULL, blank=True, null=True)
+    #note = models.CharField(max_length=500)
     # payment = models.ForeignKey(
     #     'Payment', on_delete=models.SET_NULL, blank=True, null=True)
 

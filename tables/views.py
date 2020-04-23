@@ -275,10 +275,24 @@ def edit_cuisine(request, customer_id):
     return render(request, 'account/edit_cuisine.html', context=context)
 
 def cart(request):
-    num_of_items = getCartSize(request)
+    #Order -> cart, contains OrderItems
+    #OrderItem -> make up a Order(Cart), contains an Item plus other info (quantity, etc)
+    #Order_OrderItem -> bridge table for the many to many relationship between Order and OrderItem
+    #   -contains its own PK, an Order (pk), and an OrderItem (pk)
     context = {
-    'num_of_items': num_of_items
+    'num_of_items': getCartSize(request),
     }
+    customer = Customer.objects.get(user_id = request.user.id)
+    order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        context['order_total_price'] =  order.get_total()
+        bridgeItems = list(Order_OrderItem.objects.filter(order_id=order.id))
+        order_items = []
+        for bridge_item in bridgeItems:
+            item = OrderItem.objects.get(pk=bridge_item.order_item.id)
+            order_items.append(item)
+    context['order_items'] =  order_items
     return render(request, 'tables/cart.html', context=context)
 
 @login_required

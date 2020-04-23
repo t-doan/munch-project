@@ -118,7 +118,7 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-    #note = models.CharField(max_length=500)
+    note = models.CharField(max_length=500)
 
     def __str__(self):
         return str(self.customer) + ": " + str(self.quantity) + " " + self.item.name

@@ -9,21 +9,9 @@
     <form method="post" action="{% url 'confirmation' %}">
       {% csrf_token %}
       <br>
-      <h2>Full Name:</h2>
-      <div class="form-group name">
-        {% for field in name %}
-        <div>
-          {{ field.errors }}
-          {{ field.label_tag }}
-          {% render_field field class="form-control" %}
-        </div>
-        {% endfor %}
-      </div>
-
-      <br>
-      <h2>Billing Address:</h2>
+      <!-- <h2>Billing Address:</h2> -->
       <div class="form-group billing">
-        {% for field in billing %}
+        {% for field in form %}
         <div>
           {{ field.errors }}
           {{ field.label_tag }}
@@ -32,7 +20,7 @@
         {% endfor %}
       </div>
 
-      <br>
+      <!-- <br>
       <h2>Delivery Address:</h2>
       <div class="form-group delivery">
         {% for field in delivery %}
@@ -42,13 +30,13 @@
           {% render_field field class="form-control" %}
         </div>
         {% endfor %}
-      </div>
+      </div> -->
 
       <br>
     </form>
     <br>
   </div>
-  
+
   <div class="bill">
     <h2>Order Bill</h2>
     <div>

@@ -300,6 +300,7 @@ def add_to_cart(request, id, restaurant_id):
     item = get_object_or_404(Item, id=id)
     customer = Customer.objects.get(user_id = request.user.id)
     quantity = int(request.POST['quantity'+ str(item.id)])
+    restaurant = get_restaurant_of_item(item)
     order_item, created = OrderItem.objects.get_or_create(
         item = item,
         customer = customer,
@@ -307,31 +308,43 @@ def add_to_cart(request, id, restaurant_id):
     )
     order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
     if order_qs.exists():
-        if created == True:
-            order = order_qs[0]
-            order_item.quantity = quantity
-            order_item.save()
-            new_order_orderitem = Order_OrderItem(order=order, order_item=order_item)
-            new_order_orderitem.save()
+        order = order_qs[0]
+        if order.restaurant == restaurant:
+            if created == True:
+                order_item.quantity = quantity
+                order_item.save()
+                new_order_orderitem = Order_OrderItem(order=order, order_item=order_item)
+                new_order_orderitem.save()
+            else:
+                order_item.quantity += quantity
+                order_item.save()
+            message = "Cart updated."
         else:
-            order_item.quantity += quantity
-            order_item.save()
+            order_item.delete()
+            message = "Items cannot be added to cart from multiple restaurants."
     else:
         # order does not exist, create order
         ordered_date = timezone.now()
         order = Order.objects.create(
             customer=customer,
-            ordered_date=ordered_date
+            ordered_date=ordered_date,
+            restaurant=restaurant
         )
         order_item.quantity = quantity
         order_item.save()
         new_order_orderitem = Order_OrderItem(order_item=order_item, order=order)
         new_order_orderitem.save()
+        message = "Cart updated."
     context = load_restaurant_view(restaurant_id)
-    context['message'] = "Cart updated."
+    context['message'] = message
     num_of_items = getCartSize(request)
     context['num_of_items'] = num_of_items
     return render(request, 'tables/restaurant_view.html',context = context)
+
+def get_restaurant_of_item(item):
+    menu = Menu.objects.get(id = item.menu_id_id)
+    restaurant = Restaurant.objects.get(id = menu.restaurant_id_id)
+    return restaurant
 
 def getFirstAddressOfType(addresses, type):
     for address in addresses:

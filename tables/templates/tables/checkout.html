@@ -2,20 +2,67 @@
 {% block content %}
 {% load widget_tweaks %}
 
-<div class="container">
-  <h1>Checkout</h1>
+<div class="container checkout">
+  <div class="title"><h1>Checkout</h1></div>
 
-  <form method="post" action="{% url 'confirmation' %}">
-    {% csrf_token %}
-    <div class="form-group">
-      {% for field in form %}
-      {{ field.errors }}
-      {{ field.label_tag }}
-      {% render_field field class="form-control" %}
+  <div class="info">
+    <form method="post" action="{% url 'confirmation' %}">
+      {% csrf_token %}
+      <br>
+      <h2>Full Name:</h2>
+      <div class="form-group name">
+        {% for field in name %}
+        <div>
+          {{ field.errors }}
+          {{ field.label_tag }}
+          {% render_field field class="form-control" %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <br>
+      <h2>Billing Address:</h2>
+      <div class="form-group billing">
+        {% for field in billing %}
+        <div>
+          {{ field.errors }}
+          {{ field.label_tag }}
+          {% render_field field class="form-control" %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <br>
+      <h2>Delivery Address:</h2>
+      <div class="form-group delivery">
+        {% for field in delivery %}
+        <div>
+          {{ field.errors }}
+          {{ field.label_tag }}
+          {% render_field field class="form-control" %}
+        </div>
+        {% endfor %}
+      </div>
+
+      <br>
+    </form>
+    <br>
+  </div>
+  
+  <div class="bill">
+    <h2>Order Bill</h2>
+    <div>
+      {% for restaurant, total_price in order_list.items %}
+      <b>{{ restaurant }}</b>
+      <a>${{ total_price }}</a>
       {% endfor %}
+      <b class="total">Total:</b>
+      <a class="total">${{ total }}</a>
     </div>
-    <button type="submit" class="standardButton">Confirm Purchase</button>
-  </form>
+    <br>
+    <button type="submit" class="standardButton" align=right>Confirm Purchase</button>
+  </div>
 </div>
+
 <br><br><br><br>
 {% endblock %}

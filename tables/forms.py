@@ -20,17 +20,18 @@ class AddressForm(forms.ModelForm):
         model = Address
         fields = ('nickname','street', 'city', 'state', 'zipcode',)
 
-class OrderInfoForm(forms.Form):
-    # Name
+class NameCheckout(forms.Form):
     first_name = forms.CharField(label='First Name', max_length=15)
     last_name = forms.CharField(label='Last Name', max_length=15)
-    # Billing Address
-    billing_street = forms.CharField(max_length=50)
-    billing_city = forms.CharField(max_length=50)
-    billing_state = forms.CharField(max_length=50)
-    billing_zipcode = forms.CharField(max_length=15)
-    # Order / Delivery Address
-    delivery_street = forms.CharField(max_length=50)
-    delivery_city = forms.CharField(max_length=50)
-    delivery_state = forms.CharField(max_length=50)
-    delivery_zipcode = forms.CharField(max_length=15)
+
+class BillingCheckout(forms.Form):
+    billing_street = forms.CharField(label='Address', max_length=50)
+    billing_city = forms.CharField(label='City', max_length=50)
+    billing_state = forms.CharField(label='State', max_length=50)
+    billing_zipcode = forms.CharField(label='Zipcode', max_length=15)
+
+class DeliveryCheckout(forms.Form):
+    delivery_street = forms.CharField(label='Address', max_length=50)
+    delivery_city = forms.CharField(label='City', max_length=50)
+    delivery_state = forms.CharField(label='State', max_length=50)
+    delivery_zipcode = forms.CharField(label='Zipcode', max_length=15)

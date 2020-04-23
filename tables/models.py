@@ -145,6 +145,30 @@ class Order(models.Model):
             total += order_item.quantity
         return total
 
+    def get_order_list(self):
+        order_list = dict()
+        order_orderitems = list(Order_OrderItem.objects.filter(order=self))
+        for order_orderitem in order_orderitems:
+            orderitem = order_orderitem.order_item
+            order_restaurant = str(orderitem.item.menu_id.restaurant_id)
+            if order_restaurant in order_list.keys():
+                order_list[order_restaurant].append((orderitem.item.name, orderitem.quantity, orderitem.get_total_item_price()))
+            else:
+                order_list[order_restaurant] = [(orderitem.item.name, orderitem.quantity, orderitem.get_total_item_price())]
+        return order_list
+
+    def get_total_by_restaurant(self):
+        order_list = dict()
+        order_orderitems = list(Order_OrderItem.objects.filter(order=self))
+        for order_orderitem in order_orderitems:
+            orderitem = order_orderitem.order_item
+            order_restaurant = str(orderitem.item.menu_id.restaurant_id)
+            if order_restaurant in order_list.keys():
+                order_list[order_restaurant] += orderitem.get_total_item_price()
+            else:
+                order_list[order_restaurant] = orderitem.get_total_item_price()
+        return order_list
+
 class Order_OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     order_item = models.ForeignKey(OrderItem, on_delete=models.CASCADE)

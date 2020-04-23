@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from .forms import CustomSignupForm, CustomerForm, AddressForm, OrderInfoForm
+
+from .forms import CustomSignupForm, CustomerForm, AddressForm
+from .forms import NameCheckout, BillingCheckout, DeliveryCheckout
+
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
@@ -313,11 +316,20 @@ def add_to_cart(request, id, restaurant_id):
     return render(request, 'tables/restaurant_view.html',context = context)
 
 def checkout(request):
-    form = OrderInfoForm()
+    name = NameCheckout()
+    billing = BillingCheckout()
+    delivery = DeliveryCheckout()
     num_of_items = getCartSize(request)
+    order_list = getCartListByRestaurant(request)
+    total = getTotal(request)
+
     context = {
     'num_of_items': num_of_items,
-    'form': form,
+    'name':name,
+    'billing':billing,
+    'delivery':delivery,
+    'order_list':order_list,
+    'total':total
     }
     return render(request, 'tables/checkout.html', context = context)
 
@@ -343,6 +355,28 @@ def getCartSize(request):
             order = order_qs[0]
             num_of_items = order.get_total_quantity()
     return num_of_items
+
+def getCartListByRestaurant(request):
+    order_list = dict()
+    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
+    if customer_exists:
+        customer = Customer.objects.get(user_id = request.user.id)
+        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            order_list = order.get_total_by_restaurant()
+    return order_list
+
+def getTotal(request):
+    order_total_price = 0.0
+    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
+    if customer_exists:
+        customer = Customer.objects.get(user_id = request.user.id)
+        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            order_total_price = order.get_total()
+    return order_total_price
 
 def join(request):
     return render(request, 'tables/join.html')

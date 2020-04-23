@@ -1,6 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+
 from .forms import CustomSignupForm, CustomerForm, AddressForm, CheckoutForm
+from .forms import NameCheckout, BillingCheckout, DeliveryCheckout
+
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
@@ -525,3 +528,28 @@ def getCartSize(request):
             order = order_qs[0]
             num_of_items = order.get_total_quantity()
     return num_of_items
+
+def getCartListByRestaurant(request):
+    order_list = dict()
+    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
+    if customer_exists:
+        customer = Customer.objects.get(user_id = request.user.id)
+        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            order_list = order.get_total_by_restaurant()
+    return order_list
+
+def getTotal(request):
+    order_total_price = 0.0
+    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
+    if customer_exists:
+        customer = Customer.objects.get(user_id = request.user.id)
+        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            order_total_price = order.get_total()
+    return order_total_price
+
+def join(request):
+    return render(request, 'tables/join.html')

@@ -1,12 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+ADDRESS_CHOICES = (
+    ('B', 'Billing'),
+    ('S', 'Shipping'),
+)
+
 class Address(models.Model):
     nickname = models.CharField(max_length=50)
     street = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     zipcode = models.CharField(max_length=15)
+    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
 
     def __str__(self):
         return self.street + " " + self.city
@@ -125,6 +131,13 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+    shipping_address = models.ForeignKey(
+        'Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
+    billing_address = models.ForeignKey(
+        'Address', related_name='billing_address', on_delete=models.SET_NULL, blank=True, null=True)
+    # payment = models.ForeignKey(
+    #     'Payment', on_delete=models.SET_NULL, blank=True, null=True)
+
 
     def __str__(self):
         return self.customer.first_name + " " + str(self.start_date)

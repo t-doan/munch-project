@@ -26,7 +26,6 @@ urlpatterns = [
     path('auth/signup', views.SignUp.as_view(), name='signup'),
     path('auth/customersignup', views.fillCustomer, name='fillCustomer'),
     path('auth/customersignup/address', views.fillAddress, name='fillAddress'),
-    path('join', views.join, name='join'),
     path('auth/user-profile', views.profile, name='user-profile'),
     path('auth/user-profile/edit_customer', views.edit_customer, name='edit_customer'),
     path('auth/user-profile/address/<int:address_id>', views.edit_address, name='edit_address'),
@@ -39,6 +38,7 @@ urlpatterns = [
     path('checkout', views.checkout, name='checkout'),
     path('confirmation', views.confirmation, name='confirmation'),
     path('add_to_cart/<int:id><int:restaurant_id>/', views.add_to_cart, name='add_to_cart'),
+    path('payment', views.payment, name='payment'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

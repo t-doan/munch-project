@@ -118,7 +118,7 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-    #note = models.CharField(max_length=500)
+    note = models.CharField(max_length=500)
 
     def __str__(self):
         return str(self.customer) + ": " + str(self.quantity) + " " + self.item.name
@@ -132,6 +132,7 @@ class Order(models.Model):
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     shipping_address = models.ForeignKey(
         'Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
     billing_address = models.ForeignKey(

@@ -77,9 +77,10 @@ def load_restaurant_view(restaurant_id):
     }
     return context
 
-def getListOfAddresses(customer_id):
-    customer_addresses = list(Customer_Address.objects.filter(customer_id_id=customer_id))
+def getListOfAddresses(customer):
+    customer_addresses = list(Customer_Address.objects.filter(customer_id=customer))
     addresses = []
+    print(customer_addresses)
     for cust_add in customer_addresses:
         addresses.append(Address.objects.get(id = cust_add.address_id_id))
     return addresses
@@ -164,6 +165,8 @@ def fillAddress(request):
             created_address_pk = created_address.id
             filled_form = AddressForm()
             address = Address.objects.get(id = created_address_pk)
+            address.default = True
+            address.save()
             customer = Customer.objects.get(user_id=request.user.id)
             customer_address = Customer_Address(address_id=address, customer_id=customer)
             customer_address.save()
@@ -286,11 +289,17 @@ def cart(request):
     }
     customer = Customer.objects.get(user_id = request.user.id)
     order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+    order_items = []
     if order_qs.exists():
         order = order_qs[0]
+<<<<<<< HEAD
         context['subtotal'] =  order.get_subtotal()
+=======
+        context['order_total_price'] =  order.get_total()
+        context['order_tax_price'] =  order.get_tax()
+        context['order_total_plus_tax_price'] =  order.get_total_plus_tax()
+>>>>>>> 6a287f1d0fee53b76e5fff44859e9e376b7cf300
         bridgeItems = list(Order_OrderItem.objects.filter(order_id=order.id))
-        order_items = []
         for bridge_item in bridgeItems:
             item = OrderItem.objects.get(pk=bridge_item.order_item.id)
             order_items.append(item)
@@ -348,10 +357,18 @@ def get_restaurant_of_item(item):
     restaurant = Restaurant.objects.get(id = menu.restaurant_id_id)
     return restaurant
 
-def getFirstAddressOfType(addresses, type):
+def getDefaultAddressOfType(addresses, type):
     for address in addresses:
-        if address.address_type == type:
+        if (address.address_type == type) and (address.default == True):
             return address
+    return None
+
+def is_valid_form(values):
+    valid = True
+    for field in values:
+        if field == '':
+            valid = False
+    return valid
 
 def checkout(request):
     customer = Customer.objects.get(user_id = request.user.id)
@@ -378,28 +395,13 @@ def checkout(request):
                 'fees':fees,
                 'total':Decimal(total).quantize(Decimal('0.01'))
             }
-            all_addresses = getListOfAddresses(customer.id)
-            shipping_address = getFirstAddressOfType(all_addresses, 'S')
-            # shipping_address_qs = Address.objects.filter(
-            #     user=self.request.user,
-            #     address_type='S',
-            #     # default=True
-            # )
-            # if shipping_address_qs.exists():
-                # context.update(
-                #     {'default_shipping_address': shipping_address_qs[0]})
-
-            billing_address = getFirstAddressOfType(all_addresses, 'B')
-            # billing_address_qs = Address.objects.filter(
-            #     user=self.request.user,
-            #     address_type='B',
-            #     default=True
-            # )
-            # if billing_address_qs.exists():
-            #     context.update(
-            #         {'default_billing_address': billing_address_qs[0]})
-            context['shipping_address'] = shipping_address
-            context['billing_address'] = billing_address
+            all_addresses = getListOfAddresses(customer)
+            def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
+            if def_shipping_address != None:
+                context['def_shipping_address'] = def_shipping_address
+            def_billing_address = getDefaultAddressOfType(all_addresses, 'B')
+            if def_billing_address != None:
+                context['def_billing_address'] = def_billing_address
             return render(request, "tables/checkout.html", context)
         except ObjectDoesNotExist:
             context = {
@@ -409,121 +411,144 @@ def checkout(request):
             return render(request, "checkout.html", context=context)
     elif request.method == 'POST':
         form = CheckoutForm(request.POST or None)
+        print("\n\n")
         try:
             order = Order.objects.get(customer_id=customer.id, ordered=False)
             if form.is_valid():
-                # use_default_shipping = form.cleaned_data.get(
-                #     'use_default_shipping')
-                # if use_default_shipping:
-                #     print("Using the defualt shipping address")
-                #     address_qs = Address.objects.filter(
-                #         user=self.request.user,
-                #         address_type='S',
-                #         default=True
-                #     )
-                    # if address_qs.exists():
-                    #     shipping_address = address_qs[0]
-                    #     order.shipping_address = shipping_address
-                    #     order.save()
-                    # else:
-                    #     messages.info(
-                    #         self.request, "No default shipping address available")
-                    #     return redirect('core:checkout')
-                # else:
-                #     print("User is entering a new shipping address")
-                shipping_address1 = form.cleaned_data.get(
-                    'shipping_address')
-                shipping_address2 = form.cleaned_data.get(
-                    'shipping_address2')
-                # shipping_country = form.cleaned_data.get(
-                #     'shipping_country')
-                shipping_zip = form.cleaned_data.get('shipping_zip')
-                #
-                #     if is_valid_form([shipping_address1, shipping_country, shipping_zip]):
-                #         shipping_address = Address(
-                #             user=self.request.user,
-                #             street_address=shipping_address1,
-                #             apartment_address=shipping_address2,
-                #             country=shipping_country,
-                #             zip=shipping_zip,
-                #             address_type='S'
-                #         )
-                #         shipping_address.save()
-                #
-                #         order.shipping_address = shipping_address
-                #         order.save()
-                #
-                #         set_default_shipping = form.cleaned_data.get(
-                #             'set_default_shipping')
-                #         if set_default_shipping:
-                #             shipping_address.default = True
-                #             shipping_address.save()
-                #
-                #     else:
-                #         messages.info(
-                #             self.request, "Please fill in the required shipping address fields")
-                #
-                # use_default_billing = form.cleaned_data.get(
-                #     'use_default_billing')
+                print("Valid form")
+                use_default_shipping = form.cleaned_data.get(
+                    'use_default_shipping')
+                all_addresses = getListOfAddresses(customer.id)
+                shipping_address = Address()
+                if use_default_shipping:
+                    print("Using the default shipping address")
+                    def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
+                    if def_shipping_address != None:
+                        print("Saving the default shipping address")
+                        order.shipping_address = def_shipping_address
+                        order.save()
+                    else:
+                        context = {
+                        'num_of_items': getCartSize(request),
+                        'note': "You do not have a default shipping address"
+                        }
+                        return render(request, "tables/checkout.html", context=context)
+                else:
+                    print("Saving a new shipping address")
+                    shipping_address = form.cleaned_data.get(
+                        'shipping_address')
+                    shipping_city = form.cleaned_data.get(
+                        'shipping_city')
+                    shipping_state = form.cleaned_data.get(
+                        'shipping_state')
+                    shipping_zip = form.cleaned_data.get('shipping_zip')
+                    if is_valid_form([shipping_address, shipping_city, shipping_state, shipping_zip]):
+                        print("new default shipping address was valid")
+                        shipping_address = Address(
+                            nickname='Shipping Address',
+                            street=shipping_address,
+                            city=shipping_city,
+                            state=shipping_state,
+                            zipcode=shipping_zip,
+                            address_type='S'
+                        )
+                        set_default_shipping = form.cleaned_data.get(
+                            'set_default_shipping')
+                        if set_default_shipping:
+                            print("new default shipping address should be new default")
+                            def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
+                            if def_shipping_address != None:
+                                def_shipping_address.default = False
+                                def_shipping_address.save()
+                                print("old default shipping address reset")
+                            shipping_address.default = True
+                        shipping_address.save()
+                        print("new default shipping address saved")
+                        cust_add_bridge = Customer_Address(
+                            address_id = shipping_address,
+                            customer_id = customer
+                        )
+                        cust_add_bridge.save()
+                        print("Saved bridge table item")
+                        order.shipping_address = shipping_address
+                        order.save()
+                        print("order shipping add set")
+                    else:
+                        context = {
+                        'num_of_items': getCartSize(request),
+                        'note': "Please fill in the required shipping address fields"
+                        }
+                        return render(request, "tables/checkout.html", context=context)
                 same_billing_address = form.cleaned_data.get(
                     'same_billing_address')
-
                 if same_billing_address:
-                    billing_address = shipping_address
-                    billing_address.pk = None
-                    # billing_address.save()
-                    # billing_address.address_type = 'B'
-                    billing_address.save()
-                    order.billing_address = billing_address
-                    order.save()
-                # elif use_default_billing:
-                #     print("Using the defualt billing address")
-                #     address_qs = Address.objects.filter(
-                #         user=self.request.user,
-                #         address_type='B',
-                #         default=True
-                #     )
-                #     if address_qs.exists():
-                #         billing_address = address_qs[0]
-                #         order.billing_address = billing_address
-                #         order.save()
-                #     else:
-                #         messages.info(
-                #             self.request, "No default billing address available")
-                #         return redirect('core:checkout')
+                    print("bill add = ship add")
+                    if use_default_shipping:
+                        def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
+                        if def_shipping_address != None:
+                            print("bill add = default ship add")
+                            order.shipping_address = def_shipping_address
+                            order.save()
+                    else:
+                        print("bill add = new ship add")
+                        order.billing_address = shipping_address
+                        order.save()
                 else:
-                #     print("User is entering a new billing address")
-                    billing_address1 = form.cleaned_data.get(
-                        'billing_address')
-                    billing_address2 = form.cleaned_data.get(
-                        'billing_address2')
-                    # billing_country = form.cleaned_data.get(
-                    #     'billing_country')
-                    billing_zip = form.cleaned_data.get('billing_zip')
-                #
-                #     if is_valid_form([billing_address1, billing_country, billing_zip]):
-                #         billing_address = Address(
-                #             user=self.request.user,
-                #             street_address=billing_address1,
-                #             apartment_address=billing_address2,
-                #             country=billing_country,
-                #             zip=billing_zip,
-                #             address_type='B'
-                #         )
-                #         billing_address.save()
-                #
-                #         order.billing_address = billing_address
-                #         order.save()
-                #
-                #         set_default_billing = form.cleaned_data.get(
-                #             'set_default_billing')
-                #         if set_default_billing:
-                #             billing_address.default = True
-                #             billing_address.save()
-                #
-                #     else:
-                #         messages.info(
-                #             self.request, "Please fill in the required billing address fields")
+                    use_default_billing = form.cleaned_data.get(
+                        'use_default_billing')
+                    if use_default_billing:
+                        print("Using the default billing address")
+                        def_billing_address = getDefaultAddressOfType(all_addresses, 'B')
+                        if def_billing_address != None:
+                            order.billing_address = def_billing_address
+                            order.save()
+                            print("order bill add set to def bill add")
+                        else:
+                            context = {
+                            'num_of_items': getCartSize(request),
+                            'note': "You do not have a default billing address"
+                            }
+                            return render(request, "tables/checkout.html", context=context)
+                    else:
+                        print("Saving a new billing address")
+                        billing_address = form.cleaned_data.get(
+                            'billing_address')
+                        billing_city = form.cleaned_data.get(
+                            'billing_city')
+                        billing_state = form.cleaned_data.get(
+                            'billing_state')
+                        billing_zip = form.cleaned_data.get('billing_zip')
+                        if is_valid_form([billing_address, billing_city, billing_state, billing_zip]):
+                            billing_address = Address(
+                                nickname='Billing Address',
+                                street=billing_address,
+                                city=billing_city,
+                                state=billing_state,
+                                zipcode=billing_zip,
+                                address_type='B'
+                            )
+                            set_default_billing = form.cleaned_data.get(
+                                'set_default_billing')
+                            if set_default_billing:
+                                def_billing_address = getDefaultAddressOfType(all_addresses, 'B')
+                                if def_billing_address != None:
+                                    def_billing_address.default = False
+                                    def_billing_address.save()
+                                billing_address.default = True
+                            billing_address.save()
+                            cust_add_bridge = Customer_Address(
+                                address_id = billing_address,
+                                customer_id = customer
+                            )
+                            cust_add_bridge.save()
+                            order.billing_address = billing_address
+                            order.save()
+                        else:
+                            context = {
+                            'num_of_items': getCartSize(request),
+                            'note': "Please fill in the required billing address fields"
+                            }
+                            return render(request, "tables/checkout.html", context=context)
 
                 # payment_option = form.cleaned_data.get('payment_option')
                 #
@@ -538,6 +563,7 @@ def checkout(request):
                 context = {
                 'num_of_items': getCartSize(request)
                 }
+                print("\n\n")
                 return render(request, "tables/payment.html", context=context)
         except ObjectDoesNotExist:
             context = {
@@ -613,6 +639,7 @@ def getFees(request):
         order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
         if order_qs.exists():
             order = order_qs[0]
+<<<<<<< HEAD
             fees = {
             "Sales Tax": order.get_sales_tax(),
             "Shipping Fee": Decimal('10.00'),
@@ -622,3 +649,7 @@ def getFees(request):
 
 def join(request):
     return render(request, 'tables/join.html')
+=======
+            order_total_price = order.get_total()
+    return order_total_price
+>>>>>>> 6a287f1d0fee53b76e5fff44859e9e376b7cf300

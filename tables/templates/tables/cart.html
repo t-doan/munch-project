@@ -39,9 +39,15 @@
   <input class="hide" type="text" id="instructionBox" onkeyup="enableChange2(this)">
 
   <div class="bottom-cart">
+<<<<<<< HEAD
     <div><b>Subtotal: ${{ subtotal }}</b></div>
     <div><b>Tax (9%): +$money</b></div>
     <div><b>Total: $money</b></div>
+=======
+    <div><b>Subtotal: ${{ order_total_price }}</b></div>
+    <div><b>Tax (9%): ${{ order_tax_price |floatformat:"2" }}</b></div>
+    <div><b>Total: ${{ order_total_plus_tax_price |floatformat:"2" }}</b></div>
+>>>>>>> 6a287f1d0fee53b76e5fff44859e9e376b7cf300
   </div>
 
   <br>

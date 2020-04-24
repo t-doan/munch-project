@@ -5,9 +5,9 @@
 
 <div class="container checkout">
   <div class="title"><h1>Checkout</h1></div>
-
+  <h2>{{ note }}</h2><br>
   <div class="info">
-    <form method="post" action="{% url 'confirmation' %}">
+    <form method="post" action="{% url 'checkout' %}">
       {% csrf_token %}
       <input type="checkbox" name="use_default_shipping" id="id_use_default_shipping" onclick="showShipping(this)">
       <label for="use_default_shipping">Check if you want to use default Shipping Address.</label>
@@ -19,6 +19,7 @@
           <input type="text" name="shipping_state" placeholder="State" id="id_shipping_state">
           <input type="text" name="shipping_zip" placeholder="Zipcode" id="id_shipping_zip">
         </div>
+<<<<<<< HEAD
         <input type="checkbox" name="set_default_shipping" id="id_set_default_shipping">
         <label for="set_default_shipping">I want to set this Shipping Address.</label>
       </div>
@@ -27,6 +28,27 @@
       <input type="checkbox" name="same_billing_address" id="id_same_billing_address" onclick="showBillingCheck(this)">
       <label for="same_billing_address">Check if Billing Address is the same as Delivery Address.</label>
       <br><br>
+=======
+        {% endfor %}
+      </div><br><br>
+      <button type="submit" class="standardButton" align=right>Confirm Purchase</button>
+        <!-- <div class="">
+          {{ form.shipping_address }}
+        </div>
+        <div class="">
+          {{ form.shipping_city }}
+        </div>
+        <div class="">
+          {{ form.shipping_state }}
+        </div>
+        <div class="">
+          {{ form.shipping_zip }}
+        </div>
+
+      {{ form }}<br><br><br>
+      {{ form.same_billing_address.label_tag }} {{ form.same_billing_address }}<br>
+      {{ form.set_default_shipping.label_tag }} {{ form.set_default_shipping }} -->
+>>>>>>> 6a287f1d0fee53b76e5fff44859e9e376b7cf300
 
       <div class="show" id="billing-check">
         <input type="checkbox" name="use_default_billing" id="id_use_default_billing" onclick="showBilling(this)">
@@ -66,6 +88,10 @@
       <a class="total">${{ total }}</a>
     </div>
     <br>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6a287f1d0fee53b76e5fff44859e9e376b7cf300
   </div>
 </div>
 

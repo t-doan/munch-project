@@ -9,7 +9,7 @@
     <form method="post" action="{% url 'confirmation' %}">
       {% csrf_token %}
       <br>
-      <!-- <h2>Billing Address:</h2> -->
+      <h2>Billing Address:</h2>
       <div class="form-group billing">
         {% for field in form %}
         <div>
@@ -19,6 +19,21 @@
         </div>
         {% endfor %}
       </div>
+        <!-- <div class="">
+          {{ form.shipping_address }}
+        </div>
+        <div class="">
+          {{ form.shipping_address2 }}
+        </div>
+        <div class="">
+          {{ form.shipping_state }}
+        </div>
+        <div class="">
+          {{ form.shipping_zip }}
+        </div>
+
+      {{ form }}<br><br><br>
+      {{ form.same_billing_address.label_tag }} {{ form.same_billing_address }} -->
 
       <!-- <br>
       <h2>Delivery Address:</h2>

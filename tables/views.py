@@ -353,6 +353,10 @@ def getFirstAddressOfType(addresses, type):
 
 def checkout(request):
     customer = Customer.objects.get(user_id = request.user.id)
+    billing = BillingCheckout()
+    delivery = DeliveryCheckout()
+    total = getTotal(request)
+    order_list = getCartListByRestaurant(request)
     if request.method == 'GET':
         try:
             order = Order.objects.get(customer_id=customer.id, ordered=False)
@@ -361,6 +365,10 @@ def checkout(request):
                 'form': form,
                 'order': order,
                 'num_of_items': getCartSize(request),
+                'billing':billing,
+                'delivery':delivery,
+                'order_list':order_list,
+                'total':total
             }
             all_addresses = getListOfAddresses(customer.id)
             shipping_address = getFirstAddressOfType(all_addresses, 'S')

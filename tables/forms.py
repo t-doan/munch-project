@@ -21,21 +21,21 @@ class AddressForm(forms.ModelForm):
         fields = ('nickname','street', 'city', 'state', 'zipcode',)
 
 class CheckoutForm(forms.Form):
-    shipping_address = forms.CharField(required=False)
-    shipping_address2 = forms.CharField(required=False)
-    shipping_state = forms.CharField(label='State', max_length=50)
-    shipping_zip = forms.CharField(required=False)
+    shipping_address = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Street Address'}))
+    shipping_address2 = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Street Address 2'}))
+    shipping_state = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'State'}))
+    shipping_zip = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Zipcode'}))
 
-    billing_address = forms.CharField(required=False)
-    billing_address2 = forms.CharField(required=False)
-    billing_state = forms.CharField(label='State', max_length=50)
-    billing_zip = forms.CharField(required=False)
+    billing_address = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Street Address'}))
+    billing_address2 = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Street Address 2'}))
+    billing_state = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'State'}))
+    billing_zip = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Zipcode'}))
 
     same_billing_address = forms.BooleanField(required=False)
-    # set_default_shipping = forms.BooleanField(required=False)
-    # use_default_shipping = forms.BooleanField(required=False)
-    # set_default_billing = forms.BooleanField(required=False)
-    # use_default_billing = forms.BooleanField(required=False)
+    set_default_shipping = forms.BooleanField(required=False)
+    use_default_shipping = forms.BooleanField(required=False)
+    set_default_billing = forms.BooleanField(required=False)
+    use_default_billing = forms.BooleanField(required=False)
 
     # payment_option = forms.ChoiceField(
     #     widget=forms.RadioSelect, choices=PAYMENT_CHOICES)

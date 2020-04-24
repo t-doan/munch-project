@@ -22,12 +22,12 @@ class AddressForm(forms.ModelForm):
 
 class CheckoutForm(forms.Form):
     shipping_address = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Street Address'}))
-    shipping_address2 = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Street Address 2'}))
+    shipping_city = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'City'}))
     shipping_state = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'State'}))
     shipping_zip = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Zipcode'}))
 
     billing_address = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Street Address'}))
-    billing_address2 = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Street Address 2'}))
+    billing_city = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'City'}))
     billing_state = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'State'}))
     billing_zip = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Zipcode'}))
 

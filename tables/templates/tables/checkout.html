@@ -4,9 +4,9 @@
 
 <div class="container checkout">
   <div class="title"><h1>Checkout</h1></div>
-
+  <h2>{{ note }}</h2><br>
   <div class="info">
-    <form method="post" action="{% url 'confirmation' %}">
+    <form method="post" action="{% url 'checkout' %}">
       {% csrf_token %}
       <br>
       <h2>Billing Address:</h2>
@@ -18,12 +18,13 @@
           {% render_field field class="form-control" %}
         </div>
         {% endfor %}
-      </div>
+      </div><br><br>
+      <button type="submit" class="standardButton" align=right>Confirm Purchase</button>
         <!-- <div class="">
           {{ form.shipping_address }}
         </div>
         <div class="">
-          {{ form.shipping_address2 }}
+          {{ form.shipping_city }}
         </div>
         <div class="">
           {{ form.shipping_state }}
@@ -33,7 +34,8 @@
         </div>
 
       {{ form }}<br><br><br>
-      {{ form.same_billing_address.label_tag }} {{ form.same_billing_address }} -->
+      {{ form.same_billing_address.label_tag }} {{ form.same_billing_address }}<br>
+      {{ form.set_default_shipping.label_tag }} {{ form.set_default_shipping }} -->
 
       <!-- <br>
       <h2>Delivery Address:</h2>
@@ -63,7 +65,7 @@
       <a class="total">${{ total }}</a>
     </div>
     <br>
-    <button type="submit" class="standardButton" align=right>Confirm Purchase</button>
+
   </div>
 </div>
 

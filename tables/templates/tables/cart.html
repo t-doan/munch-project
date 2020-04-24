@@ -40,8 +40,8 @@
 
   <div class="bottom-cart">
     <div><b>Subtotal: ${{ order_total_price }}</b></div>
-    <div><b>Tax (9%): +$money</b></div>
-    <div><b>Total: $money</b></div>
+    <div><b>Tax (9%): ${{ order_tax_price |floatformat:"2" }}</b></div>
+    <div><b>Total: ${{ order_total_plus_tax_price |floatformat:"2" }}</b></div>
   </div>
 
   <br>

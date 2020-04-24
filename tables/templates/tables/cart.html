@@ -5,6 +5,8 @@
 <div class="container cart-page">
 
   <h2>My Munch Cart</h2>
+  <h3>{{ restaurant }}</h3>
+  <h3>(Click to add other item from this restaurant)</h3>
   <div class="categories">
     <div class="category name"><b>Item</b></div>
     <div class="category"><b>Quantity (between 1 and 20)</b></div>
@@ -13,7 +15,6 @@
 
   <br>
 
-    <a href="#">Restaurant Name (Click to add other item from this restaurant)</a>
     <div>
       {% for order_item in order_items %}
       <div class="categories">
@@ -38,7 +39,7 @@
   <input class="hide" type="text" id="instructionBox" onkeyup="enableChange2(this)">
 
   <div class="bottom-cart">
-    <div><b>Subtotal: ${{ order_total_price }}</b></div>
+    <div><b>Subtotal: ${{ subtotal }}</b></div>
     <div><b>Tax (9%): +$money</b></div>
     <div><b>Total: $money</b></div>
   </div>

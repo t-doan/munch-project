@@ -13,7 +13,7 @@
     <form method="post" action="{% url 'checkout' %}">
       {% csrf_token %}
       <input type="checkbox" name="use_default_shipping" id="id_use_default_shipping" onclick="showShipping(this)">
-      <label for="use_default_shipping">Check if you want to use default Shipping Address.</label>
+      <label for="use_default_shipping">Use default shipping address</label>
       <div class="show" id="shipping-content">
         <h2>Shipping Address:</h2>
         <div class="form-group">
@@ -23,17 +23,17 @@
           <input type="text" name="shipping_zip" placeholder="Zipcode" id="id_shipping_zip">
         </div>
         <input type="checkbox" name="set_default_shipping" id="id_set_default_shipping">
-        <label for="set_default_shipping">I want to set this Shipping Address.</label>
+        <label for="set_default_shipping">Set this as my default shipping address</label>
       </div>
 
       <br>
       <input type="checkbox" name="same_billing_address" id="id_same_billing_address" onclick="showBillingCheck(this)">
-      <label for="same_billing_address">Check if Billing Address is the same as Delivery Address.</label>
+      <label for="same_billing_address">Biling address is the same as shipping</label>
       <br><br>
 
       <div class="show" id="billing-check">
         <input type="checkbox" name="use_default_billing" id="id_use_default_billing" onclick="showBilling(this)">
-        <label for="use_default_billing">Check if you want to use default Billing Address.</label>
+        <label for="use_default_billing">Use default billing address.</label>
         <div class="show" id="billing-content">
           <h2>Billing Address:</h2>
           <div class="form-group">
@@ -43,7 +43,7 @@
             <input type="text" name="billing_zip" placeholder="Zipcode" id="id_billing_zip">
           </div>
           <input type="checkbox" name="set_default_billing" id="id_set_default_billing">
-          <label for="set_default_billing">I want to set this Billing Address.</label>
+          <label for="set_default_billing">Set this as my default billing address</label>
         </div>
       </div>
       <button type="submit" class="standardButton" align=right>Confirm Purchase</button>

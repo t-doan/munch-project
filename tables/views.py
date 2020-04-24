@@ -278,26 +278,46 @@ def edit_cuisine(request, customer_id):
     }
     return render(request, 'account/edit_cuisine.html', context=context)
 
+def get_list_of_order_items(order):
+    order_items = []
+    bridgeItems = list(Order_OrderItem.objects.filter(order_id=order.id))
+    for bridge_item in bridgeItems:
+        item = OrderItem.objects.get(pk=bridge_item.order_item.id)
+        order_items.append(item)
+    return order_items
+
 def cart(request):
-    #Order -> cart, contains OrderItems
-    #OrderItem -> make up a Order(Cart), contains an Item plus other info (quantity, etc)
-    #Order_OrderItem -> bridge table for the many to many relationship between Order and OrderItem
-    #   -contains its own PK, an Order (pk), and an OrderItem (pk)
     context = {
-    'num_of_items': getCartSize(request),
     'restaurant': getOrderRestaurant(request)
     }
     customer = Customer.objects.get(user_id = request.user.id)
     order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
-    order_items = []
     if order_qs.exists():
         order = order_qs[0]
         context['order_subtotal'] =  order.get_subtotal()
-        bridgeItems = list(Order_OrderItem.objects.filter(order_id=order.id))
-        for bridge_item in bridgeItems:
-            item = OrderItem.objects.get(pk=bridge_item.order_item.id)
-            order_items.append(item)
-    context['order_items'] =  order_items
+        order_items = get_list_of_order_items(order)
+        context['order'] =  order
+        context['order_items'] =  order_items
+        if request.method == 'POST':
+            for order_item in order_items:
+                if ('quantity' + str(order_item.id)) in request.POST:
+                    quantity = int(request.POST['quantity'+ str(order_item.id)])
+                    order_item.quantity = quantity
+                    order_item.save()
+                    # context['quantity'+ str(order_item.id)] = quantity
+                if ('item_note' + str(order_item.id)) in request.POST:
+                    item_note = request.POST['item_note'+ str(order_item.id)]
+                    order_item.note = item_note
+                    order_item.save()
+                    # context['item_note'+ str(order_item.id)] = item_note
+            if 'instructionBox' in request.POST:
+                order_note = request.POST['instructionBox']
+                order.note = order_note
+                order.save()
+                # context['instructionBox'] = order_note
+        context['num_of_items'] = getCartSize(request)
+    else:
+        context['message'] = "You do not have a pending order"
     return render(request, 'tables/cart.html', context=context)
 
 @login_required
@@ -584,7 +604,7 @@ def getOrderRestaurant(request):
         order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
         if order_qs.exists():
             order = order_qs[0]
-            restaurant = order.get_restaurant_name()
+            restaurant = order.restaurant
     return restaurant
 
 def getSubtotal(request):

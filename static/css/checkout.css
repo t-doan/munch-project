@@ -8,28 +8,31 @@
 .checkout .hide {
   display: none;
 }
+.checkout div {
+  padding: 5px 5px;
+}
+
 .checkout .form-group {
   display: grid;
-}
-.checkout .form-group div {
-  padding: 0 5px;
-}
-.checkout .name {
-  grid-template-columns: 1fr 1fr;
-}
-.checkout .billing {
   grid-template-columns: 2fr 1fr 1fr;
 }
-.checkout .billing div:first-of-type {
+.checkout .form-group input:first-of-type {
   grid-column-start: 1;
   grid-column-end: 5;
 }
-.checkout .delivery {
-  grid-template-columns: 2fr 1fr 1fr;
+.checkout .info button {
+  float: right;
 }
-.checkout .delivery div:first-of-type {
-  grid-column-start: 1;
-  grid-column-end: 5;
+
+.checkout .bill h2 {
+  font-family: 'Pacifico', cursive;
+  text-align: center;
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+.checkout .bill h3 {
+  font-family: 'Itim', cursive;
+  font-size: 20px;
 }
 .checkout .bill {
   background: white;
@@ -49,9 +52,10 @@
   margin-top: 10px;
   border-top: 2px solid #343434;
 }
-.checkout .bill button {
-  float: right;
+.checkout .bill div a:last-of-type {
+  font-weight: bold;
 }
+
 @media (min-width: 980px) {
   .checkout {
     display: grid;

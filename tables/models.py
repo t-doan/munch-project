@@ -121,7 +121,7 @@ class OrderItem(models.Model):
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-    note = models.CharField(max_length=500)
+    note = models.CharField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return str(self.customer) + ": " + str(self.quantity) + " " + self.item.name
@@ -140,7 +140,7 @@ class Order(models.Model):
         'Address', related_name='shipping_address', on_delete=models.SET_NULL, blank=True, null=True)
     billing_address = models.ForeignKey(
         'Address', related_name='billing_address', on_delete=models.SET_NULL, blank=True, null=True)
-    #note = models.CharField(max_length=500)
+    note = models.CharField(max_length=500, blank=True, null=True)
     # payment = models.ForeignKey(
     #     'Payment', on_delete=models.SET_NULL, blank=True, null=True)
 
@@ -171,8 +171,8 @@ class Order(models.Model):
             order_list[orderitem.item.name] = orderitem.get_total_item_price()
         return order_list
 
-    def get_restaurant_name(self):
-        return str(list(Order_OrderItem.objects.filter(order=self))[0].order_item.item.menu_id.restaurant_id)
+    # def get_restaurant(self):
+    #     return str(list(Order_OrderItem.objects.filter(order=self))[0].order_item.item.menu_id.restaurant_id)
 
     def get_sales_tax(self):
         return Decimal(float(self.get_subtotal()) * 0.09).quantize(Decimal('0.01'))

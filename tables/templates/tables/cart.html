@@ -2,41 +2,51 @@
 {% block content %}
 {% load static %}
 
+<div class="container">
+  <h2>{{ message }}</h2><br>
+</div>
+
 <div class="container cart-page">
 
   <h2>My Munch Cart</h2>
-  <h3>{{ restaurant }}</h3>
-  <h3>(Click to add other item from this restaurant)</h3>
+  <h4>{{ restaurant.name }}</h4>
+  <a href="{% url 'restaurantView' restaurant.id %}">Click to add other item from this restaurant</a>
   <div class="categories">
     <div class="category name"><b>Item</b></div>
     <div class="category"><b>Quantity (between 1 and 20)</b></div>
-    <div class="category money"><b>Total Price</b></div>
+    <div class="category money"><b>Item Price</b></div>
   </div>
 
   <br>
-
+  <form class="" action="{% url 'cart' %}" method="post">
+    {% csrf_token %}
     <div>
       {% for order_item in order_items %}
       <div class="categories">
         <div class="category name"><a>{{ order_item.item.name }}</a></div>
-        <div class="category"><input type="number" id="quantity" name="quantity" value="{{ order_item.quantity }}" min="1" max="20" onclick="enableChange1(this, '{{ order_item.quantity }}')"></div>
+        <div class="category"><input type="number" id="quantity" name="quantity{{ order_item.id }}" value="{{ order_item.quantity }}" min="1" max="20" onclick="enableChange1(this, '{{ order_item.quantity }}')"></div>
         <div class="category money"><a>${{ order_item.item.price }}</a></div>
       </div>
       <div class="notes">
+        {% if order_item.note|length > 0 %}
+        <p>{{ order_item.note }}</p>
+        {% endif %}
         <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">Click to Add Note</a>
-        <input class="hide" type="text" id="textbox{{ order_item.item.id }}" onkeyup="enableChange2(this)">
+        <input class="hide" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.id }}" onkeyup="enableChange2(this)">
       </div>
       {% endfor %}
 
-
-      <!-- <div class="category name"><a>Item Name</a></div>
-      <div class="category"><input type="number" id="quantity" name="quantity" min="1" max="20"></div>
-      <div class="category money"><a>$money</a></div> -->
     </div>
-
-  <br>
-  <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Click to Add Instruction Note</a>
-  <input class="hide" type="text" id="instructionBox" onkeyup="enableChange2(this)">
+    <br>
+    {% if order.note|length > 0 %}
+    <p>{{ order.note }}</p>
+    {% endif %}
+    <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Click to Add Instruction Note</a>
+    <input class="hide" type="text" id="instructionBox" name="instructionBox" onkeyup="enableChange2(this)">
+    <p align="right">
+      <a href="{% url 'cart' %}"><button type="submit" id="save" disabled>Save Changes</button></a>
+    </p>
+  </form>
 
   <div class="bottom-cart">
     <div><b>Subtotal: ${{ order_subtotal }}</b></div>
@@ -44,7 +54,6 @@
 
   <br>
   <p align="right">
-    <a href="{% url 'cart' %}"><button id="save" disabled>Save Changes</button></a>
     <a href="{% url 'checkout' %}"><button id="checkout">Checkout</button></a>
   </p>
 </div>

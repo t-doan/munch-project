@@ -54,6 +54,7 @@
   <div class="bill">
     <h2>Order Bill</h2>
     <h3>{{ restaurant }}</h3>
+    <p> Number of Items in the order: ({{num_of_items}}) </p>
     <div>
       {% for item, total_price in order_list.items %}
       <b>{{ item }}</b>

@@ -1,22 +1,30 @@
 {% extends 'tables/base.html' %}
 {% block content %}
+{% load static %}
 
 <div class="container cart-page">
+
   <h2>My Munch Cart</h2>
   <div class="categories">
-    <div class="category"><b>Item</b></div>
+    <div class="category name"><b>Item</b></div>
     <div class="category"><b>Quantity (between 1 and 20)</b></div>
-    <div class="category"><b>Total Price</b></div>
+    <div class="category money"><b>Total Price</b></div>
   </div>
 
   <br>
 
     <a href="#">Restaurant Name (Click to add other item from this restaurant)</a>
-    <div class="categories item-list">
+    <div>
       {% for order_item in order_items %}
-      <div class="category name"><a>{{ order_item.item.name }}</a></div>
-      <div class="category"><input type="number" id="quantity" name="quantity" value="{{ order_item.quantity }}" min="1" max="20"></div>
-      <div class="category money"><a>${{ order_item.item.price }}</a></div>
+      <div class="categories">
+        <div class="category name"><a>{{ order_item.item.name }}</a></div>
+        <div class="category"><input type="number" id="quantity" name="quantity" value="{{ order_item.quantity }}" min="1" max="20" onclick="enableChange1(this, '{{ order_item.quantity }}')"></div>
+        <div class="category money"><a>${{ order_item.item.price }}</a></div>
+      </div>
+      <div class="notes">
+        <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">Click to Add Note</a>
+        <input class="hide" type="text" id="textbox{{ order_item.item.id }}" onkeyup="enableChange2(this)">
+      </div>
       {% endfor %}
 
 
@@ -24,31 +32,23 @@
       <div class="category"><input type="number" id="quantity" name="quantity" min="1" max="20"></div>
       <div class="category money"><a>$money</a></div> -->
     </div>
-    <div class="categories item-list">
-      <div class="category name add-on"><a>Option/Choice/Add-on: bla bla bla</a></div>
-      <div class="category"></div>
-      <div class="category money"><a>+$money</a></div>
-    </div>
-    <div class="notes">
-      <a class="show" id="hrefid" href="#" onclick="clickAddNote()">Click to Add Note</a>
-      <input class="hide" type="text" id="textboxid" onsubmit="enterNote()">
-    </div>
 
   <br>
-  <a class="show" id="href" href="#" onclick="clickAddInstructionNote()">Click to Add Note</a>
-  <input class="hide" type="text" id="textbox" onsubmit="enterInstructionNote()">
+  <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Click to Add Instruction Note</a>
+  <input class="hide" type="text" id="instructionBox" onkeyup="enableChange2(this)">
 
   <div class="bottom-cart">
     <div><b>Subtotal: ${{ order_total_price }}</b></div>
-    <div><b>Tax (9%): +$money</b></div>
-    <div><b>Total: $money</b></div>
+    <div><b>Tax (9%): ${{ order_tax_price |floatformat:"2" }}</b></div>
+    <div><b>Total: ${{ order_total_plus_tax_price |floatformat:"2" }}</b></div>
   </div>
 
   <br>
   <p align="right">
-    <a href="{% url 'cart' %}"><button disabled>Save Changes</button></a>
-    <a href="{% url 'checkout' %}"><button>Save and Checkout</button></a>
+    <a href="{% url 'cart' %}"><button id="save" disabled>Save Changes</button></a>
+    <a href="{% url 'checkout' %}"><button id="checkout">Checkout</button></a>
   </p>
 </div>
 
+<script type="text/javascript" src="{% static 'js/addnotes.js' %}"></script>
 {% endblock %}

@@ -291,6 +291,8 @@ def cart(request):
     if order_qs.exists():
         order = order_qs[0]
         context['order_total_price'] =  order.get_total()
+        context['order_tax_price'] =  order.get_tax()
+        context['order_total_plus_tax_price'] =  order.get_total_plus_tax()
         bridgeItems = list(Order_OrderItem.objects.filter(order_id=order.id))
         for bridge_item in bridgeItems:
             item = OrderItem.objects.get(pk=bridge_item.order_item.id)

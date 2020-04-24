@@ -5,3 +5,60 @@
   font-size: 40px;
   text-align: center;
 }
+.checkout .hide {
+  display: none;
+}
+.checkout .form-group {
+  display: grid;
+}
+.checkout .form-group div {
+  padding: 0 5px;
+}
+.checkout .name {
+  grid-template-columns: 1fr 1fr;
+}
+.checkout .billing {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+.checkout .billing div:first-of-type {
+  grid-column-start: 1;
+  grid-column-end: 5;
+}
+.checkout .delivery {
+  grid-template-columns: 2fr 1fr 1fr;
+}
+.checkout .delivery div:first-of-type {
+  grid-column-start: 1;
+  grid-column-end: 5;
+}
+.checkout .bill {
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  border-style: dashed;
+  border-width: 2px;
+}
+.checkout .bill div {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+.checkout .bill div a {
+  text-align: right;
+}
+.checkout .bill div .total {
+  margin-top: 10px;
+  border-top: 2px solid #343434;
+}
+.checkout .bill button {
+  float: right;
+}
+@media (min-width: 980px) {
+  .checkout {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+  }
+  .checkout .title {
+    grid-column-start: 1;
+    grid-column-end: 6;
+  }
+}

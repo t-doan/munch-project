@@ -1,10 +1,8 @@
-function clickAddNote() {
-  document.getElementById("textboxid").className="show";
-  document.getElementById("hrefid").className="hide";
+function clickAddNote(id) {
+  document.getElementById("textbox" + id).className="show";
+  document.getElementById("note" + id).className="hide";
 }
-function enterNote() {}
 function clickAddInstructionNote() {
-  document.getElementById("textbox").className="show";
-  document.getElementById("href").className="hide";
+  document.getElementById("instructionBox").className="show";
+  document.getElementById("instructionclick").className="hide";
 }
-function enterInstructionNote() {}

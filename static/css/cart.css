@@ -5,6 +5,7 @@
   font-size: 40px;
   text-align: center;
 }
+
 .cart-page .categories .category {
   text-align: center;
 }
@@ -15,13 +16,11 @@
   margin-left: 20px;
   text-align: left;
 }
-.cart-page .categories .add-on {
-  margin-left: 40px;
-}
 .cart-page .categories {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
 }
+
 .cart-page a:hover {
   text-decoration: none;
   color: pink;
@@ -29,6 +28,7 @@
 .cart-page .notes {
   margin-left: 40px;
 }
+
 .cart-page .bottom-cart div {
   display: grid;
   grid-column: 1fr;
@@ -55,6 +55,7 @@
   font-family: 'Abril Fatface', cursive;
   background-color: orange;
 }
+
 .cart-page .hide {
   display: none;
 }

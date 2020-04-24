@@ -2,9 +2,12 @@
 {% block content %}
 {% load widget_tweaks %}
 
+<div class="container">
+  <h2>{{ note }}</h2><br>
+</div>
+
 <div class="container checkout">
   <div class="title"><h1>Checkout</h1></div>
-  <h2>{{ note }}</h2><br>
   <div class="info">
     <form method="post" action="{% url 'checkout' %}">
       {% csrf_token %}

@@ -370,19 +370,19 @@ def checkout(request):
     delivery = DeliveryCheckout()
     total = getTotal(request)
     order_list = getCartListByRestaurant(request)
+    context = {
+        'num_of_items': getCartSize(request),
+        'billing':billing,
+        'delivery':delivery,
+        'order_list':order_list,
+        'total':total
+    }
     if request.method == 'GET':
         try:
             order = Order.objects.get(customer_id=customer.id, ordered=False)
             form = CheckoutForm()
-            context = {
-                'form': form,
-                'order': order,
-                'num_of_items': getCartSize(request),
-                'billing':billing,
-                'delivery':delivery,
-                'order_list':order_list,
-                'total':total
-            }
+            context['order'] = order
+            context['form'] = form
             all_addresses = getListOfAddresses(customer)
             def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
             if def_shipping_address != None:
@@ -392,16 +392,15 @@ def checkout(request):
                 context['def_billing_address'] = def_billing_address
             return render(request, "tables/checkout.html", context)
         except ObjectDoesNotExist:
-            context = {
-            'num_of_items': getCartSize(request),
-            'note': "You do not have an active order"
-            }
+            context['note'] = "You do not have a pending order"
             return render(request, "checkout.html", context=context)
     elif request.method == 'POST':
         form = CheckoutForm(request.POST or None)
         print("\n\n")
         try:
             order = Order.objects.get(customer_id=customer.id, ordered=False)
+            context['order'] = order
+            context['form'] = form
             if form.is_valid():
                 print("Valid form")
                 use_default_shipping = form.cleaned_data.get(
@@ -416,10 +415,7 @@ def checkout(request):
                         order.shipping_address = def_shipping_address
                         order.save()
                     else:
-                        context = {
-                        'num_of_items': getCartSize(request),
-                        'note': "You do not have a default shipping address"
-                        }
+                        context['note'] = "You do not have a default shipping address"
                         return render(request, "tables/checkout.html", context=context)
                 else:
                     print("Saving a new shipping address")
@@ -462,10 +458,7 @@ def checkout(request):
                         order.save()
                         print("order shipping add set")
                     else:
-                        context = {
-                        'num_of_items': getCartSize(request),
-                        'note': "Please fill in the required shipping address fields"
-                        }
+                        context['note'] = "Please fill in the required shipping address fields"
                         return render(request, "tables/checkout.html", context=context)
                 same_billing_address = form.cleaned_data.get(
                     'same_billing_address')
@@ -492,10 +485,7 @@ def checkout(request):
                             order.save()
                             print("order bill add set to def bill add")
                         else:
-                            context = {
-                            'num_of_items': getCartSize(request),
-                            'note': "You do not have a default billing address"
-                            }
+                            context['note'] = "You do not have a default billing address"
                             return render(request, "tables/checkout.html", context=context)
                     else:
                         print("Saving a new billing address")
@@ -532,10 +522,7 @@ def checkout(request):
                             order.billing_address = billing_address
                             order.save()
                         else:
-                            context = {
-                            'num_of_items': getCartSize(request),
-                            'note': "Please fill in the required billing address fields"
-                            }
+                            context['note'] = "Please fill in the required billing address fields"
                             return render(request, "tables/checkout.html", context=context)
 
                 # payment_option = form.cleaned_data.get('payment_option')
@@ -554,10 +541,7 @@ def checkout(request):
                 print("\n\n")
                 return render(request, "tables/payment.html", context=context)
         except ObjectDoesNotExist:
-            context = {
-            'num_of_items': getCartSize(request),
-            'note': "You do not have an active order"
-            }
+            context['note'] = "You do not have an active order"
             return render(request, "tables/checkout.html", context=context)
 
 def payment(request):

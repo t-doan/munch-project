@@ -155,28 +155,6 @@ class Order(models.Model):
             total += order_item.get_total_item_price()
         return total
 
-    def get_tax(self):
-        tax = 0
-        total = 0
-        order_orderitems = list(Order_OrderItem.objects.filter(order=self))
-        for order_orderitem in order_orderitems:
-            order_item = order_orderitem.order_item
-            total += order_item.get_total_item_price()
-            tax = total * 9/100
-        return tax
-
-    def get_total_plus_tax(self):
-        tax = 0
-        total = 0
-        order_orderitems = list(Order_OrderItem.objects.filter(order=self))
-        for order_orderitem in order_orderitems:
-            order_item = order_orderitem.order_item
-            total += order_item.get_total_item_price()
-            tax = total * 9/100
-            get_total_plus_tax = total + tax
-        return get_total_plus_tax
-
-
     def get_total_quantity(self):
         total = 0
         order_orderitems = list(Order_OrderItem.objects.filter(order=self))

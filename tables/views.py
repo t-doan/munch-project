@@ -292,9 +292,7 @@ def cart(request):
     order_items = []
     if order_qs.exists():
         order = order_qs[0]
-        context['order_total_price'] =  order.get_total()
-        context['order_tax_price'] =  order.get_tax()
-        context['order_total_plus_tax_price'] =  order.get_total_plus_tax()
+        context['order_subtotal'] =  order.get_subtotal()
         bridgeItems = list(Order_OrderItem.objects.filter(order_id=order.id))
         for bridge_item in bridgeItems:
             item = OrderItem.objects.get(pk=bridge_item.order_item.id)
@@ -383,7 +381,7 @@ def checkout(request):
         'subtotal':subtotal,
         'restaurant':restaurant,
         'fees':fees,
-        'total':Decimal(total).quantize(Decimal('0.01'))
+        'total':total
     }
     if request.method == 'GET':
         try:
@@ -619,5 +617,9 @@ def getFees(request):
         order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
         if order_qs.exists():
             order = order_qs[0]
-            order_total_price = order.get_total()
-    return order_total_price
+            fees = {
+            "Sales Tax": order.get_sales_tax(),
+            "Shipping Fee": Decimal('10.00'),
+            "Service Fee": Decimal('5.00')
+            }
+    return fees

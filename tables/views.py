@@ -13,6 +13,7 @@ import googlemaps
 import json
 from django.http import HttpRequest
 from decouple import config
+from decimal import *
 
 from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine, Order, OrderItem, Order_OrderItem
 from .models import Address, Customer, Customer_Address, Restaurant_Cuisine
@@ -284,6 +285,7 @@ def cart(request):
     #   -contains its own PK, an Order (pk), and an OrderItem (pk)
     context = {
     'num_of_items': getCartSize(request),
+    'restaurant': getOrderRestaurant(request)
     }
     customer = Customer.objects.get(user_id = request.user.id)
     order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
@@ -368,14 +370,20 @@ def checkout(request):
     customer = Customer.objects.get(user_id = request.user.id)
     billing = BillingCheckout()
     delivery = DeliveryCheckout()
-    total = getTotal(request)
-    order_list = getCartListByRestaurant(request)
+    subtotal = getSubtotal(request)
+    restaurant = getOrderRestaurant(request)
+    order_list = getOrderList(request)
+    fees = getFees(request)
+    total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
     context = {
         'num_of_items': getCartSize(request),
         'billing':billing,
         'delivery':delivery,
         'order_list':order_list,
-        'total':total
+        'subtotal':subtotal,
+        'restaurant':restaurant,
+        'fees':fees,
+        'total':Decimal(total).quantize(Decimal('0.01'))
     }
     if request.method == 'GET':
         try:
@@ -570,19 +578,41 @@ def getCartSize(request):
             num_of_items = order.get_total_quantity()
     return num_of_items
 
-def getCartListByRestaurant(request):
-    order_list = dict()
+def getOrderRestaurant(request):
+    restaurant = ""
     customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
     if customer_exists:
         customer = Customer.objects.get(user_id = request.user.id)
         order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
         if order_qs.exists():
             order = order_qs[0]
-            order_list = order.get_total_by_restaurant()
+            restaurant = order.get_restaurant_name()
+    return restaurant
+
+def getSubtotal(request):
+    subtotal = 0.0
+    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
+    if customer_exists:
+        customer = Customer.objects.get(user_id = request.user.id)
+        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            subtotal = order.get_subtotal()
+    return subtotal
+
+def getOrderList(request):
+    order_list = 0.0
+    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
+    if customer_exists:
+        customer = Customer.objects.get(user_id = request.user.id)
+        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            order_list = order.get_order_list()
     return order_list
 
-def getTotal(request):
-    order_total_price = 0.0
+def getFees(request):
+    fees = dict()
     customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
     if customer_exists:
         customer = Customer.objects.get(user_id = request.user.id)

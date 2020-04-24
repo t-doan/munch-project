@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from decimal import *
 
 ADDRESS_CHOICES = (
     ('B', 'Billing'),
@@ -143,11 +144,10 @@ class Order(models.Model):
     # payment = models.ForeignKey(
     #     'Payment', on_delete=models.SET_NULL, blank=True, null=True)
 
-
     def __str__(self):
         return self.customer.first_name + " " + str(self.start_date)
 
-    def get_total(self):
+    def get_subtotal(self):
         total = 0
         order_orderitems = list(Order_OrderItem.objects.filter(order=self))
         for order_orderitem in order_orderitems:
@@ -190,24 +190,14 @@ class Order(models.Model):
         order_orderitems = list(Order_OrderItem.objects.filter(order=self))
         for order_orderitem in order_orderitems:
             orderitem = order_orderitem.order_item
-            order_restaurant = str(orderitem.item.menu_id.restaurant_id)
-            if order_restaurant in order_list.keys():
-                order_list[order_restaurant].append((orderitem.item.name, orderitem.quantity, orderitem.get_total_item_price()))
-            else:
-                order_list[order_restaurant] = [(orderitem.item.name, orderitem.quantity, orderitem.get_total_item_price())]
+            order_list[orderitem.item.name] = orderitem.get_total_item_price()
         return order_list
 
-    def get_total_by_restaurant(self):
-        order_list = dict()
-        order_orderitems = list(Order_OrderItem.objects.filter(order=self))
-        for order_orderitem in order_orderitems:
-            orderitem = order_orderitem.order_item
-            order_restaurant = str(orderitem.item.menu_id.restaurant_id)
-            if order_restaurant in order_list.keys():
-                order_list[order_restaurant] += orderitem.get_total_item_price()
-            else:
-                order_list[order_restaurant] = orderitem.get_total_item_price()
-        return order_list
+    def get_restaurant_name(self):
+        return str(list(Order_OrderItem.objects.filter(order=self))[0].order_item.item.menu_id.restaurant_id)
+
+    def get_sales_tax(self):
+        return Decimal(float(self.get_subtotal()) * 0.09).quantize(Decimal('0.01'))
 
 class Order_OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)

@@ -8,20 +8,18 @@
 .checkout .hide {
   display: none;
 }
-.checkout div {
-  padding: 5px 5px;
-}
 
 .checkout .form-group {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-columns: 1fr 120px 70px;
 }
 .checkout .form-group input:first-of-type {
   grid-column-start: 1;
-  grid-column-end: 5;
+  grid-column-end: 4;
 }
 .checkout .info button {
   float: right;
+  margin-right: 10px;
 }
 
 .checkout .bill h2 {
@@ -63,13 +61,21 @@
   font-weight: bold;
 }
 
-@media (min-width: 980px) {
+@media (min-width: 900px) {
   .checkout {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 1fr 350px;
   }
   .checkout .title {
     grid-column-start: 1;
-    grid-column-end: 6;
+    grid-column-end: 3;
+  }
+  .checkout .bill {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+  }
+  .checkout .info {
+    padding: 10px;
   }
 }

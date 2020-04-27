@@ -3,6 +3,15 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Customer, Address, Customer_Address
 from django_select2.forms import Select2MultipleWidget
+from datetime import date
+
+CARD_TYPES = [
+    ('visa', 'Visa'),
+    ('mastercard', 'Mastercard'),
+    ('amex', 'American Express'),
+    ('discover', 'Discover'),
+    ('giftcard', 'Gift Card')
+]
 
 class CustomSignupForm(UserCreationForm):
     email = forms.EmailField(max_length=255, required=True)
@@ -40,15 +49,14 @@ class CheckoutForm(forms.Form):
     # payment_option = forms.ChoiceField(
     #     widget=forms.RadioSelect, choices=PAYMENT_CHOICES)
 
-
-class BillingCheckout(forms.Form):
-    billing_street = forms.CharField(label='Address', max_length=50)
-    billing_city = forms.CharField(label='City', max_length=50)
-    billing_state = forms.CharField(label='State', max_length=50)
-    billing_zipcode = forms.CharField(label='Zipcode', max_length=15)
-
-class DeliveryCheckout(forms.Form):
-    delivery_street = forms.CharField(label='Address', max_length=50)
-    delivery_city = forms.CharField(label='City', max_length=50)
-    delivery_state = forms.CharField(label='State', max_length=50)
-    delivery_zipcode = forms.CharField(label='Zipcode', max_length=15)
+class PaymentForm(forms.Form):
+    card_type = forms.ChoiceField(
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        choices=CARD_TYPES
+        attrs={'placeholder': 'Card Type'}
+    )
+    card_holder = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': "Card Holder's Name"}))
+    card_number = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Card Number'}))
+    experation = forms.DateField(label="Card's Experation Date", widget=forms.widgets.DateInput(format="%m/%Y"))
+    cvv = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "CVV"}))

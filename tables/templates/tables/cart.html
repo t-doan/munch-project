@@ -8,6 +8,7 @@
 
 <div class="container cart-page">
 
+  {% if restaurant.name|length > 0 %}
   <h2>My Munch Cart</h2>
   <h4>{{ restaurant.name }}</h4>
   <a href="{% url 'restaurantView' restaurant.id %}">Click to add other item from this restaurant</a>
@@ -56,6 +57,7 @@
   <p align="right">
     <a href="{% url 'checkout' %}"><button id="checkout">Checkout</button></a>
   </p>
+  {% endif %}
 </div>
 
 <script type="text/javascript" src="{% static 'js/addnotes.js' %}"></script>

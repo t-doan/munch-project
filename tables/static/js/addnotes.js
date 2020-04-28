@@ -11,6 +11,10 @@ function enableChange1(new_value, old_value) {
     document.getElementById("save").disabled = false;
     document.getElementById("checkout").disabled = true;
   }
+  else {
+    document.getElementById("save").disabled = true;
+    document.getElementById("checkout").disabled = false;
+  }
 }
 function enableChange2(txt) {
   if (txt.value != '') {

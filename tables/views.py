@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
 from .forms import CustomSignupForm, CustomerForm, AddressForm, CheckoutForm
-from .forms import BillingCheckout, DeliveryCheckout
+from .forms import BillingCheckout, DeliveryCheckout, PaymentForm
 
 from django.urls import reverse_lazy
 from django.views import generic
@@ -643,3 +643,22 @@ def getFees(request):
             "Service Fee": Decimal('5.00')
             }
     return fees
+
+def payment(request):
+    customer = Customer.objects.get(user_id = request.user.id)
+    payment = PaymentForm()
+    subtotal = getSubtotal(request)
+    restaurant = getOrderRestaurant(request)
+    order_list = getOrderList(request)
+    fees = getFees(request)
+    total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
+    context = {
+        'num_of_items': getCartSize(request),
+        'payment':payment,
+        'order_list':order_list,
+        'subtotal':subtotal,
+        'restaurant':restaurant,
+        'fees':fees,
+        'total':total
+    }
+    return render(request, "payment.html", context=context)

@@ -29,11 +29,18 @@
   text-align: center;
   font-weight: bold;
   padding-bottom: 10px;
+  text-decoration: underline
 }
 .checkout .bill h3 {
   font-family: 'Itim', cursive;
   font-size: 20px;
+  text-align: center;
 }
+
+.checkout .bill p {
+  text-align: center;
+}
+
 .checkout .bill {
   background: white;
   padding: 10px;
@@ -56,13 +63,23 @@
   font-weight: bold;
 }
 
-@media (min-width: 980px) {
+@media (min-width: 900px) {
   .checkout {
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: 2fr 1fr;
   }
   .checkout .title {
     grid-column-start: 1;
-    grid-column-end: 6;
+    grid-column-end: 4;
+  }
+  .checkout .bill {
+    grid-column-start: 3;
+    grid-column-end: 4;
+    grid-row-start: 2;
+  }
+  .checkout .info {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 2;
   }
 }

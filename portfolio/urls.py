@@ -39,6 +39,8 @@ urlpatterns = [
     path('confirmation', views.confirmation, name='confirmation'),
     path('add_to_cart/<int:id><int:restaurant_id>/', views.add_to_cart, name='add_to_cart'),
     path('payment', views.payment, name='payment'),
+    path('auth/user-profile/order-history', views.order_history, name='order_history'),
+    path('auth/user-profile/order-history/review/<int:order_id>', views.review, name='review'),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

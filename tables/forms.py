@@ -1,7 +1,8 @@
 from django import forms
+from django.forms import Textarea, NumberInput
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Customer, Address, Customer_Address
+from .models import Customer, Address, Customer_Address, Review
 from django_select2.forms import Select2MultipleWidget
 from datetime import date
 

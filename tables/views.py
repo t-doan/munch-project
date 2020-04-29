@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
-from .forms import CustomSignupForm, CustomerForm, AddressForm, CheckoutForm, PaymentForm
+from .forms import (CustomSignupForm, CustomerForm, AddressForm,
+CheckoutForm, PaymentForm)
 
 from django.urls import reverse_lazy
 from django.views import generic
@@ -100,6 +101,32 @@ def profile(request):
     'num_of_items': getCartSize(request)
     }
     return render(request, 'account/user-profile.html', context=context)
+
+def order_history(request):
+    customer = Customer.objects.get(user_id = request.user.id)
+    order_list = []
+    raw_order_list = list(Order.objects.filter(customer_id=customer.id, ordered=True))
+    print(raw_order_list)
+    for order in raw_order_list:
+        print(order)
+        order_items = get_list_of_order_items(order)
+        subtotal = getSubtotal(request)
+        fees = getFees(request)
+        total = float(subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"])
+        order_details = [order, order_items, total]
+        order_list.append(order_details)
+    context = {
+    'num_of_items': getCartSize(request),
+    'order_list':order_list,
+    }
+    return render(request, 'account/order_history.html', context=context)
+
+def review(request, order_id):
+    context = {
+    'num_of_items': getCartSize(request),
+    'id':order_id,
+    }
+    return render(request, 'account/review.html', context=context)
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm

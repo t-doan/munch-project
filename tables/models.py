@@ -80,7 +80,8 @@ class Customer_Payment(models.Model):
         return 'Payment Id: ' + str(self.payment_id) + ' Customer Id: ' + str(self.customer_id)
 
 class Review(models.Model):
-    text = models.CharField(max_length=300)
+    header = models.CharField(max_length=50)
+    text = models.CharField(max_length=500, blank=True, null=True)
     stars = models.PositiveSmallIntegerField()
     customer_id = models.ForeignKey(Customer,on_delete=models.CASCADE)
     restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
@@ -145,6 +146,7 @@ class Order(models.Model):
     note = models.CharField(max_length=500, blank=True, null=True)
     payment = models.ForeignKey(
         'Payment', on_delete=models.SET_NULL, blank=True, null=True)
+    review = models.ForeignKey(Review,on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.customer.first_name + " " + str(self.start_date)

@@ -63,13 +63,14 @@ class Customer_Address(models.Model):
     def __str__(self):
         return 'Address: ' + str(self.address_id) + ' Customer: ' + str(self.customer_id)
 
-class Payment (models.Model):
-    card_number = models.BigIntegerField()
-    card_pin = models.IntegerField()
-    card_expdate = models.DateField()
+class Payment(models.Model):
+    stripe_charge_id = models.CharField(max_length=50)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True)
+    amount = models.FloatField()
+    timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Card Num: ' + str(self.card_number)
+        return self.customer.first_name
 
 class Customer_Payment(models.Model):
     payment_id = models.ForeignKey(Payment,on_delete=models.CASCADE)
@@ -131,6 +132,7 @@ class OrderItem(models.Model):
 
 
 class Order(models.Model):
+    ref_code = models.CharField(max_length=20, blank=True, null=True)
     customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
@@ -141,8 +143,8 @@ class Order(models.Model):
     billing_address = models.ForeignKey(
         'Address', related_name='billing_address', on_delete=models.SET_NULL, blank=True, null=True)
     note = models.CharField(max_length=500, blank=True, null=True)
-    # payment = models.ForeignKey(
-    #     'Payment', on_delete=models.SET_NULL, blank=True, null=True)
+    payment = models.ForeignKey(
+        'Payment', on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.customer.first_name + " " + str(self.start_date)

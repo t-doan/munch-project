@@ -6,6 +6,7 @@ from django_select2.forms import Select2MultipleWidget
 from datetime import date
 
 CARD_TYPES = [
+    ('','Card Type'),
     ('visa', 'Visa'),
     ('mastercard', 'Mastercard'),
     ('amex', 'American Express'),
@@ -46,17 +47,7 @@ class CheckoutForm(forms.Form):
     set_default_billing = forms.BooleanField(required=False)
     use_default_billing = forms.BooleanField(required=False)
 
-    # payment_option = forms.ChoiceField(
-    #     widget=forms.RadioSelect, choices=PAYMENT_CHOICES)
-
 class PaymentForm(forms.Form):
-    card_type = forms.ChoiceField(
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-        choices=CARD_TYPES
-        attrs={'placeholder': 'Card Type'}
-    )
-    card_holder = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': "Card Holder's Name"}))
-    card_number = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Card Number'}))
-    experation = forms.DateField(label="Card's Experation Date", widget=forms.widgets.DateInput(format="%m/%Y"))
-    cvv = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "CVV"}))
+    stripeToken = forms.CharField(required=False)
+    save = forms.BooleanField(required=False)
+    use_default = forms.BooleanField(required=False)

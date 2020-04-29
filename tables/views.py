@@ -1,8 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
-from .forms import CustomSignupForm, CustomerForm, AddressForm, CheckoutForm
-from .forms import BillingCheckout, DeliveryCheckout, PaymentForm
+from .forms import CustomSignupForm, CustomerForm, AddressForm, CheckoutForm, PaymentForm
 
 from django.urls import reverse_lazy
 from django.views import generic
@@ -11,12 +10,14 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 import stripe
 import googlemaps
 import json
+import random
+import string
 from django.http import HttpRequest
 from decouple import config
 from decimal import *
 
 from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine, Order, OrderItem, Order_OrderItem
-from .models import Address, Customer, Customer_Address, Restaurant_Cuisine
+from .models import Address, Customer, Customer_Address, Restaurant_Cuisine, Payment
 
 stripe.api_key = config('STRIPE_API_KEY')
 gmaps = googlemaps.Client(key=config('GOOGLE_API_KEY'))
@@ -166,6 +167,7 @@ def fillAddress(request):
             filled_form = AddressForm()
             address = Address.objects.get(id = created_address_pk)
             address.default = True
+            address.type = 'S'
             address.save()
             customer = Customer.objects.get(user_id=request.user.id)
             customer_address = Customer_Address(address_id=address, customer_id=customer)
@@ -386,8 +388,6 @@ def is_valid_form(values):
 
 def checkout(request):
     customer = Customer.objects.get(user_id = request.user.id)
-    billing = BillingCheckout()
-    delivery = DeliveryCheckout()
     subtotal = getSubtotal(request)
     restaurant = getOrderRestaurant(request)
     order_list = getOrderList(request)
@@ -395,8 +395,6 @@ def checkout(request):
     total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
     context = {
         'num_of_items': getCartSize(request),
-        'billing':billing,
-        'delivery':delivery,
         'order_list':order_list,
         'subtotal':subtotal,
         'restaurant':restaurant,
@@ -561,17 +559,18 @@ def checkout(request):
                 #     messages.warning(
                 #         self.request, "Invalid payment option selected")
                 #     return redirect('core:checkout')
-                context = {
-                'num_of_items': getCartSize(request)
-                }
-                print("\n\n")
-                return render(request, "tables/payment.html", context=context)
-        except ObjectDoesNotExist:
+                # context = {
+                # 'num_of_items': getCartSize(request),
+                # }
+                print("Reached the end\n\n")
+        except Exception:
             context['note'] = "You do not have an active order"
             return render(request, "tables/checkout.html", context=context)
-
-def payment(request):
-    return render(request, 'tables/payment.html')
+        context = {
+            'num_of_items': getCartSize(request),
+        }
+        context = addOrderInfo(request, context)
+        return render(request, "tables/payment.html", context=context)
 
 def confirmation(request):
     deliveryEmployeeName = "John Doe"
@@ -644,21 +643,184 @@ def getFees(request):
             }
     return fees
 
+def addOrderInfo(request, context):
+    context['payment'] = PaymentForm()
+    context['restaurant'] = getOrderRestaurant(request)
+    context['order_list'] = getOrderList(request)
+    subtotal = getSubtotal(request)
+    fees = getFees(request)
+    context['subtotal'] = subtotal
+    context['fees'] = fees
+    context['total'] = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
+    return context
+
 def payment(request):
     customer = Customer.objects.get(user_id = request.user.id)
-    payment = PaymentForm()
-    subtotal = getSubtotal(request)
-    restaurant = getOrderRestaurant(request)
-    order_list = getOrderList(request)
-    fees = getFees(request)
-    total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
+    order = Order.objects.get(customer_id=customer.id, ordered=False)
     context = {
         'num_of_items': getCartSize(request),
-        'payment':payment,
-        'order_list':order_list,
-        'subtotal':subtotal,
-        'restaurant':restaurant,
-        'fees':fees,
-        'total':total
     }
-    return render(request, "payment.html", context=context)
+    if request.method == 'GET':
+        if order.billing_address:
+            context = {
+                'order': order
+            }
+            # userprofile = self.request.user.userprofile
+            # if userprofile.one_click_purchasing:
+                # fetch the users card list
+            cards = stripe.Customer.list_sources(
+                customer.stripeid,
+                limit=3,
+                object='card'
+            )
+            card_list = cards['data']
+            if len(card_list) > 0:
+                # update the context with the default card
+                context.update({
+                    'card': card_list[0]
+                })
+            return render(request, "payment.html", context)
+        else:
+            context['note'] = "You have not added a billing address"
+            return render(request, "tables/payment.html", context=context)
+    elif request.method == 'POST':
+        form = PaymentForm(request.POST)
+        print(request)
+        print(request.POST)
+        if form.is_valid():
+            print("ok")
+            token = form.cleaned_data.get('stripeToken')
+            save = form.cleaned_data.get('save')
+            use_default = form.cleaned_data.get('use_default')
+
+            if save:
+                if customer.stripeid != '' and customer.stripeid is not None:
+                    stripeCustomer = stripe.Customer.retrieve(
+                        customer.stripeid)
+                    stripeCustomer.sources.create(source=token)
+                    print("Used previous stripe id")
+
+                else:
+                    stripeCustomer = stripe.Customer.create(
+                        email=request.user.email,
+                    )
+                    stripeCustomer.sources.create(source=token)
+                    customer.stripeid = stripeCustomer['id']
+                    # userprofile.one_click_purchasing = True
+                    customer.save()
+                    print("Created new stripe id")
+
+            subtotal = getSubtotal(request)
+            fees = getFees(request)
+            context['subtotal'] = subtotal
+            context['fees'] = fees
+            context['total'] = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
+
+            subtotal = getSubtotal(request)
+            fees = getFees(request)
+            total = float(subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"])
+            amount = total * 100
+            print("Calc amt: " + str(amount))
+            print("Calc total: " + str(total))
+
+            try:
+
+                if use_default or save:
+                    # charge the stripeCustomer because we cannot charge the token more than once
+                    charge = stripe.Charge.create(
+                        amount=int(amount),  # cents
+                        currency="usd",
+                        customer=customer.stripeid
+                    )
+                    print("charging the recurring customer")
+                else:
+                    # charge once off on the token
+                    charge = stripe.Charge.create(
+                        amount=int(amount),  # cents
+                        currency="usd",
+                        source=token
+                    )
+                    print("charging the one time card token")
+
+                # create the payment
+                payment = Payment()
+                print("payment created")
+                payment.stripe_charge_id = charge['id']
+                print("set stripe charge id")
+                payment.customer = customer
+                print("created customer")
+                # subtotal = getSubtotal(request)
+                # fees = getFees(request)
+                # total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
+                payment.amount = total
+                print(payment)
+                payment.save()
+                print("payment saved")
+
+                # assign the payment to the order
+                order_items = get_list_of_order_items(order)
+                print(order_items)
+                for item in order_items:
+                    item.ordered = True
+
+                # order_items.update(ordered=True)
+                print(order_items)
+                for item in order_items:
+                    item.save()
+                print("payment assigned to order items")
+
+                order.ordered = True
+                order.payment = payment
+                order.ref_code = create_ref_code()
+                order.save()
+                print("payment assigned to order")
+
+                context['note'] = "Your order was successful!"
+                return render(request, "tables/confirmation.html", context=context)
+
+            except stripe.error.CardError as e:
+                body = e.json_body
+                err = body.get('error', {})
+                context['note'] = f"{err.get('message')}"
+                return render(request, "tables/payment.html", context=context)
+
+            except stripe.error.RateLimitError as e:
+                # Too many requests made to the API too quickly
+                context['note'] = "Rate limit error"
+                return render(request, "tables/payment.html", context=context)
+
+            except stripe.error.InvalidRequestError as e:
+                # Invalid parameters were supplied to Stripe's API
+                print(e)
+                context['note'] = "Invalid parameters"
+                return render(request, "tables/payment.html", context=context)
+
+            except stripe.error.AuthenticationError as e:
+                # Authentication with Stripe's API failed
+                # (maybe you changed API keys recently)
+                context['note'] = "Not authenticated"
+                return render(request, "tables/payment.html", context=context)
+
+            except stripe.error.APIConnectionError as e:
+                # Network communication with Stripe failed
+                messages.warning(self.request, "Network error")
+                return redirect("/")
+                context['note'] = "Not authenticated"
+                return render(request, "tables/payment.html", context=context)
+
+            except stripe.error.StripeError as e:
+                # Display a very generic error to the user, and maybe send
+                # yourself an email
+                context['note'] = "Something went wrong. You were not charged. Please try again."
+                return render(request, "tables/payment.html", context=context)
+
+            # except Exception as e:
+            #     # send an email to ourselves
+            #     context['note'] = "A serious error occurred. We have been notifed."
+            #     return render(request, "tables/payment.html", context=context)
+
+        context['note'] = "Invalid data received"
+        return render(request, "tables/payment.html", context=context)
+
+def create_ref_code():
+    return ''.join(random.choices(string.ascii_lowercase + string.digits, k=20))

@@ -11,14 +11,13 @@
   {% if restaurant.name|length > 0 %}
   <h2>My Munch Cart</h2>
   <h4>{{ restaurant.name }}</h4>
-  <a href="{% url 'restaurantView' restaurant.id %}">Click to add other item from this restaurant</a>
+  <a href="{% url 'restaurantView' restaurant.id %}">Click to add other items from this restaurant</a>
   <div class="categories">
     <div class="category name"><b>Item</b></div>
     <div class="category"><b>Quantity (between 1 and 20)</b></div>
     <div class="category money"><b>Item Price</b></div>
   </div>
 
-  <br>
   <form class="" action="{% url 'cart' %}" method="post">
     {% csrf_token %}
     <div>

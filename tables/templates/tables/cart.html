@@ -12,9 +12,10 @@
   <h2>My Munch Cart</h2>
   <h4>{{ restaurant.name }}</h4>
   <a href="{% url 'restaurantView' restaurant.id %}">Click to add other items from this restaurant</a>
+  <p>*Change quantity to '0' to delete an item</p>
   <div class="categories">
     <div class="category name"><b>Item</b></div>
-    <div class="category"><b>Quantity (between 1 and 20)</b></div>
+    <div class="category"><b>Quantity (between 0* and 20)</b></div>
     <div class="category money"><b>Item Price</b></div>
   </div>
 
@@ -24,7 +25,7 @@
       {% for order_item in order_items %}
       <div class="categories">
         <div class="category name"><a>{{ order_item.item.name }}</a></div>
-        <div class="category"><input type="number" id="quantity" name="quantity{{ order_item.id }}" value="{{ order_item.quantity }}" min="1" max="20" onclick="enableChange1(this, '{{ order_item.quantity }}')"></div>
+        <div class="category"><input type="number" id="quantity" name="quantity{{ order_item.id }}" value="{{ order_item.quantity }}" min="0" max="20" onclick="enableChange1(this, '{{ order_item.quantity }}')"></div>
         <div class="category money"><a>${{ order_item.item.price }}</a></div>
       </div>
       <div class="notes">

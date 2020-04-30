@@ -381,28 +381,29 @@ def cart(request):
     order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
     if order_qs.exists():
         order = order_qs[0]
-        context['order_subtotal'] =  order.get_subtotal()
         order_items = get_list_of_order_items(order)
-        context['order'] =  order
-        context['order_items'] =  order_items
         if request.method == 'POST':
             for order_item in order_items:
                 if ('quantity' + str(order_item.id)) in request.POST:
                     quantity = int(request.POST['quantity'+ str(order_item.id)])
-                    order_item.quantity = quantity
-                    order_item.save()
-                    # context['quantity'+ str(order_item.id)] = quantity
+                    if quantity == 0:
+                        order_item.delete()
+                    else:
+                        order_item.quantity = quantity
+                        order_item.save()
                 if ('item_note' + str(order_item.id)) in request.POST:
                     item_note = request.POST['item_note'+ str(order_item.id)]
                     order_item.note = item_note
                     order_item.save()
-                    # context['item_note'+ str(order_item.id)] = item_note
             if 'instructionBox' in request.POST:
                 order_note = request.POST['instructionBox']
                 order.note = order_note
                 order.save()
-                # context['instructionBox'] = order_note
         context['num_of_items'] = getCartSize(request)
+        context['order_subtotal'] =  order.get_subtotal()
+        order_items = get_list_of_order_items(order)
+        context['order'] =  order
+        context['order_items'] =  order_items
     else:
         context['message'] = "You do not have a pending order"
     return render(request, 'tables/cart.html', context=context)

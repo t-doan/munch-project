@@ -87,8 +87,8 @@ class Review(models.Model):
     restaurant_id = models.ForeignKey(Restaurant,on_delete=models.CASCADE)
 
     def __str__(self):
-        return ('Customer Id: ' + str(self.customer_id) + ' Rest. Id: '
-        + str(self.restaurant_id) + ' ' + str(self.stars) + " stars")
+        return (str(self.stars) + ' stars' + ' Customer: '
+        + str(self.customer_id) + ' Rest: ' + str(self.restaurant_id))
 
 
 class Cuisine(models.Model):

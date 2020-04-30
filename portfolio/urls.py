@@ -31,6 +31,7 @@ urlpatterns = [
     path('auth/user-profile/address/<int:address_id>', views.edit_address, name='edit_address'),
     path('auth/user-profile/add-address/<int:customer_id>', views.add_address, name='add_address'),
     path('restaurant/<int:restaurant_id>', views.restaurantView, name='restaurantView'),
+    path('restaurant/<int:restaurant_id>/reviews', views.restaurant_review, name='restaurant_review'),
     path('auth/user-profile/delete/<int:address_id>', views.delete_address, name='delete_address'),
     path('auth/user-profile/edit_cuisine/<int:customer_id>', views.edit_cuisine, name='edit_cuisine'),
     path('dashboard', views.load_dashboard, name='load_dashboard'),

@@ -18,7 +18,7 @@ from decouple import config
 from decimal import *
 
 from .models import Restaurant, Menu, Item, Cuisine, Customer_Cuisine, Order, OrderItem, Order_OrderItem
-from .models import Address, Customer, Customer_Address, Restaurant_Cuisine, Payment
+from .models import Address, Customer, Customer_Address, Restaurant_Cuisine, Payment, Review
 
 stripe.api_key = config('STRIPE_API_KEY')
 gmaps = googlemaps.Client(key=config('GOOGLE_API_KEY'))
@@ -75,6 +75,7 @@ def load_restaurant_view(restaurant_id):
     'menu_items':menu_items,
     'i_amt':range(len(menu_names)),
     'cuisines_str':cuisines_str,
+    'avg_stars': get_avg_stars(restaurant_id),
     'message':"",
     }
     return context
@@ -110,8 +111,8 @@ def order_history(request):
     for order in raw_order_list:
         print(order)
         order_items = get_list_of_order_items(order)
-        subtotal = getSubtotal(request)
-        fees = getFees(request)
+        subtotal = order.get_subtotal()
+        fees = getFees(order)
         total = float(subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"])
         order_details = [order, order_items, total]
         order_list.append(order_details)
@@ -121,12 +122,66 @@ def order_history(request):
     }
     return render(request, 'account/order_history.html', context=context)
 
+def get_avg_stars(restaurant_id):
+    review_list = list(Review.objects.filter(restaurant_id=restaurant_id))
+    avg = 0.0
+    for review in review_list:
+        avg += review.stars
+    avg /= len(review_list)
+    return avg
+
 def review(request, order_id):
     context = {
     'num_of_items': getCartSize(request),
     'id':order_id,
     }
+    order = Order.objects.get(id=order_id)
+    if request.method == 'POST':
+        stars = request.POST['stars']
+        header = request.POST['header']
+        text = request.POST['text']
+        review = Review()
+        if order.review != None and order.review != '':
+            review = order.review
+            review.stars = customer_address
+            review.header=header
+            review.customer_id = order.customer
+            review.restaurant_id = order.restaurant
+            if text:
+                review.text = text
+            else:
+                review.text = ''
+            review.save()
+        else:
+            review = Review(
+            stars=stars,
+            header=header,
+            customer_id = order.customer,
+            restaurant_id = order.restaurant
+            )
+            if text:
+                review.text=text
+            else:
+                review.text = ''
+        review.save()
+        order.review = review
+        order.save()
+        context['note'] = 'Your review has been saved'
+    review = order.review
+    if review:
+        context['stars'] = review.stars
+        context['header'] = review.header
+        context['text'] = review.text
     return render(request, 'account/review.html', context=context)
+
+def restaurant_review(request, restaurant_id):
+    review_list = list(Review.objects.filter(restaurant_id=restaurant_id))
+    context = {
+    'num_of_items': getCartSize(request),
+    'restaurant_id': restaurant_id,
+    'review_list': review_list,
+    }
+    return render(request, 'tables/restaurant_review.html', context=context)
 
 class SignUp(generic.CreateView):
     form_class = CustomSignupForm
@@ -415,25 +470,26 @@ def is_valid_form(values):
 
 def checkout(request):
     customer = Customer.objects.get(user_id = request.user.id)
-    subtotal = getSubtotal(request)
     restaurant = getOrderRestaurant(request)
-    order_list = getOrderList(request)
-    fees = getFees(request)
-    total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
+    order = ''
     context = {
         'num_of_items': getCartSize(request),
-        'order_list':order_list,
-        'subtotal':subtotal,
         'restaurant':restaurant,
-        'fees':fees,
-        'total':total
     }
     if request.method == 'GET':
         try:
             order = Order.objects.get(customer_id=customer.id, ordered=False)
+            fees = getFees(order)
+            subtotal = order.get_subtotal()
+            order_list = order.get_order_list()
             form = CheckoutForm()
+            total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
             context['order'] = order
             context['form'] = form
+            context['fees'] = fees
+            context['subtotal'] = subtotal
+            context['order_list'] = order_list
+            context['total'] = total
             all_addresses = getListOfAddresses(customer)
             def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
             if def_shipping_address != None:
@@ -450,8 +506,18 @@ def checkout(request):
         print("\n\n")
         try:
             order = Order.objects.get(customer_id=customer.id, ordered=False)
+            fees = getFees(order)
+            subtotal = order.get_subtotal()
+            order_list = order.get_order_list()
+            total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
             context['order'] = order
             context['form'] = form
+            context['fees'] = fees
+            context['subtotal'] = subtotal
+            context['order_list'] = order_list
+            context['total'] = total
+            order_list = order.get_order_list()
+            context['order_list'] = order_list
             if form.is_valid():
                 print("Valid form")
                 use_default_shipping = form.cleaned_data.get(
@@ -575,20 +641,6 @@ def checkout(request):
                         else:
                             context['note'] = "Please fill in the required billing address fields"
                             return render(request, "tables/checkout.html", context=context)
-
-                # payment_option = form.cleaned_data.get('payment_option')
-                #
-                # if payment_option == 'S':
-                #     return redirect('core:payment', payment_option='stripe')
-                # elif payment_option == 'P':
-                #     return redirect('core:payment', payment_option='paypal')
-                # else:
-                #     messages.warning(
-                #         self.request, "Invalid payment option selected")
-                #     return redirect('core:checkout')
-                # context = {
-                # 'num_of_items': getCartSize(request),
-                # }
                 print("Reached the end\n\n")
         except Exception:
             context['note'] = "You do not have an active order"
@@ -596,7 +648,9 @@ def checkout(request):
         context = {
             'num_of_items': getCartSize(request),
         }
-        context = addOrderInfo(request, context)
+        print(order)
+        context = addOrderInfo(request, context, order)
+        context = load_payment(request, context)
         return render(request, "tables/payment.html", context=context)
 
 def confirmation(request):
@@ -633,53 +687,46 @@ def getOrderRestaurant(request):
             restaurant = order.restaurant
     return restaurant
 
-def getSubtotal(request):
-    subtotal = 0.0
-    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
-    if customer_exists:
-        customer = Customer.objects.get(user_id = request.user.id)
-        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
-        if order_qs.exists():
-            order = order_qs[0]
-            subtotal = order.get_subtotal()
-    return subtotal
-
-def getOrderList(request):
-    order_list = 0.0
-    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
-    if customer_exists:
-        customer = Customer.objects.get(user_id = request.user.id)
-        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
-        if order_qs.exists():
-            order = order_qs[0]
-            order_list = order.get_order_list()
-    return order_list
-
-def getFees(request):
-    fees = dict()
-    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
-    if customer_exists:
-        customer = Customer.objects.get(user_id = request.user.id)
-        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
-        if order_qs.exists():
-            order = order_qs[0]
-            fees = {
-            "Sales Tax": order.get_sales_tax(),
-            "Shipping Fee": Decimal('10.00'),
-            "Service Fee": Decimal('5.00')
-            }
+def getFees(order):
+    fees = {
+    "Sales Tax": order.get_sales_tax(),
+    "Shipping Fee": Decimal('10.00'),
+    "Service Fee": Decimal('5.00')
+    }
     return fees
 
-def addOrderInfo(request, context):
+def addOrderInfo(request, context, order):
     context['payment'] = PaymentForm()
     context['restaurant'] = getOrderRestaurant(request)
-    context['order_list'] = getOrderList(request)
-    subtotal = getSubtotal(request)
-    fees = getFees(request)
+    context['order_list'] = order.get_order_list()
+    subtotal = order.get_subtotal()
+    fees = getFees(order)
     context['subtotal'] = subtotal
     context['fees'] = fees
     context['total'] = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
     return context
+
+def load_payment(request, context):
+    customer = Customer.objects.get(user_id = request.user.id)
+    order = Order.objects.get(customer_id=customer.id, ordered=False)
+    if order.billing_address:
+        context['order'] = order
+        cards = stripe.Customer.list_sources(
+            customer.stripeid,
+            limit=3,
+            object='card'
+        )
+        print(cards)
+        card_list = cards['data']
+        if len(card_list) > 0:
+            # update the context with the default card
+            context.update({
+                'card': card_list[0]
+            })
+        return context
+    else:
+        context['note'] = "You have not added a billing address"
+        return context
 
 def payment(request):
     customer = Customer.objects.get(user_id = request.user.id)
@@ -688,28 +735,8 @@ def payment(request):
         'num_of_items': getCartSize(request),
     }
     if request.method == 'GET':
-        if order.billing_address:
-            context = {
-                'order': order
-            }
-            # userprofile = self.request.user.userprofile
-            # if userprofile.one_click_purchasing:
-                # fetch the users card list
-            cards = stripe.Customer.list_sources(
-                customer.stripeid,
-                limit=3,
-                object='card'
-            )
-            card_list = cards['data']
-            if len(card_list) > 0:
-                # update the context with the default card
-                context.update({
-                    'card': card_list[0]
-                })
-            return render(request, "payment.html", context)
-        else:
-            context['note'] = "You have not added a billing address"
-            return render(request, "tables/payment.html", context=context)
+        context = load_payment(request, context)
+        return render(request, "tables/payment.html", context=context)
     elif request.method == 'POST':
         form = PaymentForm(request.POST)
         print(request)
@@ -737,14 +764,12 @@ def payment(request):
                     customer.save()
                     print("Created new stripe id")
 
-            subtotal = getSubtotal(request)
-            fees = getFees(request)
+            subtotal = order.get_subtotal()
+            fees = getFees(order)
             context['subtotal'] = subtotal
             context['fees'] = fees
             context['total'] = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
 
-            subtotal = getSubtotal(request)
-            fees = getFees(request)
             total = float(subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"])
             amount = total * 100
             print("Calc amt: " + str(amount))
@@ -776,9 +801,6 @@ def payment(request):
                 print("set stripe charge id")
                 payment.customer = customer
                 print("created customer")
-                # subtotal = getSubtotal(request)
-                # fees = getFees(request)
-                # total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
                 payment.amount = total
                 print(payment)
                 payment.save()
@@ -803,6 +825,7 @@ def payment(request):
                 print("payment assigned to order")
 
                 context['note'] = "Your order was successful!"
+                context['num_of_items'] = 0
                 return render(request, "tables/confirmation.html", context=context)
 
             except stripe.error.CardError as e:

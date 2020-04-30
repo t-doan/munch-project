@@ -37,7 +37,7 @@
                   {% csrf_token %}
                   <input type="hidden" name="use_default" value="true">
                   <div class="stripe-form-row">
-                    <button id="stripeBtn">Submit Payment</button>
+                    <button id="stripeBtn">Submit Default Payment (Total: ${{ total }})</button>
                   </div>
                   <div id="card-errors" role="alert"></div>
               </form>
@@ -68,7 +68,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </main>
 

@@ -658,14 +658,8 @@ def checkout(request):
         return render(request, "tables/payment.html", context=context)
 
 def confirmation(request):
-    deliveryEmployeeName = "John Doe"
-    deliveryEmployeePhone = "2291824093"
-    OrderNumber = 0
-    OrderNumber = OrderNumber + 1
     context = {
-    'deliveryEmployeeName': deliveryEmployeeName,
-    'deliveryEmployeePhone': deliveryEmployeePhone,
-    'OrderNumber': OrderNumber
+    'note': 'Go order some munchies!'
     }
     return render(request, 'tables/confirmation.html', context = context)
 
@@ -828,8 +822,10 @@ def payment(request):
                 order.save()
                 print("payment assigned to order")
 
-                context['note'] = "Your order was successful!"
                 context['num_of_items'] = 0
+                context['order_ref'] = order.ref_code
+                context['deliveryEmployeeName'] = 'Jennifer'
+                context['deliveryEmployeePhone'] = '909-436-3333'
                 return render(request, "tables/confirmation.html", context=context)
 
             except stripe.error.CardError as e:

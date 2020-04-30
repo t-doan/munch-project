@@ -2,10 +2,16 @@
 {% block content %}
 
 <div class="container">
+  {% if note %}
+  <h3>{{ note }}</h3>
+  {% else %}
   <h3>Thank you for your order.</h3>
   <h3>Your order will be delivered by: {{ deliveryEmployeeName }}</h3>
   <h4>Contact: {{ deliveryEmployeePhone }}</h4><br>
-  <h3>Order ID: {{ OrderNumber }}</h3><br><br><br><br>
+  <h4>You should receive your order in about 40-60 minutes</h4>
+  <h4>Order ID: {{ order_ref }}</h4>
+  {% endif %}
+  <br><br><br><br>
 </div>
 
 {% endblock %}

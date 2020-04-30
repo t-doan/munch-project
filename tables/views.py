@@ -124,11 +124,14 @@ def order_history(request):
 
 def get_avg_stars(restaurant_id):
     review_list = list(Review.objects.filter(restaurant_id=restaurant_id))
-    avg = 0.0
-    for review in review_list:
-        avg += review.stars
-    avg /= len(review_list)
-    return avg
+    if len(review_list) != 0:
+        avg = 0.0
+        for review in review_list:
+            avg += review.stars
+        avg /= len(review_list)
+        return avg
+    else:
+        return 0
 
 def review(request, order_id):
     context = {

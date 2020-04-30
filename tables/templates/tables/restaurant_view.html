@@ -10,7 +10,7 @@
   <h6>Location: {{ restaurant.address }}</h6>
   <h6>Phone Number: {{ restaurant.phone_number }}</h6>
   <h6>{{ cuisines_str }}</h6><br>
-  {% if avg_stars %}
+  {% if avg_stars > 0 %}
   <h6>Average rating: {{ avg_stars }}/5</h6>
   <a href="{% url 'restaurant_review' restaurant.id %}"><button type="button"
     class="button buttonCancel">Reviews</button></a>

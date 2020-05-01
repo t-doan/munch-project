@@ -1,0 +1,40 @@
+{% extends 'tables/base.html' %}
+{% block content %}
+{% load index %}
+
+<div class="container">
+  <h3>Order History</h3><br>
+  {% if order_list|length < 0 %}
+  <h4>You do not have any past orders.</h4>
+  {% endif %}
+  {% for order in order_list %}
+  <h5>{{ order.0.restaurant }}</h5>
+  <h5>Ordered on: {{ order.0.ordered_date }}</h5>
+  <h5>Sent to: {{ order.0.shipping_address }}</h5>
+  <table style="width:100%">
+    <tr>
+      <th>Item</th>
+      <th>Price</th>
+    </tr>
+    {% for order_item in order|index:1 %}
+    <tr>
+      <td>{{order_item.item.name}}</td>
+      <td>{{order_item.quantity}} x ${{order_item.item.price}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td><b>Total:</b></td>
+      <td>${{ order|index:2 }}</td>
+    </tr>
+  </table>
+  <a href="{% url 'review' order.0.id %}"><button type="button"
+    class="button buttonCancel">Leave a review</button></a>
+    <br><br>
+  {% endfor %}
+
+  <a href="{% url 'user-profile' %}"><button type="button"
+    class="button buttonCancel">Go Back </button></a>
+</div>
+<br><br><br><br>
+
+{% endblock %}

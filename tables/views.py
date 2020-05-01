@@ -708,19 +708,20 @@ def load_payment(request, context):
     customer = Customer.objects.get(user_id = request.user.id)
     order = Order.objects.get(customer_id=customer.id, ordered=False)
     if order.billing_address:
+        if customer.stripeid != '' and customer.stripeid is not None:
+            cards = stripe.Customer.list_sources(
+                customer.stripeid,
+                limit=3,
+                object='card'
+            )
+            print(cards)
+            card_list = cards['data']
+            if len(card_list) > 0:
+                # update the context with the default card
+                context.update({
+                    'card': card_list[0]
+                })
         context['order'] = order
-        cards = stripe.Customer.list_sources(
-            customer.stripeid,
-            limit=3,
-            object='card'
-        )
-        print(cards)
-        card_list = cards['data']
-        if len(card_list) > 0:
-            # update the context with the default card
-            context.update({
-                'card': card_list[0]
-            })
         return context
     else:
         context['note'] = "You have not added a billing address"
@@ -758,7 +759,6 @@ def payment(request):
                     )
                     stripeCustomer.sources.create(source=token)
                     customer.stripeid = stripeCustomer['id']
-                    # userprofile.one_click_purchasing = True
                     customer.save()
                     print("Created new stripe id")
 
@@ -774,7 +774,6 @@ def payment(request):
             print("Calc total: " + str(total))
 
             try:
-
                 if use_default or save:
                     # charge the stripeCustomer because we cannot charge the token more than once
                     charge = stripe.Charge.create(

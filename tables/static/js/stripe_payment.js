@@ -1,3 +1,6 @@
+/* payment.html
+================================================*/
+
 var stripe = Stripe('pk_test_RGv0n4Q3DzjbW7IFCNzLdnBO007PXHgSH6');
 
 // Create an instance of Elements.

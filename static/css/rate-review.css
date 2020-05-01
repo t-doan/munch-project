@@ -1,0 +1,11 @@
+/* review.html
+================================================*/
+.rate-review h3 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+.rate-review .header {
+  display: grid;
+  grid-template-columns: 1fr 50px 25px 50px;
+}

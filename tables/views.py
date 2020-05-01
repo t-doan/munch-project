@@ -1,8 +1,13 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
+<<<<<<< HEAD
 from .forms import (CustomSignupForm, CustomerForm, AddressForm,
 CheckoutForm, PaymentForm)
+=======
+from .forms import CustomSignupForm, CustomerForm, AddressForm, CheckoutForm
+# from .forms import BillingCheckout, DeliveryCheckout, PaymentForm
+>>>>>>> Tbranch
 
 from django.urls import reverse_lazy
 from django.views import generic

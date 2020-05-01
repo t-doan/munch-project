@@ -3,7 +3,6 @@
 {% load static %}
 
 {% block extra_head %}
-<script src="https://js.stripe.com/v3/"></script>
 <link href="{% static 'css/stripe_payment.css' %}" rel="stylesheet">
 {% endblock extra_head %}
 
@@ -20,7 +19,6 @@
         <div class="col-md-12 mb-4">
           <div class="card">
           {% if card %}
-            <script src="https://js.stripe.com/v3/"></script>
               <div style="padding: 5px 30px;">
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" name="use_default_card" id="use_default_card" onclick="check_default_card(this)">

@@ -8,17 +8,20 @@
     <div class="row">
       {% for restaurant in restaurants %}
       <div class="col-md-4">
-        <div class="card mb-4 box-shadow">
-          <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
-          <div class="card-body">
-            <p class="card-text"><a href="{% url 'restaurantView' restaurant.id %}">{{ restaurant.name }}</a></p>
-            <p>About
-              {% with restaurant.name|addstr:' text' as restaurant_name %}
-              {{ restaurant_dists|get_item:restaurant_name }}
-              {% endwith %}
-               away</p>
+        <a href="{% url 'restaurantView' restaurant.id %}">
+          <div class="card mb-4 box-shadow" href="{% url 'restaurantView' restaurant.id %}">
+            <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
+            <div class="card-body">
+              <p class="card-text">{{ restaurant.name }}</p>
+              <p>About
+                {% with restaurant.name|addstr:' text' as restaurant_name %}
+                {{ restaurant_dists|get_item:restaurant_name }}
+                {% endwith %}
+                 away
+               </p>
+            </div>
           </div>
-        </div>
+        </a>
       </div>
       {% endfor %}
     </div>

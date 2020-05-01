@@ -1,18 +1,25 @@
 {% extends 'tables/base.html' %}
-{% block content %}
 {% load index %}
+{% load static %}
+
+{% block extra_head %}
+<link href="{% static 'css/rate-review.css' %}" rel="stylesheet">
+{% endblock extra_head %}
+
+{% block content %}
 
 <div class="container rate-review">
   <h4>{{ note }}</h4>
   <h3>Leave a Review for {{ restaurant }}</h3><br>
   <form method="post" action="{% url 'review' id %}">
     {% csrf_token %}
-    <div class="header">
-      <input type="text" name="header" value="{{ header }}" placeholder="Header (50 characters)"><br>
+    <div class="rating-area">
+      <input type="text" name="header" value="{{ header }}" placeholder="Header (50 characters)">
       <b>Rate:</b>
-      <input type="number" id="stars" name="stars" value="{{ stars }}" min="1" max="5"><br>
+      <input type="number" id="stars" name="stars" value="{{ stars }}" min="1" max="5">
+      <a> / 5 stars. </a>
+      <textarea name="text" value="" cols="80" rows="20" placeholder="Enter your review here (500 characters)">{{ text }}</textarea><br>
     </div>
-    <textarea name="text" value="" cols="80" rows="20" placeholder="Enter your review here (500 characters)">{{ text }}</textarea><br>
 
     <a href="{% url 'order_history' %}"><button type="button"
       class="button buttonCancel">Go Back </button></a>

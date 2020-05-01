@@ -2,13 +2,16 @@
 {% block content %}
 {% load index %}
 
-<div class="container">
+<div class="container rate-review">
   <h4>{{ note }}</h4>
-  <h3>Leave a Review for order with id: {{ id }}</h3><br>
+  <h3>Leave a Review for {{ restaurant }}</h3><br>
   <form method="post" action="{% url 'review' id %}">
     {% csrf_token %}
-    <input type="number" id="stars" name="stars" value="{{ stars }}" min="1" max="5"><br>
-    <input type="text" name="header" value="{{ header }}" placeholder="Header (50 characters)"><br>
+    <div class="header">
+      <input type="text" name="header" value="{{ header }}" placeholder="Header (50 characters)"><br>
+      <b>Rate:</b>
+      <input type="number" id="stars" name="stars" value="{{ stars }}" min="1" max="5"><br>
+    </div>
     <textarea name="text" value="" cols="80" rows="20" placeholder="Enter your review here (500 characters)">{{ text }}</textarea><br>
 
     <a href="{% url 'order_history' %}"><button type="button"

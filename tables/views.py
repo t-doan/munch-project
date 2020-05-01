@@ -134,11 +134,12 @@ def get_avg_stars(restaurant_id):
         return 0
 
 def review(request, order_id):
+    order = Order.objects.get(id=order_id)
     context = {
     'num_of_items': getCartSize(request),
     'id':order_id,
+    'restaurant': order.restaurant.name
     }
-    order = Order.objects.get(id=order_id)
     if request.method == 'POST':
         stars = request.POST['stars']
         header = request.POST['header']

@@ -96,3 +96,7 @@ button:hover {
 .current-card-form {
   /* display: none; */
 }
+
+.card .hide {
+  display: none;
+}

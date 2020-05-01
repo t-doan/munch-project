@@ -71,9 +71,18 @@ function stripeTokenHandler(token) {
 var currentCardForm = $('.current-card-form');
 var newCardForm = $('.new-card-form');
 var use_default_card = document.querySelector("input[name=use_default_card]");
+use_default_card.addEventListener('change', function() {
+  if (this.checked) {
+    newCardForm.hide();
+    currentCardForm.show()
+  } else {
+    newCardForm.show();
+    currentCardForm.hide()
+  }
+})
 
-function check_default_card() {
-  if (use_default_card.checked) {
+function check_default_card(checkbox) {
+  if (checkbox.checked) {
     stripeBtn.disabled = false;
     new_card_form.className="new-card-form hide";
   }

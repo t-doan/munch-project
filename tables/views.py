@@ -147,7 +147,7 @@ def review(request, order_id):
         review = Review()
         if order.review != None and order.review != '':
             review = order.review
-            review.stars = customer_address
+            review.stars = order.stars
             review.header=header
             review.customer_id = order.customer
             review.restaurant_id = order.restaurant

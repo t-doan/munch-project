@@ -30,7 +30,6 @@
                   <span>Exp: {{ card.exp_month }}/{{ card.exp_year }}</span></label>
                 </div>
               </div>
-              {% endif %}
 
             <div class="current-card-form">
               <form action="{% url 'payment' %}" method="post" class="stripe-form">
@@ -42,6 +41,7 @@
                   <div id="card-errors" role="alert"></div>
               </form>
             </div>
+            {% endif %}
 
             <div class="new-card-form">
               <form action="{% url 'payment' %}" method="post" class="stripe-form" id="stripe-form">

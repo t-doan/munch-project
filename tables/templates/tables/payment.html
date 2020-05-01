@@ -1,12 +1,15 @@
 {% extends 'tables/base.html' %}
 {% load widget_tweaks %}
 {% load static %}
-
 {% block extra_head %}
+<script src="https://js.stripe.com/v3/"></script>
 <link href="{% static 'css/stripe_payment.css' %}" rel="stylesheet">
 {% endblock extra_head %}
 
 {% block content %}
+{% load widget_tweaks %}
+{% load static %}
+
 
   <main >
     <h2>{{ note }}</h2>
@@ -18,6 +21,8 @@
 
         <div class="col-md-12 mb-4">
           <div class="card">
+          {% if card %}
+            <script src="https://js.stripe.com/v3/"></script>
               <div style="padding: 5px 30px;">
                 <div class="custom-control custom-checkbox">
                   <input type="checkbox" class="custom-control-input" name="use_default_card" id="use_default_card" onclick="check_default_card(this)">
@@ -37,6 +42,7 @@
                     <div id="card-errors" role="alert"></div>
                 </form>
               </div>
+            {% endif %}
 
             <div id="new_card_form" class="new-card-form show">
               <form action="{% url 'payment' %}" method="post" class="stripe-form" id="stripe-form">
@@ -66,7 +72,10 @@
     </div>
   </main>
 
-  <script src="https://js.stripe.com/v3/"></script>
-  <script type="text/javascript" src="{% static 'js/stripe_payment.js' %}"></script>
-
 {% endblock content %}
+
+{% block extra_scripts %}
+
+<script type="text/javascript" src="{% static 'js/stripe_payment.js' %}"></script>
+
+{% endblock extra_scripts %}

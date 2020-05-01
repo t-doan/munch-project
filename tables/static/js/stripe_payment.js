@@ -72,13 +72,13 @@ var currentCardForm = $('.current-card-form');
 var newCardForm = $('.new-card-form');
 var use_default_card = document.querySelector("input[name=use_default_card]");
 
-function check_default_card() {
-  if (use_default_card.checked) {
-    stripeBtn.disabled = false;
-    new_card_form.className="new-card-form hide";
+function check_default_card(checkcheck) {
+  if (checkcheck.checked) {
+    document.getElementById("current_card_form").className="current-card-form show";
+    document.getElementById("new_card_form").className="new-card-form hide";
   }
   else {
-    stripeBtn.disabled = true;
-    new_card_form.className="new-card-form show";
+    document.getElementById("current_card_form").className="current-card-form hide";
+    document.getElementById("new_card_form").className="new-card-form show";
   }
 }

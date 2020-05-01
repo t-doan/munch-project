@@ -48,12 +48,12 @@ class CheckoutForm(forms.Form):
     set_default_billing = forms.BooleanField(required=False)
     use_default_billing = forms.BooleanField(required=False)
 
-<<<<<<< HEAD
+
 class PaymentForm(forms.Form):
     stripeToken = forms.CharField(required=False)
     save = forms.BooleanField(required=False)
     use_default = forms.BooleanField(required=False)
-=======
+    
     # payment_option = forms.ChoiceField(
     #     widget=forms.RadioSelect, choices=PAYMENT_CHOICES)
 
@@ -68,4 +68,3 @@ class PaymentForm(forms.Form):
 #     card_number = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': 'Card Number'}))
 #     experation = forms.DateField(label="Card's Experation Date", widget=forms.widgets.DateInput(format="%m/%Y"))
 #     cvv = forms.CharField(widget=forms.TextInput(attrs={'placeholder': "CVV"}))
->>>>>>> Tbranch

@@ -1,0 +1,29 @@
+/* order-history.html
+================================================*/
+.order-history h3 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+
+.order-history .order {
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  border-style: dashed;
+  border-width: 2px;
+}
+.checkout .bill div {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+.checkout .bill div a {
+  text-align: right;
+}
+.checkout .bill div .total {
+  margin-top: 10px;
+  border-top: 2px solid #343434;
+}
+.checkout .bill div a:last-of-type {
+  font-weight: bold;
+}

@@ -12,21 +12,38 @@
   font-family: 'Abril Fatface', cursive;
   font-size: 18px;
 }
+.restaurant-view h1 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+}
+.restaurant-view h3 {
+  font-family: 'Fredoka One', cursive;
+  text-align: center;
+}
+
+.restaurant-view .info button {
+  width: auto;
+  width: 150px;
+}
+.restaurant-view .info {
+  display: grid;
+  grid-template-columns: 210px 1fr;
+  margin-bottom: 20px;
+}
+.restaurant-view .info * {
+  padding: 5px;
+}
+.restaurant-view .info .right-side {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+}
+.restaurant-view .info .right-side *:last-child {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
 
 .restaurant-view button:hover {
   opacity: 0.7;
-}
-.restaurant-view button {
-  border: none;
-  outline: 0;
-  padding: 12px;
-  color: white;
-  background-color: #000;
-  text-align: center;
-  cursor: pointer;
-  width: 100%;
-  font-family: 'Abril Fatface', cursive;
-  font-size: 18px;
 }
 .restaurant-view .hide {
   display: none;

@@ -5,15 +5,12 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
-  .dashboard .pricing-header p {
+  .dashboard .pricing-header form {
     font-size: 50px;
-    margin: 20px;
-    margin-top: 40px;
+    margin: 50%;
   }
   .dashboard .pricing-header .ordering {
     background-color: #E2E2E2; /* rbg(251,54,0) orange*/
-    flex: 1 1 50%;
-    flex-wrap: wrap;
   }
 }
 @media (max-width: 799px) {
@@ -28,7 +25,7 @@
     transform: translate(-50%, -50%);
   }
   .dashboard .pricing-header p {
-    font-size: 25px;
+    font-size: 50px;
     color: white;
   }
   .dashboard .pricing-header {

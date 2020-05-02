@@ -35,7 +35,7 @@
   -webkit-transition: all 150ms ease;
   transition: all 150ms ease;
   float: left;
-  width: 100%
+  width: 100%;
 }
 
 button:hover {
@@ -91,10 +91,6 @@ button:hover {
 
 .StripeElement--webkit-autofill {
   background-color: #fefde5 !important;
-}
-
-.current-card-form {
-  /* display: none; */
 }
 
 .card .hide {

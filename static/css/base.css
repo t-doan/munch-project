@@ -9,6 +9,7 @@
   color: #E2E2E2; /* white grey */
   padding: 5px 10px;
   border-radius: 10px;
+  transition-duration: 0.4s;
 }
 .base-box a:hover {
   font-weight: bold;

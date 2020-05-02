@@ -10,8 +10,8 @@
         {% csrf_token %}
         <br><br><br>
         <label for="search_address"><p>Start your Food Journey</p></label><br>
-        <input type="text" name="search_address" value="" placeholder="Enter address or zipcode" size="30">
-        <input type="submit" name="enter_address_btn" value="Find Food" class="standardButton">
+        <input type="text" name="search_address" value="" placeholder="Enter address or zipcode" size="30" keyup="inputAddress(this)">
+        <input type="submit" name="enter_address_btn" id="enter_address_btn" value="Find Food" class="standardButton" disabled>
       </form>
     </div>
   </div>
@@ -21,4 +21,6 @@
   <h5>This is a student project to learn about software engineering processes. Cal Poly Pomona 2020</h5>
 </div>
 <br><br><br><br>
+
+<script type="text/javascript" src="{% static 'js/home.js' %}"></script>
 {% endblock %}

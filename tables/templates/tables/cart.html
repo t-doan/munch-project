@@ -32,7 +32,7 @@
         {% if order_item.note|length > 0 %}
         <p>{{ order_item.note }}</p>
         {% endif %}
-        <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">Click to Add Note</a>
+        <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">Click to Add/Change Note</a>
         <input class="hide" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.id }}" onkeyup="enableChange2(this)">
       </div>
       {% endfor %}
@@ -42,7 +42,7 @@
     {% if order.note|length > 0 %}
     <p>{{ order.note }}</p>
     {% endif %}
-    <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Click to Add Instruction Note</a>
+    <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Click to Add/Change Instruction Note</a>
     <input class="hide" type="text" id="instructionBox" name="instructionBox" onkeyup="enableChange2(this)">
     <p align="right">
       <a href="{% url 'cart' %}"><button type="submit" id="save" disabled>Save Changes</button></a>

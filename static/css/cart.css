@@ -40,8 +40,16 @@
   padding: 10px 0;
 }
 .cart-page button {
-  font-family: 'Abril Fatface', cursive;
-  font-size: 18px;
+  font-family: 'Chewy', cursive;
+  font-size: 20px;
+  border-radius: 20px;
+  transition-duration: 0.4s;
+  background-color: #70A0AF; /* Pewter Blue */
+  color: white;
+}
+.cart-page button:hover {
+  background-color: white;
+  color: #70A0AF; /* Pewter Blue */
 }
 .cart-page input {
   font-family: 'Abril Fatface', cursive;

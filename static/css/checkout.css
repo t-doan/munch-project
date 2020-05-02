@@ -11,7 +11,11 @@
 
 .checkout .form-group {
   display: grid;
-  grid-template-columns: 1fr 120px 70px;
+  grid-template-columns: 1fr 120px 100px;
+}
+.checkout .form-group input {
+  padding: 3px;
+  margin: 3px;
 }
 .checkout .form-group input:first-of-type {
   grid-column-start: 1;
@@ -59,6 +63,19 @@
 }
 .checkout .bill div a:last-of-type {
   font-weight: bold;
+}
+
+.checkout button {
+  font-family: 'Chewy', cursive;
+  font-size: 20px;
+  border-radius: 20px;
+  transition-duration: 0.4s;
+  background-color: #70A0AF; /* Pewter Blue */
+  color: white;
+}
+.checkout button:hover {
+  background-color: white;
+  color: #70A0AF; /* Pewter Blue */
 }
 
 @media (min-width: 900px) {

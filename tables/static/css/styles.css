@@ -29,11 +29,15 @@ body {
   display: flex; justify-content: flex-end;
   padding: 10px;
 }
-
 .standardButton {
-  font-family: 'Abril Fatface', cursive;
-  background-color: orange;
-  border-style: solid;
-  border-color: black;
-  color: black;
+  font-family: 'Chewy', cursive;
+  font-size: 20px;
+  border-radius: 20px;
+  transition-duration: 0.4s;
+  background-color: #706993; /* Pewter Blue */
+  color: white;
+}
+.standardButton:hover {
+  background-color: white;
+  color: #706993; /* Pewter Blue */
 }

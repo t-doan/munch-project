@@ -38,14 +38,18 @@ def load_dashboard(request):
         customer = Customer.objects.get(user_id = request.user.id)
         restaurant_cuisines = {}
         customer_cuisines = get_list_of_customer_cuisines(customer)
+        distance_list = []
     for restaurant in restaurants:
         my_dist = gmaps.distance_matrix(address_str, restaurant.address, units='imperial')['rows'][0]['elements'][0]
         print(my_dist)
         restaurant_dists[restaurant.name + ' text'] = my_dist['distance']['text'] + 'les'
         restaurant_dists[restaurant.name + ' value'] = my_dist['distance']['value']
+        # print('restaurant_dist:', restaurant_dists[restaurant.name + ' value'])
         if request.user.is_authenticated:
             restaurant_cuisines[restaurant.name + ' cuisines'] = get_list_of_restaurant_cuisines(restaurant)
+            distance_list.append(restaurant_dists[restaurant.name + ' value'])
     print(restaurant_dists)
+
     # restaurants.sort(key=lambda (x,y): restaurant_dists.index(x))
     context = {
     'restaurants':restaurants,
@@ -53,6 +57,10 @@ def load_dashboard(request):
     'num_of_items': getCartSize(request),
     }
     if request.user.is_authenticated:
+        print('\nPre sort: ', restaurants)
+        restaurants = [x for _,x in sorted(zip(distance_list,restaurants))]
+        print('\nPost sort: ', restaurants)
+        context['restaurants'] = restaurants
         context['restaurant_cuisines'] = restaurant_cuisines
         context['customer_cuisines'] = customer_cuisines
     return render(request, 'tables/dashboard.html', context = context)

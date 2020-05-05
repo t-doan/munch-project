@@ -34,18 +34,53 @@ def load_dashboard(request):
     print(address_str)
     restaurants = Restaurant.objects.all()
     restaurant_dists = {}
+    if request.user.is_authenticated:
+        customer = Customer.objects.get(user_id = request.user.id)
+        restaurant_cuisines = {}
+        customer_cuisines = get_list_of_customer_cuisines(customer)
+        distance_list = []
+        # common_list = []
     for restaurant in restaurants:
         my_dist = gmaps.distance_matrix(address_str, restaurant.address, units='imperial')['rows'][0]['elements'][0]
         print(my_dist)
         restaurant_dists[restaurant.name + ' text'] = my_dist['distance']['text'] + 'les'
         restaurant_dists[restaurant.name + ' value'] = my_dist['distance']['value']
+        distance_list.append(restaurant_dists[restaurant.name + ' value'])
+        # print('restaurant_dist:', restaurant_dists[restaurant.name + ' value'])
+        if request.user.is_authenticated:
+            restaurant_cuisines[restaurant.name + ' cuisines'] = get_list_of_restaurant_cuisines(restaurant)
+            # num_common = get_num_common_cuisines(customer, restaurant)
+            # common_list.append(num_common)
+            # print('Common cuisines: ', num_common)
     print(restaurant_dists)
+    # print('common list: ', common_list)
+    # restaurants_sorted_by_common = [x for _,x in sorted(zip(common_list,restaurants))]
+    restaurants = [x for _,x in sorted(zip(distance_list,restaurants))]
+
+    # restaurants.sort(key=lambda (x,y): restaurant_dists.index(x))
     context = {
     'restaurants':restaurants,
     'restaurant_dists':restaurant_dists,
     'num_of_items': getCartSize(request),
     }
+    if request.user.is_authenticated:
+        context['restaurants'] = restaurants
+        context['restaurant_cuisines'] = restaurant_cuisines
+        context['customer_cuisines'] = customer_cuisines
     return render(request, 'tables/dashboard.html', context = context)
+
+    @register.filter
+    def get_item(dictionary, key):
+        return dictionary.get(key)
+
+def get_num_common_cuisines(customer, restaurant):
+    customer_cuisines = get_list_of_customer_cuisines(customer)
+    restaurant_cuisines = get_list_of_restaurant_cuisines(restaurant)
+    num_common = 0
+    for cuisine in customer_cuisines:
+        if cuisine in restaurant_cuisines:
+            num_common += 1
+    return num_common
 
 def restaurantView(request, restaurant_id):
     context = load_restaurant_view(restaurant_id)
@@ -373,6 +408,24 @@ def get_list_of_order_items(order):
         item = OrderItem.objects.get(pk=bridge_item.order_item.id)
         order_items.append(item)
     return order_items
+
+def get_list_of_restaurant_cuisines(restaurant):
+    restaurant_cuisines = []
+    bridgeItems = list(Restaurant_Cuisine.objects.filter(restaurant_id_id=restaurant.id))
+    print('rest_cuisines bridgeItem: ',len(bridgeItems))
+    for bridge_item in bridgeItems:
+        cuisine = Cuisine.objects.get(pk=bridge_item.cuisine_id.id)
+        restaurant_cuisines.append(cuisine)
+    return restaurant_cuisines
+
+def get_list_of_customer_cuisines(customer):
+    customer_cuisines = []
+    bridgeItems = list(Customer_Cuisine.objects.filter(customer_id_id=customer.id))
+    print('customer_cusines bridgeItem: ',len(bridgeItems))
+    for bridge_item in bridgeItems:
+        cuisine = Cuisine.objects.get(pk=bridge_item.cuisine_id.id)
+        customer_cuisines.append(cuisine)
+    return customer_cuisines
 
 def cart(request):
     context = {

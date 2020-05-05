@@ -13,6 +13,15 @@
             <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
             <div class="card-body">
               <p class="card-text">{{ restaurant.name }}</p>
+              {% if user.is_authenticated %}
+                {% for cuisine in customer_cuisines %}
+                    {% with restaurant.name|add:" cuisines" as key %}
+                      {% if cuisine in restaurant_cuisines|get_item:key %}
+                        <p>{{ cuisine }}</p>
+                      {% endif %}
+                    {% endwith %}
+                {% endfor %}
+              {% endif %}
               <p>About
                 {% with restaurant.name|addstr:' text' as restaurant_name %}
                 {{ restaurant_dists|get_item:restaurant_name }}

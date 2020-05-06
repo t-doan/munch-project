@@ -10,52 +10,69 @@
 
   {% if restaurant.name|length > 0 %}
   <h2>My Munch Cart</h2>
-  <h4>{{ restaurant.name }}</h4>
-  <a href="{% url 'restaurantView' restaurant.id %}">Click to add other items from this restaurant</a>
-  <p>*Change quantity to '0' to delete an item</p>
-  <div class="categories">
-    <div class="category name"><b>Item</b></div>
-    <div class="category"><b>Quantity (between 0* and 20)</b></div>
-    <div class="category money"><b>Item Price</b></div>
-  </div>
-
+  <a href="{% url 'restaurantView' restaurant.id %}">
+    <h4>{{ restaurant.name }}</h4>
+  </a>
+  <br>
+  <p>Notice: *Change quantity to '0' to delete an item</p>
   <form class="" action="{% url 'cart' %}" method="post">
     {% csrf_token %}
-    <div>
+    <div id=order-list>
       {% for order_item in order_items %}
-      <div class="categories">
-        <div class="category name"><a>{{ order_item.item.name }}</a></div>
-        <div class="category"><input type="number" id="quantity" name="quantity{{ order_item.id }}" value="{{ order_item.quantity }}" min="0" max="20" onclick="enableChange1(this, '{{ order_item.quantity }}')"></div>
-        <div class="category money"><a>${{ order_item.item.price }}</a></div>
-      </div>
-      <div class="notes">
-        {% if order_item.note|length > 0 %}
-        <p>{{ order_item.note }}</p>
-        {% endif %}
-        <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">Click to Add/Change Note</a>
-        <input class="hide" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.id }}" onkeyup="enableChange2(this)">
+      <div id="order-item">
+        <img class="card-img-top" src="{{ order_item.item.image.url }}" height="140"></img>
+        <div id="order-info">
+          <div>
+            <a>{{ order_item.item.name }}</a>
+          </div>
+          <div>
+            <b>Quantity (0* to 20): </b>
+            <input type="number"
+              id="quantity"
+              name="quantity{{ order_item.id }}"
+              value="{{ order_item.quantity }}"
+              min="0" max="20"
+              onclick="enableChange1(this, '{{ order_item.quantity }}')">
+          </div>
+          <div>
+            <b>Unit Price: </b>
+            <a>${{ order_item.item.price }}</a>
+          </div>
+          <div>
+            <b>Note: </b>
+            <a>
+              {% if order_item.note|length > 0 %}
+              <a>{{ order_item.note }} </a>
+              {% else %}
+              <i>(None) </i>
+              {% endif %}
+              <button class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">+</button>
+              <input class="hide" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.id }}" onkeyup="enableChange2(this)">
+            </a>
+          </div>
+        </div>
       </div>
       {% endfor %}
-
     </div>
     <br>
+    <b>Instruction Note: </b>
     {% if order.note|length > 0 %}
-    <p>{{ order.note }}</p>
+    <a>{{ order.note }} </a>
+    {% else %}
+    <i>(None) </i>
     {% endif %}
-    <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Click to Add/Change Instruction Note</a>
+    <button class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">+</button>
     <input class="hide" type="text" id="instructionBox" name="instructionBox" onkeyup="enableChange2(this)">
     <p align="right">
       <a href="{% url 'cart' %}"><button type="submit" id="save" disabled>Save Changes</button></a>
     </p>
   </form>
 
-  <div class="bottom-cart">
-    <div><b>Subtotal: ${{ order_subtotal }}</b></div>
-  </div>
-
   <br>
-  <p align="right">
-    <a href="{% url 'checkout' %}"><button id="checkout">Checkout</button></a>
+  <p align="center">
+    <a href="{% url 'checkout' %}"><button id="checkout">Checkout - Subtotal: ${{ order_subtotal }}</button></a>
+    <br>
+    <i>(Please make sure saving cart before checkout)</i>
   </p>
   {% endif %}
 </div>

@@ -1,0 +1,24 @@
+/* base.html
+================================================*/
+.base-box {
+  background: #E3170A;
+}
+.base-box a {
+  font-family: 'Abril Fatface', cursive;
+  background-color: black;
+  color: #E2E2E2; /* white grey */
+  padding: 5px 10px;
+  border-radius: 10px;
+  transition-duration: 0.5s;
+}
+.base-box a:hover {
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+  background-color: white;
+}
+.base-box h5 a {
+  font-family: 'Nosifer', cursive;
+  font-size: 150%;
+  margin: 0 5px;
+}

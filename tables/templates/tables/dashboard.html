@@ -1,0 +1,41 @@
+{% extends 'tables/base.html' %}
+{% block content %}
+{% load index %}
+
+<div class="album py-5">
+  <div class="container dashboard">
+    <h3 class="underline">Restaurants near you</h3><br>
+    <div class="row">
+      {% for restaurant in restaurants %}
+      <div class="col-md-4">
+        <a id="click-to-restaurant" href="{% url 'restaurantView' restaurant.id %}">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
+            <div class="card-body">
+              <p class="card-text">{{ restaurant.name }}</p>
+              {% if user.is_authenticated %}
+                {% for cuisine in customer_cuisines %}
+                    {% with restaurant.name|add:" cuisines" as key %}
+                      {% if cuisine in restaurant_cuisines|get_item:key %}
+                        <p>{{ cuisine }}</p>
+                      {% endif %}
+                    {% endwith %}
+                {% endfor %}
+              {% endif %}
+              <p>About
+                {% with restaurant.name|addstr:' text' as restaurant_name %}
+                {{ restaurant_dists|get_item:restaurant_name }}
+                {% endwith %}
+                 away
+               </p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<br><br><br><br>
+
+{% endblock %}

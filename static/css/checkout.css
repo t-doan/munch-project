@@ -1,0 +1,98 @@
+/* checkout.html
+================================================*/
+.checkout h1 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+.checkout .hide {
+  display: none;
+}
+
+.checkout .form-group {
+  display: grid;
+  grid-template-columns: 1fr 120px 100px;
+}
+.checkout .form-group input {
+  padding: 3px;
+  margin: 3px;
+}
+.checkout .form-group input:first-of-type {
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+.checkout .info button {
+  float: right;
+  margin-right: 10px;
+}
+
+.checkout .bill h2 {
+  font-family: 'Pacifico', cursive;
+  text-align: center;
+  font-weight: bold;
+  padding-bottom: 10px;
+  text-decoration: underline
+}
+.checkout .bill h3 {
+  font-family: 'Itim', cursive;
+  font-size: 20px;
+  text-align: center;
+}
+
+.checkout .bill p {
+  text-align: center;
+}
+
+.checkout .bill {
+  background: white;
+  padding: 10px;
+  border-radius: 5px;
+  border-style: dashed;
+  border-width: 2px;
+}
+.checkout .bill div {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+.checkout .bill div a {
+  text-align: right;
+}
+.checkout .bill div .total {
+  margin-top: 10px;
+  border-top: 2px solid #343434;
+}
+.checkout .bill div a:last-of-type {
+  font-weight: bold;
+}
+
+.checkout button {
+  font-family: 'Chewy', cursive;
+  font-size: 20px;
+  border-radius: 20px;
+  transition-duration: 0.4s;
+  background-color: #70A0AF; /* Pewter Blue */
+  color: white;
+}
+.checkout button:hover {
+  background-color: white;
+  color: #70A0AF; /* Pewter Blue */
+}
+
+@media (min-width: 900px) {
+  .checkout {
+    display: grid;
+    grid-template-columns: 1fr 350px;
+  }
+  .checkout .title {
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  .checkout .bill {
+    grid-column-start: 2;
+    grid-column-end: 3;
+    grid-row-start: 2;
+  }
+  .checkout .info {
+    padding: 10px;
+  }
+}

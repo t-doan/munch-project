@@ -1,0 +1,43 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+body {
+  background-color: #FBCD4D;
+}
+
+/* text styling
+================================================*/
+.boldfont {
+  font-family: 'Georgia';
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.underline {
+  font-family: 'Lobster';
+  font-size: 60px;
+  text-decoration: underline;
+  text-align: center;
+}
+
+/* button styling
+================================================*/
+.leftAlignButton {
+  display: flex; justify-content: flex-end;
+  padding: 10px;
+}
+.standardButton {
+  font-family: 'Chewy', cursive;
+  font-size: 20px;
+  border-radius: 20px;
+  transition-duration: 0.4s;
+  background-color: #706993; /* Pewter Blue */
+  color: white;
+}
+.standardButton:hover {
+  background-color: white;
+  color: #706993; /* Pewter Blue */
+}

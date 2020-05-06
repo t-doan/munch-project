@@ -1,0 +1,25 @@
+/* signup.html
+================================================*/
+.signup h2 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sign-up .form-group {
+  display: grid;
+  grid-template-columns: 300px 300px;
+}
+
+.signup .button {
+  font-family: 'Chewy', cursive;
+  border-radius: 20px;
+  transition-duration: 0.4s;
+  background-color: #6BA292;
+  color: white;
+}
+.signup .button:hover {
+  background-color: white;
+  color: #6BA292;
+}

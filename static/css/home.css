@@ -1,0 +1,48 @@
+/* home.html
+================================================*/
+.dashboard .pricing-header p {
+  font-family: 'Playball', cursive;
+  font-weight: bold;
+  text-align: center;
+  font-size: 50px;
+}
+.dashboard .container {
+  margin-top: 20px;
+}
+
+@media (min-width: 900px) {
+  .dashboard .pricing-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .dashboard .pricing-hearder p {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .dashboard .pricing-header .ordering {
+    background-color: #E2E2E2; /* rbg(251,54,0) orange*/
+  }
+}
+@media (max-width: 899px) {
+  .dashboard .pricing-header img {
+    opacity: 0.3;
+    z-index: 0;
+  }
+  .dashboard .pricing-header .ordering {
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .dashboard .pricing-header p {
+    font-size: 35px;
+    color: white;
+  }
+  .dashboard .pricing-header {
+    z-index: 1;
+  }
+}

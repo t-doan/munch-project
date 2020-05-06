@@ -1,0 +1,54 @@
+/* order-history.html
+================================================*/
+.order-history h3 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+
+.order-history .order {
+  margin: 5px;
+  padding: 10px;
+  background: white;
+  border-radius: 5px;
+  border-style: dashed;
+  border-width: 2px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+}
+.order-history .order h5 {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+.order-history .order h5:first-of-type {
+  font-weight: bold;
+}
+.order-history .order .item {
+  text-align: left;
+}
+.order-history .order .price {
+  text-align: right;
+}
+.order-history .button {
+  font-family: 'Chewy', cursive;
+  border-radius: 20px;
+  transition-duration: 0.4s;
+  background-color: #6BA292;
+  color: white;
+}
+.order-history .button:hover {
+  background-color: white;
+  color: #6BA292;
+}
+
+@media (min-width: 850px) {
+  .order-history .list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (min-width: 1100px) {
+    .order-history .list {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+}

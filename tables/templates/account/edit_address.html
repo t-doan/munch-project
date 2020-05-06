@@ -1,0 +1,72 @@
+{% extends 'tables/base.html' %}
+{% block content %}
+{% load widget_tweaks %}
+
+<div class="container edit-address">
+  <h1>Edit Address</h1>
+  <h2>{{ note }}</h2>
+
+  <form method="post" action="{% url 'edit_address' address.id %}">
+    {% csrf_token %}
+    <div class="form-group">
+      {% for field in form %}
+      {{ field.errors }}
+      {{ field.label_tag }}
+      {% render_field field class="form-control" %}
+      {% endfor %}
+    </div>
+    <style>
+      .buttonCancel {
+        background-color:rgba(190, 0, 0, 1);
+        border: black;
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration:none;
+        font-size: 15px;
+        transition-duration: 0.4s;
+        display: inline-block;
+        margin: 4px 1px;
+        cursor: pointer;
+        border-radius: 6px;
+        font-family: sans-serif;
+        font-style: normal;
+        font-weight: bold;
+        float: left;
+      }
+      .buttonCancel:hover{
+        background-color:rgba(255, 0, 0, 1);
+        border: black;
+        color: white;
+      }
+      .buttonSave {
+        background-color:rgba(0, 145, 0, 1);
+        border: black;
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration:none;
+        font-size: 15px;
+        transition-duration: 0.4s;
+        display: inline-block;
+        margin: 4px 1px;
+        cursor: pointer;
+        border-radius: 6px;
+        font-family: sans-serif;
+        font-style: normal;
+        font-weight: bold;
+        float: right;
+      }
+      .buttonSave:hover{
+        background-color:rgba(0, 255, 0, 1);
+        border: black;
+        color: white;
+      }
+    </style>
+      <a href="{% url 'user-profile' %}"><button type="button"
+        class="button buttonCancel">Go Back </button></a>
+      <button type="submit" class="button buttonSave"> Save Changes</button>
+  </form>
+</div>
+
+{% endblock %}

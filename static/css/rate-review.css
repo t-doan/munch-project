@@ -1,0 +1,25 @@
+/* review.html
+================================================*/
+.rate-review h3 {
+  font-family: 'Lobster', cursive;
+  font-size: 40px;
+  text-align: center;
+}
+.rate-review .rating-area {
+  display: grid;
+  grid-template-columns: 1fr 50px 50px 75px;
+}
+.rate-review .rating-area * {
+  margin: 5px;
+}
+.rate-review .rating-area *:first-of-type {
+  margin-right: 10px;
+}
+.rate-review .rating-area textarea {
+  grid-column-start: 1;
+  grid-column-end: 5;
+}
+.rate-review button {
+  font-family: 'Righteous', cursive;
+  text-align: center;
+}

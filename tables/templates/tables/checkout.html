@@ -1,4 +1,78 @@
 {% extends 'tables/base.html' %}
 {% block content %}
+{% load widget_tweaks %}
+{% load static %}
 
+<div class="container">
+  <h2>{{ note }}</h2><br>
+</div>
+
+<div class="container checkout">
+  <div class="title"><h1>Checkout</h1></div>
+
+  <div class="bill">
+    <h2>Order Bill</h2>
+    <h3>{{ restaurant }}</h3>
+    <p> Number of Items in the order: ({{num_of_items}}) </p>
+    <div>
+      {% for item, total_price in order_list.items %}
+      <b>{{ item }}</b>
+      <a>${{ total_price }}</a>
+      {% endfor %}
+      <b class="sub total">Subtotal:</b>
+      <a class="sub total">${{ subtotal }}</a>
+      {% for fee, price in fees.items %}
+      <b>{{ fee }}:</b>
+      <a>${{ price }}</a>
+      {% endfor %}
+      <b class="total">Total:</b>
+      <a class="total">${{ total }}</a>
+    </div>
+  </div>
+
+  <div class="info">
+    <form method="post" action="{% url 'checkout' %}">
+      {% csrf_token %}
+      <input type="checkbox" name="use_default_shipping" id="id_use_default_shipping" onclick="showShipping(this)">
+      <label for="use_default_shipping">Use default shipping address</label>
+      <div class="show" id="shipping-content">
+        <h2>Shipping Address:</h2>
+        <div class="form-group">
+          <input type="text" name="shipping_address" placeholder="Street" id="id_shipping_address">
+          <input type="text" name="shipping_city" placeholder="City" id="id_shipping_city">
+          <input type="text" name="shipping_state" placeholder="State" id="id_shipping_state">
+          <input type="text" name="shipping_zip" placeholder="Zipcode" id="id_shipping_zip">
+        </div>
+        <input type="checkbox" name="set_default_shipping" id="id_set_default_shipping">
+        <label for="set_default_shipping">Set this as my default shipping address</label>
+      </div>
+
+      <br>
+      <input type="checkbox" name="same_billing_address" id="id_same_billing_address" onclick="showBillingCheck(this)">
+      <label for="same_billing_address">Biling address is the same as shipping</label>
+      <br><br>
+
+      <div class="show" id="billing-check">
+        <input type="checkbox" name="use_default_billing" id="id_use_default_billing" onclick="showBilling(this)">
+        <label for="use_default_billing">Use default billing address.</label>
+        <div class="show" id="billing-content">
+          <h2>Billing Address:</h2>
+          <div class="form-group">
+            <input type="text" name="billing_address" placeholder="Street" id="id_billing_address">
+            <input type="text" name="billing_city" placeholder="City" id="id_billing_city">
+            <input type="text" name="billing_state" placeholder="State" id="id_billing_state">
+            <input type="text" name="billing_zip" placeholder="Zipcode" id="id_billing_zip">
+          </div>
+          <input type="checkbox" name="set_default_billing" id="id_set_default_billing">
+          <label for="set_default_billing">Set this as my default billing address</label>
+        </div>
+      </div>
+      <button type="submit" class="standardButton" align=right>Confirm Purchase</button>
+    </form>
+    <br>
+  </div>
+</div>
+
+<br><br><br><br>
+<script type="text/javascript" src="{% static 'js/show_addresses.js' %}"></script>
 {% endblock %}

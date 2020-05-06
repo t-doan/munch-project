@@ -1,18 +1,62 @@
 {% extends 'tables/base.html' %}
 {% block content %}
 {% load widget_tweaks %}
+{% load index %}
+{% load static %}
 
-<div class="container">
-<h1>{{ restaurant.name }}</h1>
-<h6>Location: {{ restaurant.address }}</h6>
-<h6>Phone Number: {{ restaurant.phone_number }}</h6>
-{% csrf_token %}
-        <ul>
-            {% for item in items %}
-            <li><b>{{ item.name }}</b> - {{ item.price }}</li>
-            {% endfor %}
-        </ul>
+<div class="container restaurant-view">
+  <h2>{{ message }}</h2><br>
+
+  <h1>{{ restaurant.name }}</h1>
+  <div class="info">
+    <img class="card-img-top" src="{{ restaurant.image.url }}" height="200"></img>
+    <div class="right-side">
+      <b>Location:</b>
+      <h6>{{ restaurant.address }}</h6>
+      <b>Phone Number:</b>
+      <h6>{{ restaurant.phone_number }}</h6>
+      <b>Cuisine:</b>
+      <h6>{{ cuisines_str }}</h6>
+      {% if avg_stars > 0 %}
+      <b>Average rating:</b>
+      <h6>{{ avg_stars }}/5</h6>
+      <a href="{% url 'restaurant_review' restaurant.id %}">
+        <button type="button" class="button buttonCancel">Reviews</button>
+      </a>
+      {% else %}
+      <h6>No reviews</h6>
+      {% endif %}
+    </div>
+  </div>
+
+  {% for i in i_amt %}
+  <h3>{{ menu_names|index:i }}</h3>
+  <div class="album py-5">
+    <div class="container">
+      <div class="row">
+        {% for item in menu_items|index:i %}
+        <div class="col-md-4">
+          <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="{{ item.image.url }}" height="200"></img>
+            <div class="card-body">
+              <p class="card-text"><b>{{ item.name }}</b> - ${{ item.price }}</p>
+              <button class="show" id="btn{{ item.id }}" onclick="clickAddToCart('{{ item.id }}')">Add to Cart</button>
+              <form class="" action="{% url 'add_to_cart' item.id restaurant.id %}" method="post">
+                {% csrf_token %}
+                <div class="quantity-line">
+                  <div><button class="hide" id="btn-confirm{{ item.id }}" onclick="confirm('{{ item.id }}')">Confirm Amount</button></div>
+                  <div><input class="hide" type="number" id="quantity{{ item.id }}" name="quantity{{ item.id }}" value="1" min="1" max="20"></div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 
-
+<script type="text/javascript" src="{% static 'js/addtocart.js' %}"></script>
 {% endblock %}

@@ -374,85 +374,218 @@ def get_list_of_order_items(order):
         order_items.append(item)
     return order_items
 
-def cart(request):
-    context = {
-    'restaurant': getOrderRestaurant(request)
-    }
-    customer = Customer.objects.get(user_id = request.user.id)
-    order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        order_items = get_list_of_order_items(order)
+def get_cart_subtotal(cart):
+    subtotal = 0
+    item_list = cart.get('details').get('item_id_list')
+    for item_id in item_list:
+        item_price = cart.get(str(item_id)).get('item').get('price')
+        item_quantity =  cart.get(str(item_id)).get('quantity')
+        subtotal += float(item_price) * item_quantity
+    return subtotal
+
+def get_cart_size(cart):
+    size = 0
+    item_list = cart.get('details').get('item_id_list')
+    for item_id in item_list:
+        item_quantity =  cart.get(str(item_id)).get('quantity')
+        size += item_quantity
+    return size
+
+def session_cart(request):
+    context = {}
+    cart = request.session.get('cart')
+    if cart:
+        restaurant = Restaurant.objects.get(id=cart.get('details').get('restaurant_id'))
+        context = {
+        'guest_user': True,
+        'restaurant': restaurant
+        }
         if request.method == 'POST':
-            for order_item in order_items:
-                if ('quantity' + str(order_item.id)) in request.POST:
-                    quantity = int(request.POST['quantity'+ str(order_item.id)])
+            print(request.POST)
+            item_list = cart.get('details').get('item_id_list')
+            for item_id in item_list:
+                if ('item_note' + str(item_id)) in request.POST:
+                    item_note = request.POST['item_note' + str(item_id)]
+                    cart[str(item_id)]['note'] = item_note
+                if ('quantity' + str(item_id)) in request.POST:
+                    quantity = int(request.POST['quantity' + str(item_id)])
                     if quantity == 0:
-                        order_item.delete()
+                        cart.pop(str(item_id))
+                        item_list.remove(item_id)
                     else:
-                        order_item.quantity = quantity
-                        order_item.save()
-                if ('item_note' + str(order_item.id)) in request.POST:
-                    item_note = request.POST['item_note'+ str(order_item.id)]
-                    order_item.note = item_note
-                    order_item.save()
+                        item = cart.get(str(item_id))
+                        item['quantity'] = quantity
+                        cart[str(item_id)] = item
+            cart['details']['item_id_list'] = item_list
             if 'instructionBox' in request.POST:
                 order_note = request.POST['instructionBox']
-                order.note = order_note
-                order.save()
+                cart['details']['note'] = order_note
+            request.session['cart'] = cart
+            print('New Cart:\n', cart)
         context['num_of_items'] = getCartSize(request)
-        context['order_subtotal'] =  order.get_subtotal()
-        order_items = get_list_of_order_items(order)
-        context['order'] =  order
-        context['order_items'] =  order_items
+        context['order_subtotal'] = get_cart_subtotal(cart)
+        item_ids = cart.get('details').get('item_id_list')
+        order_items = []
+        for id in item_ids:
+            item = Item.objects.get(id=id)
+            item_dict = {
+            'item': item.get_dict_of_model(),
+            'quantity': cart.get(str(item.id)).get('quantity')
+            }
+            if cart.get(str(item.id)).get('note'):
+                item_dict['note'] = cart.get(str(item.id)).get('note')
+            print('ITEM DICT FOR ', id, ": ", item_dict)
+            order_items.append(item_dict)
+        if cart.get('details').get('note'):
+            context['order_note'] = cart.get('details').get('note')
+        context['order_items'] = order_items
     else:
         context['message'] = "You do not have a pending order"
+    return context
+
+def cart(request):
+    context = {}
+    if request.user.id:
+        customer = Customer.objects.get(user_id = request.user.id)
+        context = {
+        'restaurant': getOrderRestaurant(request)
+        }
+        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            order_items = get_list_of_order_items(order)
+            if request.method == 'POST':
+                for order_item in order_items:
+                    if ('item_note' + str(order_item.id)) in request.POST:
+                        item_note = request.POST['item_note'+ str(order_item.id)]
+                        order_item.note = item_note
+                        order_item.save()
+                    if ('quantity' + str(order_item.id)) in request.POST:
+                        quantity = int(request.POST['quantity'+ str(order_item.id)])
+                        if quantity == 0:
+                            order_item.delete()
+                        else:
+                            order_item.quantity = quantity
+                            order_item.save()
+                if 'instructionBox' in request.POST:
+                    order_note = request.POST['instructionBox']
+                    order.note = order_note
+                    order.save()
+            context['num_of_items'] = getCartSize(request)
+            context['order_subtotal'] =  order.get_subtotal()
+            order_items = get_list_of_order_items(order)
+            context['order'] =  order
+            context['order_items'] =  order_items
+        else:
+            context['message'] = "You do not have a pending order"
+    else:
+        context = session_cart(request)
     return render(request, 'tables/cart.html', context=context)
 
-@login_required
-def add_to_cart(request, id, restaurant_id):
+def add_to_session_cart(request, id, restaurant_id):
     item = get_object_or_404(Item, id=id)
-    customer = Customer.objects.get(user_id = request.user.id)
     quantity = int(request.POST['quantity'+ str(item.id)])
     restaurant = get_restaurant_of_item(item)
-    order_item, created = OrderItem.objects.get_or_create(
-        item = item,
-        customer = customer,
-        ordered = False,
-    )
-    order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
-    if order_qs.exists():
-        order = order_qs[0]
-        if order.restaurant == restaurant:
-            if created == True:
-                order_item.quantity = quantity
-                order_item.save()
-                new_order_orderitem = Order_OrderItem(order=order, order_item=order_item)
-                new_order_orderitem.save()
+    cart = request.session.get('cart')
+    if cart:
+        # cart exists
+        if cart.get('details').get('restaurant_id') == restaurant.id:
+            order_item = cart.get(str(item.id))
+            if order_item == None:
+                # item does not exist in cart
+                order_item_details = {
+                'quantity': quantity,
+                'item': item.get_dict_of_model(),
+                }
+                list = cart.get('details').get('item_id_list')
+                list.append(str(item.id))
+                cart['details']['item_id_list'] = list
+                cart[str(item.id)] = order_item_details
             else:
-                order_item.quantity += quantity
-                order_item.save()
+                # item exists, update quantity
+                prev_quantity = cart.get(str(item.id)).get('quantity')
+                cart[str(item.id)]['quantity'] = prev_quantity + quantity
+            # prev_cart_quantity = cart.get('details').get('total_quantity')
+            # print(prev_cart_quantity + quantity)
+            # cart['details']['total_quantity'] = prev_cart_quantity + quantity
+            # prev_subtotal = cart.get('details').get('subtotal')
+            # cart['details']['subtotal'] = (float(item.price)*quantity) + prev_subtotal
+            request.session['cart'] = cart
             message = "Cart updated."
         else:
-            order_item.delete()
+            # different restaurant
             message = "Items cannot be added to cart from multiple restaurants."
     else:
-        # order does not exist, create order
-        ordered_date = timezone.now()
-        order = Order.objects.create(
-            customer=customer,
-            ordered_date=ordered_date,
-            restaurant=restaurant
-        )
-        order_item.quantity = quantity
-        order_item.save()
-        new_order_orderitem = Order_OrderItem(order_item=order_item, order=order)
-        new_order_orderitem.save()
+        # cart does not exist, create cart
+        request.session['cart'] = {}
+        # ordered_date = str(timezone.now())
+        order_details = {
+        # 'ordered_date': ordered_date,
+        'restaurant_id': restaurant.id,
+        # 'total_quantity': quantity,
+        'item_id_list': [item.id,],
+        # 'subtotal': float(item.price)*quantity,
+        }
+        order_item_details = {
+        'quantity': quantity,
+        'item': item.get_dict_of_model(),
+        }
+        request.session['cart']['details'] = order_details
+        request.session['cart'][str(item.id)] = order_item_details
         message = "Cart updated."
     context = load_restaurant_view(restaurant_id)
     context['message'] = message
-    num_of_items = getCartSize(request)
-    context['num_of_items'] = num_of_items
+    context['num_of_items'] = getCartSize(request)
+    print(request.session.get('cart'))
+    return context
+
+def add_to_cart(request, id, restaurant_id):
+    context = {}
+    if request.user.id:
+        customer = Customer.objects.get(user_id = request.user.id)
+        item = get_object_or_404(Item, id=id)
+        quantity = int(request.POST['quantity'+ str(item.id)])
+        restaurant = get_restaurant_of_item(item)
+        order_item, created = OrderItem.objects.get_or_create(
+            item = item,
+            customer = customer,
+            ordered = False,
+        )
+        order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
+        if order_qs.exists():
+            order = order_qs[0]
+            if order.restaurant == restaurant:
+                if created == True:
+                    order_item.quantity = quantity
+                    order_item.save()
+                    new_order_orderitem = Order_OrderItem(order=order, order_item=order_item)
+                    new_order_orderitem.save()
+                else:
+                    order_item.quantity += quantity
+                    order_item.save()
+                message = "Cart updated."
+            else:
+                order_item.delete()
+                message = "Items cannot be added to cart from multiple restaurants."
+        else:
+            # order does not exist, create order
+            ordered_date = timezone.now()
+            order = Order.objects.create(
+                customer=customer,
+                ordered_date=ordered_date,
+                restaurant=restaurant
+            )
+            order_item.quantity = quantity
+            order_item.save()
+            new_order_orderitem = Order_OrderItem(order_item=order_item, order=order)
+            new_order_orderitem.save()
+            message = "Cart updated."
+        context = load_restaurant_view(restaurant_id)
+        context['message'] = message
+        num_of_items = getCartSize(request)
+        context['num_of_items'] = num_of_items
+    else:
+        context = add_to_session_cart(request, id, restaurant_id)
     return render(request, 'tables/restaurant_view.html',context = context)
 
 def get_restaurant_of_item(item):
@@ -473,14 +606,23 @@ def is_valid_form(values):
             valid = False
     return valid
 
-def checkout(request):
+def session_checkout(request):
+    context = {}
     customer = Customer.objects.get(user_id = request.user.id)
-    restaurant = getOrderRestaurant(request)
-    order = ''
-    context = {
-        'num_of_items': getCartSize(request),
-        'restaurant':restaurant,
-    }
+    cart = request.session.get('cart')
+    if cart:
+        restaurant = cart.get('details').get('restaurant')
+        order = ''
+        context = {
+            'num_of_items': getCartSize(request),
+            'restaurant':restaurant,
+        }
+    else:
+        context['note'] = "You do not have a pending order"
+        return (context, false)
+    return (context, success)
+
+
     if request.method == 'GET':
         try:
             order = Order.objects.get(customer_id=customer.id, ordered=False)
@@ -502,10 +644,10 @@ def checkout(request):
             def_billing_address = getDefaultAddressOfType(all_addresses, 'B')
             if def_billing_address != None:
                 context['def_billing_address'] = def_billing_address
-            return render(request, "tables/checkout.html", context)
+            # return render(request, "tables/checkout.html", context)
         except ObjectDoesNotExist:
             context['note'] = "You do not have a pending order"
-            return render(request, "checkout.html", context=context)
+            # return render(request, "checkout.html", context=context)
     elif request.method == 'POST':
         form = CheckoutForm(request.POST or None)
         print("\n\n")
@@ -538,7 +680,7 @@ def checkout(request):
                         order.save()
                     else:
                         context['note'] = "You do not have a default shipping address"
-                        return render(request, "tables/checkout.html", context=context)
+                        # return render(request, "tables/checkout.html", context=context)
                 else:
                     print("Saving a new shipping address")
                     shipping_address = form.cleaned_data.get(
@@ -581,7 +723,7 @@ def checkout(request):
                         print("order shipping add set")
                     else:
                         context['note'] = "Please fill in the required shipping address fields"
-                        return render(request, "tables/checkout.html", context=context)
+                        # return render(request, "tables/checkout.html", context=context)
                 same_billing_address = form.cleaned_data.get(
                     'same_billing_address')
                 if same_billing_address:
@@ -608,7 +750,7 @@ def checkout(request):
                             print("order bill add set to def bill add")
                         else:
                             context['note'] = "You do not have a default billing address"
-                            return render(request, "tables/checkout.html", context=context)
+                            # return render(request, "tables/checkout.html", context=context)
                     else:
                         print("Saving a new billing address")
                         billing_address = form.cleaned_data.get(
@@ -645,18 +787,216 @@ def checkout(request):
                             order.save()
                         else:
                             context['note'] = "Please fill in the required billing address fields"
-                            return render(request, "tables/checkout.html", context=context)
+                            # return render(request, "tables/checkout.html", context=context)
                 print("Reached the end\n\n")
         except Exception:
             context['note'] = "You do not have an active order"
-            return render(request, "tables/checkout.html", context=context)
+            # return render(request, "tables/checkout.html", context=context)
         context = {
             'num_of_items': getCartSize(request),
         }
         print(order)
         context = addOrderInfo(request, context, order)
         context = load_payment(request, context)
-        return render(request, "tables/payment.html", context=context)
+        # return render(request, "tables/payment.html", context=context)
+
+
+
+
+
+def checkout(request):
+    context = {}
+    if request.user.id:
+        customer = Customer.objects.get(user_id = request.user.id)
+        restaurant = getOrderRestaurant(request)
+        order = ''
+        context = {
+            'num_of_items': getCartSize(request),
+            'restaurant':restaurant,
+        }
+        if request.method == 'GET':
+            try:
+                order = Order.objects.get(customer_id=customer.id, ordered=False)
+                fees = getFees(order)
+                subtotal = order.get_subtotal()
+                order_list = order.get_order_list()
+                form = CheckoutForm()
+                total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
+                context['order'] = order
+                context['form'] = form
+                context['fees'] = fees
+                context['subtotal'] = subtotal
+                context['order_list'] = order_list
+                context['total'] = total
+                all_addresses = getListOfAddresses(customer)
+                def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
+                if def_shipping_address != None:
+                    context['def_shipping_address'] = def_shipping_address
+                def_billing_address = getDefaultAddressOfType(all_addresses, 'B')
+                if def_billing_address != None:
+                    context['def_billing_address'] = def_billing_address
+                return render(request, "tables/checkout.html", context)
+            except ObjectDoesNotExist:
+                context['note'] = "You do not have a pending order"
+                return render(request, "checkout.html", context=context)
+        elif request.method == 'POST':
+            form = CheckoutForm(request.POST or None)
+            print("\n\n")
+            try:
+                order = Order.objects.get(customer_id=customer.id, ordered=False)
+                fees = getFees(order)
+                subtotal = order.get_subtotal()
+                order_list = order.get_order_list()
+                total = subtotal + fees["Sales Tax"] + fees["Shipping Fee"] + fees["Service Fee"]
+                context['order'] = order
+                context['form'] = form
+                context['fees'] = fees
+                context['subtotal'] = subtotal
+                context['order_list'] = order_list
+                context['total'] = total
+                order_list = order.get_order_list()
+                context['order_list'] = order_list
+                if form.is_valid():
+                    print("Valid form")
+                    use_default_shipping = form.cleaned_data.get(
+                        'use_default_shipping')
+                    all_addresses = getListOfAddresses(customer.id)
+                    shipping_address = Address()
+                    if use_default_shipping:
+                        print("Using the default shipping address")
+                        def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
+                        if def_shipping_address != None:
+                            print("Saving the default shipping address")
+                            order.shipping_address = def_shipping_address
+                            order.save()
+                        else:
+                            context['note'] = "You do not have a default shipping address"
+                            return render(request, "tables/checkout.html", context=context)
+                    else:
+                        print("Saving a new shipping address")
+                        shipping_address = form.cleaned_data.get(
+                            'shipping_address')
+                        shipping_city = form.cleaned_data.get(
+                            'shipping_city')
+                        shipping_state = form.cleaned_data.get(
+                            'shipping_state')
+                        shipping_zip = form.cleaned_data.get('shipping_zip')
+                        if is_valid_form([shipping_address, shipping_city, shipping_state, shipping_zip]):
+                            print("new default shipping address was valid")
+                            shipping_address = Address(
+                                nickname='Shipping Address',
+                                street=shipping_address,
+                                city=shipping_city,
+                                state=shipping_state,
+                                zipcode=shipping_zip,
+                                address_type='S'
+                            )
+                            set_default_shipping = form.cleaned_data.get(
+                                'set_default_shipping')
+                            if set_default_shipping:
+                                print("new default shipping address should be new default")
+                                def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
+                                if def_shipping_address != None:
+                                    def_shipping_address.default = False
+                                    def_shipping_address.save()
+                                    print("old default shipping address reset")
+                                shipping_address.default = True
+                            shipping_address.save()
+                            print("new default shipping address saved")
+                            cust_add_bridge = Customer_Address(
+                                address_id = shipping_address,
+                                customer_id = customer
+                            )
+                            cust_add_bridge.save()
+                            print("Saved bridge table item")
+                            order.shipping_address = shipping_address
+                            order.save()
+                            print("order shipping add set")
+                        else:
+                            context['note'] = "Please fill in the required shipping address fields"
+                            return render(request, "tables/checkout.html", context=context)
+                    same_billing_address = form.cleaned_data.get(
+                        'same_billing_address')
+                    if same_billing_address:
+                        print("bill add = ship add")
+                        if use_default_shipping:
+                            def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
+                            if def_shipping_address != None:
+                                print("bill add = default ship add")
+                                order.shipping_address = def_shipping_address
+                                order.save()
+                        else:
+                            print("bill add = new ship add")
+                            order.billing_address = shipping_address
+                            order.save()
+                    else:
+                        use_default_billing = form.cleaned_data.get(
+                            'use_default_billing')
+                        if use_default_billing:
+                            print("Using the default billing address")
+                            def_billing_address = getDefaultAddressOfType(all_addresses, 'B')
+                            if def_billing_address != None:
+                                order.billing_address = def_billing_address
+                                order.save()
+                                print("order bill add set to def bill add")
+                            else:
+                                context['note'] = "You do not have a default billing address"
+                                return render(request, "tables/checkout.html", context=context)
+                        else:
+                            print("Saving a new billing address")
+                            billing_address = form.cleaned_data.get(
+                                'billing_address')
+                            billing_city = form.cleaned_data.get(
+                                'billing_city')
+                            billing_state = form.cleaned_data.get(
+                                'billing_state')
+                            billing_zip = form.cleaned_data.get('billing_zip')
+                            if is_valid_form([billing_address, billing_city, billing_state, billing_zip]):
+                                billing_address = Address(
+                                    nickname='Billing Address',
+                                    street=billing_address,
+                                    city=billing_city,
+                                    state=billing_state,
+                                    zipcode=billing_zip,
+                                    address_type='B'
+                                )
+                                set_default_billing = form.cleaned_data.get(
+                                    'set_default_billing')
+                                if set_default_billing:
+                                    def_billing_address = getDefaultAddressOfType(all_addresses, 'B')
+                                    if def_billing_address != None:
+                                        def_billing_address.default = False
+                                        def_billing_address.save()
+                                    billing_address.default = True
+                                billing_address.save()
+                                cust_add_bridge = Customer_Address(
+                                    address_id = billing_address,
+                                    customer_id = customer
+                                )
+                                cust_add_bridge.save()
+                                order.billing_address = billing_address
+                                order.save()
+                            else:
+                                context['note'] = "Please fill in the required billing address fields"
+                                return render(request, "tables/checkout.html", context=context)
+                    print("Reached the end\n\n")
+            except Exception:
+                context['note'] = "You do not have an active order"
+                return render(request, "tables/checkout.html", context=context)
+            context = {
+                'num_of_items': getCartSize(request),
+            }
+            print(order)
+            context = addOrderInfo(request, context, order)
+            context = load_payment(request, context)
+            return render(request, "tables/payment.html", context=context)
+    else:
+        context, post_success = session_checkout(request)
+        if post_success:
+            return render(request, "tables/payment.html", context=context)
+        else:
+            return render(request, "checkout.html", context=context)
+
 
 def confirmation(request):
     context = {
@@ -666,13 +1006,15 @@ def confirmation(request):
 
 def getCartSize(request):
     num_of_items = -1
-    customer_exists = Customer.objects.filter(user_id = request.user.id).exists()
-    if customer_exists:
+    if request.user.id:
         customer = Customer.objects.get(user_id = request.user.id)
         order_qs = Order.objects.filter(customer_id=customer.id, ordered=False)
         if order_qs.exists():
             order = order_qs[0]
             num_of_items = order.get_total_quantity()
+    else:
+        if request.session.get('cart'):
+            num_of_items = get_cart_size(request.session.get('cart'))
     return num_of_items
 
 def getOrderRestaurant(request):

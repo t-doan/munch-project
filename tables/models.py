@@ -45,6 +45,12 @@ class Item(models.Model):
     def __str__(self):
         return self.name + " from menu: " + str(self.menu_id)
 
+    def get_dict_of_model(self):
+        return {
+        'id': self.id,
+        'name': self.name,
+        'price': str(self.price),
+        }
 
 class Customer(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
@@ -70,7 +76,7 @@ class Payment(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.customer.first_name
+        return self.customer.first_name + " " + str(self.amount)
 
 class Customer_Payment(models.Model):
     payment_id = models.ForeignKey(Payment,on_delete=models.CASCADE)
@@ -134,7 +140,7 @@ class OrderItem(models.Model):
 
 class Order(models.Model):
     ref_code = models.CharField(max_length=20, blank=True, null=True)
-    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE, blank=True, null=True)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)

@@ -45,6 +45,12 @@ class Item(models.Model):
     def __str__(self):
         return self.name + " from menu: " + str(self.menu_id)
 
+    def get_dict_of_model(self):
+        return {
+        'id': self.id,
+        'name': self.name,
+        'price': str(self.price),
+        }
 
 class Customer(models.Model):
     user = models.OneToOneField(User,on_delete=models.CASCADE)
@@ -65,12 +71,12 @@ class Customer_Address(models.Model):
 
 class Payment(models.Model):
     stripe_charge_id = models.CharField(max_length=50)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, blank=True, null=True)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE, blank=True, null=True)
     amount = models.FloatField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.customer.first_name
+        return str(self.customer) + " " + str(self.amount)
 
 class Customer_Payment(models.Model):
     payment_id = models.ForeignKey(Payment,on_delete=models.CASCADE)
@@ -89,7 +95,6 @@ class Review(models.Model):
     def __str__(self):
         return (str(self.stars) + ' stars' + ' Customer: '
         + str(self.customer_id) + ' Rest: ' + str(self.restaurant_id))
-
 
 class Cuisine(models.Model):
     name = models.CharField(max_length=50)
@@ -119,7 +124,7 @@ class Item_Cuisine(models.Model):
         return 'Item Id: ' + str(self.item_id) + ' Cuisine. Id: ' + str(self.cuisine_id)
 
 class OrderItem(models.Model):
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE, blank=True, null=True)
     ordered = models.BooleanField(default=False)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
@@ -134,7 +139,7 @@ class OrderItem(models.Model):
 
 class Order(models.Model):
     ref_code = models.CharField(max_length=20, blank=True, null=True)
-    customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE, blank=True, null=True)
     start_date = models.DateTimeField(auto_now_add=True)
     ordered_date = models.DateTimeField()
     ordered = models.BooleanField(default=False)
@@ -149,7 +154,7 @@ class Order(models.Model):
     review = models.ForeignKey(Review,on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
-        return self.customer.first_name + " " + str(self.start_date)
+        return str(self.customer) + " " + str(self.start_date)
 
     def get_subtotal(self):
         total = 0
@@ -172,7 +177,10 @@ class Order(models.Model):
         order_orderitems = list(Order_OrderItem.objects.filter(order=self))
         for order_orderitem in order_orderitems:
             orderitem = order_orderitem.order_item
-            order_list[orderitem.item.name] = orderitem.get_total_item_price()
+            order_list[orderitem.item.name] = {
+            'total_price': orderitem.get_total_item_price(),
+            'quantity': orderitem.quantity,
+            }
         return order_list
 
     # def get_restaurant(self):

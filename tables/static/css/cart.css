@@ -60,17 +60,19 @@
   border-top: 5px solid #343434;
   padding: 10px 0;
 }
-.cart-page button {
+.cart-page button, #edit-add a:last-of-type {
   font-family: 'Chewy', cursive;
   font-size: 20px;
   border-radius: 20px;
   transition-duration: 0.4s;
   background-color: #401F3E; /* Dark Purple */
   color: white;
+  padding: 0 5px;
 }
-.cart-page button:hover {
+.cart-page button:hover, #edit-add a:last-of-type:hover {
   background-color: white;
   color: #401F3E; /* Dark Purple */
+  text-decoration: none;
 }
 .cart-page input {
   font-family: 'Abril Fatface', cursive;

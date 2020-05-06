@@ -38,15 +38,16 @@
             <b>Unit Price: </b>
             <a>${{ order_item.item.price }}</a>
           </div>
-          <div>
+          <div id="edit-add">
             <b>Note: </b>
             <a>
               {% if order_item.note|length > 0 %}
               <a>{{ order_item.note }} </a>
+              <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">Edit</a>
               {% else %}
               <i>(None) </i>
+              <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">+</a>
               {% endif %}
-              <button class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">+</button>
               <input class="hide" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.id }}" onkeyup="enableChange2(this)">
             </a>
           </div>
@@ -55,14 +56,17 @@
       {% endfor %}
     </div>
     <br>
-    <b>Instruction Note: </b>
-    {% if order.note|length > 0 %}
-    <a>{{ order.note }} </a>
-    {% else %}
-    <i>(None) </i>
-    {% endif %}
-    <button class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">+</button>
-    <input class="hide" type="text" id="instructionBox" name="instructionBox" onkeyup="enableChange2(this)">
+    <div id="edit-add">
+      <b>Instruction Note: </b>
+      {% if order.note|length > 0 %}
+      <a>{{ order.note }} </a>
+      <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Edit</a>
+      {% else %}
+      <i>(None) </i>
+      <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">+</a>
+      {% endif %}
+      <input class="hide" type="text" id="instructionBox" name="instructionBox" onkeyup="enableChange2(this)">
+    </div>
     <p align="right">
       <a href="{% url 'cart' %}"><button type="submit" id="save" disabled>Save Changes</button></a>
     </p>

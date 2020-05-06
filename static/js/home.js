@@ -1,8 +1,8 @@
 function inputAddress(addr) {
-  if (addr === '') {
-    enter_address_btn.disabled = true;
+  if (addr.length === 0) {
+    document.getElementById("enter_address_btn").disabled = true;
   }
   else {
-    enter_address_btn.disabled = false;
+    document.getElementById("enter_address_btn").disabled = false;
   }
 }

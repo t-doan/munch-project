@@ -1,0 +1,5 @@
+/* dashboard.html
+================================================*/
+.dashboard #click-to-restaurant:hover {
+  text-decoration: none;
+}

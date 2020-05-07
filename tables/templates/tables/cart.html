@@ -13,11 +13,11 @@
   <h4>{{ restaurant.name }}</h4>
   <a href="{% url 'restaurantView' restaurant.id %}">Click to add other items from this restaurant</a>
   <p>*Change quantity to '0' to delete an item</p>
-  <div class="categories">
+  <!-- <div class="categories">
     <div class="category name"><b>Item</b></div>
     <div class="category"><b>Quantity (between 0* and 20)</b></div>
     <div class="category money"><b>Item Price</b></div>
-  </div>
+  </div> -->
 
   {% if guest_user %}
   <form class="" action="{% url 'cart' %}" method="post">

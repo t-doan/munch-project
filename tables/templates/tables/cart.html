@@ -53,42 +53,67 @@
   {% else %}
   <form class="" action="{% url 'cart' %}" method="post">
     {% csrf_token %}
-    <div>
+    <div id=order-list>
       {% for order_item in order_items %}
-      <div class="categories">
-        <div class="category name"><a>{{ order_item.item.name }}</a></div>
-        <div class="category"><input type="number" id="quantity" name="quantity{{ order_item.id }}" value="{{ order_item.quantity }}" min="0" max="20" onclick="enableChange1(this, '{{ order_item.quantity }}')"></div>
-        <div class="category money"><a>${{ order_item.item.price }}</a></div>
-      </div>
-      <div class="notes">
-        {% if order_item.note|length > 0 %}
-        <p>{{ order_item.note }}</p>
-        {% endif %}
-        <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">Click to Add/Change Note</a>
-        <input class="hide" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.id }}" value="{{ order_item.note }}" onkeyup="enableChange2(this)">
+      <div id="order-item">
+        <img class="card-img-top" src="{{ order_item.item.image.url }}" height="140"></img>
+        <div id="order-info">
+          <div>
+            <a>{{ order_item.item.name }}</a>
+          </div>
+          <div>
+            <b>Quantity (0* to 20): </b>
+            <input type="number"
+              id="quantity"
+              name="quantity{{ order_item.id }}"
+              value="{{ order_item.quantity }}"
+              min="0" max="20"
+              onclick="enableChange1(this, '{{ order_item.quantity }}')">
+          </div>
+          <div>
+            <b>Unit Price: </b>
+            <a>${{ order_item.item.price }}</a>
+          </div>
+          <div id="edit-add">
+            <b>Note: </b>
+            <a>
+              {% if order_item.note|length > 0 %}
+              <a>{{ order_item.note }} </a>
+              <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">Edit</a>
+              {% else %}
+              <i>(None) </i>
+              <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">+</a>
+              {% endif %}
+              <input class="hide" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.id }}" onkeyup="enableChange2(this)">
+            </a>
+          </div>
+        </div>
       </div>
       {% endfor %}
-
     </div>
     <br>
-    {% if order.note|length > 0 %}
-    <p>{{ order.note }}</p>
-    {% endif %}
-    <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Click to Add/Change Instruction Note</a>
-    <input class="hide" type="text" id="instructionBox" name="instructionBox" value="{{ order.note }}" onkeyup="enableChange2(this)">
+    <div id="edit-add">
+      <b>Instruction Note: </b>
+      {% if order.note|length > 0 %}
+      <a>{{ order.note }} </a>
+      <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Edit</a>
+      {% else %}
+      <i>(None) </i>
+      <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">+</a>
+      {% endif %}
+      <input class="hide" type="text" id="instructionBox" name="instructionBox" onkeyup="enableChange2(this)">
+    </div>
     <p align="right">
       <a href="{% url 'cart' %}"><button type="submit" id="save" disabled>Save Changes</button></a>
     </p>
   </form>
   {% endif %}
 
-  <div class="bottom-cart">
-    <div><b>Subtotal: ${{ order_subtotal }}</b></div>
-  </div>
-
   <br>
-  <p align="right">
-    <a href="{% url 'checkout' %}"><button id="checkout">Checkout</button></a>
+  <p align="center">
+    <a href="{% url 'checkout' %}"><button id="checkout">Checkout - Subtotal: ${{ order_subtotal }}</button></a>
+    <br>
+    <i>(Please make sure to save cart before checkout)</i>
   </p>
   {% endif %}
 </div>

@@ -13,44 +13,6 @@
   <h4>{{ restaurant.name }}</h4>
   <a href="{% url 'restaurantView' restaurant.id %}">Click to add other items from this restaurant</a>
   <p>*Change quantity to '0' to delete an item</p>
-  <!-- <div class="categories">
-    <div class="category name"><b>Item</b></div>
-    <div class="category"><b>Quantity (between 0* and 20)</b></div>
-    <div class="category money"><b>Item Price</b></div>
-  </div> -->
-
-  {% if guest_user %}
-  <form class="" action="{% url 'cart' %}" method="post">
-    {% csrf_token %}
-    <div>
-      {% for order_item in order_items %}
-      <div class="categories">
-        <div class="category name"><a>{{ order_item.item.name }}</a></div>
-        <div class="category"><input type="number" id="quantity{{ order_item.item.id }}" name="quantity{{ order_item.item.id }}" value="{{ order_item.quantity }}" min="0" max="20" onclick="enableChange1(this, '{{ order_item.quantity }}')"></div>
-        <div class="category money"><a>${{ order_item.item.price }}</a></div>
-      </div>
-      <div class="notes">
-        {% if order_item.note|length > 0 %}
-        <p>{{ order_item.note }}</p>
-        {% endif %}
-        <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">Click to Add/Change Note</a>
-        <input class="hide" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.item.id }}" value="{{ order_item.note }}" onkeyup="enableChange2(this)">
-      </div>
-      {% endfor %}
-
-    </div>
-    <br>
-    {% if order_note %}
-    <p>{{ order_note }}</p>
-    {% endif %}
-    <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Click to Add/Change Instruction Note</a>
-    <input class="hide" type="text" id="instructionBox" name="instructionBox" value="{{ order_note }}" onkeyup="enableChange2(this)">
-    <p align="right">
-      <a href="{% url 'cart' %}"><button type="submit" id="save" disabled>Save Changes</button></a>
-    </p>
-  </form>
-
-  {% else %}
   <form class="" action="{% url 'cart' %}" method="post">
     {% csrf_token %}
     <div id=order-list>
@@ -84,7 +46,7 @@
               <i>(None) </i>
               <a class="show" id="note{{ order_item.item.id }}" href="#" onclick="clickAddNote('{{ order_item.item.id }}')">+</a>
               {% endif %}
-              <input class="hide" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.id }}" onkeyup="enableChange2(this)">
+              <input class="hide" style="width:180px;" type="text" id="textbox{{ order_item.item.id }}" name="item_note{{ order_item.item.id }}" value="{{ order_item.note }}" onkeyup="enableChange2(this)">
             </a>
           </div>
         </div>
@@ -94,20 +56,19 @@
     <br>
     <div id="edit-add">
       <b>Instruction Note: </b>
-      {% if order.note|length > 0 %}
-      <a>{{ order.note }} </a>
+      {% if order_note|length > 0 %}
+      <a>{{ order_note }} </a>
       <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">Edit</a>
       {% else %}
       <i>(None) </i>
       <a class="show" id="instructionclick" href="#" onclick="clickAddInstructionNote()">+</a>
       {% endif %}
-      <input class="hide" type="text" id="instructionBox" name="instructionBox" onkeyup="enableChange2(this)">
+      <input style="width:700px;" class="hide" type="text" id="instructionBox" name="instructionBox" value="{{ order_note }}" onkeyup="enableChange2(this)">
     </div>
     <p align="right">
       <a href="{% url 'cart' %}"><button type="submit" id="save" disabled>Save Changes</button></a>
     </p>
   </form>
-  {% endif %}
 
   <br>
   <p align="center">

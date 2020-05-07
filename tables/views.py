@@ -38,7 +38,7 @@ def load_dashboard(request):
         customer = Customer.objects.get(user_id = request.user.id)
         restaurant_cuisines = {}
         customer_cuisines = get_list_of_customer_cuisines(customer)
-        distance_list = []
+    distance_list = []
         # common_list = []
     for restaurant in restaurants:
         my_dist = gmaps.distance_matrix(address_str, restaurant.address, units='imperial')['rows'][0]['elements'][0]
@@ -491,7 +491,7 @@ def session_cart(request):
         for id in item_ids:
             item = Item.objects.get(id=id)
             item_dict = {
-            'item': item.get_dict_of_model(),
+            'item': item,
             'quantity': cart.get(str(item.id)).get('quantity')
             }
             if cart.get(str(item.id)).get('note'):

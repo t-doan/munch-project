@@ -34,11 +34,12 @@ def load_dashboard(request):
     print(address_str)
     restaurants = Restaurant.objects.all()
     restaurant_dists = {}
+    distance_list = []
     if request.user.is_authenticated:
         customer = Customer.objects.get(user_id = request.user.id)
         restaurant_cuisines = {}
         customer_cuisines = get_list_of_customer_cuisines(customer)
-        distance_list = []
+        #distance_list = []
         # common_list = []
     for restaurant in restaurants:
         my_dist = gmaps.distance_matrix(address_str, restaurant.address, units='imperial')['rows'][0]['elements'][0]

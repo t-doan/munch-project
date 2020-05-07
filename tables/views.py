@@ -34,6 +34,7 @@ def load_dashboard(request):
     print(address_str)
     restaurants = Restaurant.objects.all()
     restaurant_dists = {}
+    distance_list = []
     if request.user.is_authenticated:
         customer = Customer.objects.get(user_id = request.user.id)
         restaurant_cuisines = {}

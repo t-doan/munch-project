@@ -101,7 +101,7 @@ def load_restaurant_view(restaurant_id):
     if len(rest_cuisines) == 0:
         cuisines_str = ""
     else:
-        cuisines_str = "Cuisines:"
+        cuisines_str = ""
         for rest_cuis in rest_cuisines:
             cuisines_str = cuisines_str + " " + Cuisine.objects.get(id = rest_cuis.cuisine_id_id).name + ","
         cuisines_str = cuisines_str[:len(cuisines_str)-1]

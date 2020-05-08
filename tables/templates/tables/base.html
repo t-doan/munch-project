@@ -47,7 +47,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nosifer&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet">
-  
+
   <!-- Functions: JS File Links || I think we can call these wherever we need them -->
   <!-- <script type="text/javascript" src="{% static 'js/addtocart.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/checkout.js' %}"></script>
@@ -59,9 +59,9 @@
     <nav class="my-2 my-md-0 mr-md-3">
       <!-- Cart Button -->
       {% if num_of_items > 0 %}
-      <a href="{% url 'cart' %}" color="red">Cart: {{ num_of_items }}</a>
+      <a href="{% url 'cart' %}">Cart: {{ num_of_items }}</a>
       {% else %}
-      <a href="{% url 'cart' %}">Cart</a>
+      <a href="">Cart</a>
       {% endif %}
       <!-- User Buttons -->
       {% if user.is_authenticated %}

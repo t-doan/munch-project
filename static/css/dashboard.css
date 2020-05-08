@@ -2,4 +2,16 @@
 ================================================*/
 .dashboard #click-to-restaurant:hover {
   text-decoration: none;
+  font-weight: bolder;
+}
+.dashboard .card-body p:first-child {
+  font-family: 'Anton', sans-serif;
+  text-align: center;
+  color: red;
+  background-color: lightgreen;
+  padding: 3px;
+  border-radius: 12px;
+}
+.dashboard .card-body p:last-child {
+  font-family: 'Fredoka One', cursive;
 }

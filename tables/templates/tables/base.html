@@ -61,7 +61,7 @@
       {% if num_of_items > 0 %}
       <a href="{% url 'cart' %}">Cart: {{ num_of_items }}</a>
       {% else %}
-      <a href="">Cart</a>
+      <a href="{% url 'cart' %}">Cart</a>
       {% endif %}
       <!-- User Buttons -->
       {% if user.is_authenticated %}

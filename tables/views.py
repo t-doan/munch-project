@@ -32,6 +32,12 @@ def home(request):
 def load_dashboard(request):
     address_str = request.POST.get('search_address')
     print(address_str)
+    if address_str is '':
+        context = {
+        'num_of_items': getCartSize(request),
+        'message': 'Please enter a valid location for your search.'
+        }
+        return render (request, 'tables/home.html', context=context)
     restaurants = Restaurant.objects.all()
     restaurant_dists = {}
     distance_list = []
@@ -44,6 +50,12 @@ def load_dashboard(request):
     for restaurant in restaurants:
         my_dist = gmaps.distance_matrix(address_str, restaurant.address, units='imperial')['rows'][0]['elements'][0]
         print(my_dist)
+        if my_dist['status'] is not 'OK':
+            context = {
+            'num_of_items': getCartSize(request),
+            'message': 'Please enter a valid location for your search.'
+            }
+            return render (request, 'tables/home.html', context=context)
         restaurant_dists[restaurant.name + ' text'] = my_dist['distance']['text'] + 'les'
         restaurant_dists[restaurant.name + ' value'] = my_dist['distance']['value']
         distance_list.append(restaurant_dists[restaurant.name + ' value'])
@@ -65,14 +77,13 @@ def load_dashboard(request):
     'num_of_items': getCartSize(request),
     }
     if request.user.is_authenticated:
-        context['restaurants'] = restaurants
         context['restaurant_cuisines'] = restaurant_cuisines
         context['customer_cuisines'] = customer_cuisines
     return render(request, 'tables/dashboard.html', context = context)
 
     @register.filter
     def get_item(dictionary, key):
-        return dictionary.get(key)
+            return dictionary.get(key)
 
 def get_num_common_cuisines(customer, restaurant):
     customer_cuisines = get_list_of_customer_cuisines(customer)
@@ -85,7 +96,6 @@ def get_num_common_cuisines(customer, restaurant):
 
 def restaurantView(request, restaurant_id):
     context = load_restaurant_view(restaurant_id)
-    context['num_of_items'] = getCartSize(request)
     return render(request, 'tables/restaurant_view.html',context = context)
 
 def load_restaurant_view(restaurant_id):
@@ -113,6 +123,7 @@ def load_restaurant_view(restaurant_id):
     'cuisines_str':cuisines_str,
     'avg_stars': get_avg_stars(restaurant_id),
     'message':"",
+    'num_of_items': getCartSize(request),
     }
     return context
 
@@ -135,7 +146,7 @@ def profile(request):
     'customer': customer,
     'addresses': addresses,
     'cuisines': cuisines,
-    'num_of_items': getCartSize(request)
+    'num_of_items': getCartSize(request),
     }
     return render(request, 'account/user-profile.html', context=context)
 
@@ -174,7 +185,7 @@ def review(request, order_id):
     context = {
     'num_of_items': getCartSize(request),
     'id':order_id,
-    'restaurant': order.restaurant.name
+    'restaurant': order.restaurant.name,
     }
     if request.method == 'POST':
         stars = request.POST['stars']
@@ -237,7 +248,7 @@ class SignUp(generic.CreateView):
 
 def fillCustomer(request):
     context = {
-    'num_of_items': getCartSize(request),
+    'accountCreation': True
     }
     if request.method == 'POST':
         filled_form = CustomerForm(request.POST)
@@ -266,7 +277,7 @@ def edit_customer(request):
     form = CustomerForm(instance = customer)
     context = {
     'num_of_items': getCartSize(request),
-    'form': form
+    'form': form,
     }
     if request.method == 'POST':
         filled_form = CustomerForm(request.POST, instance=customer)
@@ -298,14 +309,14 @@ def fillAddress(request):
             created_address_pk = None
         context = {
         'created_address_pk':created_address_pk,
-        'num_of_items': getCartSize(request)
+        # 'accountCreation': True
         }
         return render(request, 'tables/home.html', context=context)
 
 def add_address(request, customer_id):
     context = {
     'customer_id':customer_id,
-    'num_of_items': getCartSize(request)
+    'num_of_items': getCartSize(request),
     }
     if request.method == 'POST':
         filled_form = AddressForm(request.POST)
@@ -361,7 +372,7 @@ def edit_address(request, address_id):
             'num_of_items': num_of_items,
             'form':form,
             'note':note,
-            'address':address
+            'address':address,
             }
             return render(request, 'account/edit_address.html', context=context)
     context = {
@@ -398,7 +409,7 @@ def edit_cuisine(request, customer_id):
     'num_of_items': num_of_items,
     'customer':customer,
     'non_cuisines':non_cuisines,
-    'cuisines':cuisines
+    'cuisines':cuisines,
     }
     return render(request, 'account/edit_cuisine.html', context=context)
 
@@ -438,14 +449,6 @@ def get_cart_subtotal(cart):
     subtotal = Decimal(subtotal).quantize(Decimal('0.01'))
     return subtotal
 
-def get_cart_size(cart):
-    size = 0
-    item_list = cart.get('details').get('item_id_list')
-    for item_id in item_list:
-        item_quantity =  cart.get(str(item_id)).get('quantity')
-        size += item_quantity
-    return size
-
 def session_cart(request):
     context = {}
     cart = request.session.get('cart')
@@ -483,7 +486,7 @@ def session_cart(request):
             request.session.pop('cart')
             context = {
             'message': 'You do not have a pending order',
-            'num_of_items': 0
+            'num_of_items': 0,
             }
             return context
         context['order_subtotal'] = get_cart_subtotal(cart)
@@ -583,11 +586,6 @@ def add_to_session_cart(request, id, restaurant_id):
                 # item exists, update quantity
                 prev_quantity = cart.get(str(item.id)).get('quantity')
                 cart[str(item.id)]['quantity'] = prev_quantity + quantity
-            # prev_cart_quantity = cart.get('details').get('total_quantity')
-            # print(prev_cart_quantity + quantity)
-            # cart['details']['total_quantity'] = prev_cart_quantity + quantity
-            # prev_subtotal = cart.get('details').get('subtotal')
-            # cart['details']['subtotal'] = (float(item.price)*quantity) + prev_subtotal
             request.session['cart'] = cart
             message = "Cart updated."
         else:
@@ -596,13 +594,9 @@ def add_to_session_cart(request, id, restaurant_id):
     else:
         # cart does not exist, create cart
         request.session['cart'] = {}
-        # ordered_date = str(timezone.now())
         order_details = {
-        # 'ordered_date': ordered_date,
         'restaurant_id': restaurant.id,
-        # 'total_quantity': quantity,
         'item_id_list': [item.id,],
-        # 'subtotal': float(item.price)*quantity,
         }
         order_item_details = {
         'quantity': quantity,
@@ -903,7 +897,7 @@ def checkout(request):
                             def_shipping_address = getDefaultAddressOfType(all_addresses, 'S')
                             if def_shipping_address != None:
                                 print("bill add = default ship add")
-                                order.shipping_address = def_shipping_address
+                                order.billing_address = def_shipping_address
                                 order.save()
                         else:
                             print("bill add = new ship add")
@@ -980,7 +974,7 @@ def checkout(request):
 
 def confirmation(request):
     context = {
-    'note': 'Go order some munchies!'
+    'note': 'Go order some munchies!',
     }
     return render(request, 'tables/confirmation.html', context = context)
 
@@ -996,6 +990,14 @@ def getCartSize(request):
         if request.session.get('cart'):
             num_of_items = get_cart_size(request.session.get('cart'))
     return num_of_items
+
+def get_cart_size(cart):
+    size = 0
+    item_list = cart.get('details').get('item_id_list')
+    for item_id in item_list:
+        item_quantity =  cart.get(str(item_id)).get('quantity')
+        size += item_quantity
+    return size
 
 def getOrderRestaurant(request):
     restaurant = ""

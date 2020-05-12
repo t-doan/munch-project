@@ -32,7 +32,7 @@ def home(request):
 def load_dashboard(request):
     address_str = request.POST.get('search_address')
     print(address_str)
-    if address_str is '':
+    if address_str == '':
         context = {
         'num_of_items': getCartSize(request),
         'message': 'Please enter a valid location for your search.'
@@ -50,12 +50,19 @@ def load_dashboard(request):
     for restaurant in restaurants:
         my_dist = gmaps.distance_matrix(address_str, restaurant.address, units='imperial')['rows'][0]['elements'][0]
         print(my_dist)
-        if my_dist['status'] is not 'OK':
+        print(my_dist['status'])
+        if my_dist['status'] != 'OK':
             context = {
             'num_of_items': getCartSize(request),
             'message': 'Please enter a valid location for your search.'
             }
             return render (request, 'tables/home.html', context=context)
+        # elif my_dist['status'] is not 'OK':
+        #     context = {
+        #     'num_of_items': getCartSize(request),
+        #     'message': 'Please enter a valid location for your search.'
+        #     }
+        #     return render (request, 'tables/home.html', context=context)
         restaurant_dists[restaurant.name + ' text'] = my_dist['distance']['text'] + 'les'
         restaurant_dists[restaurant.name + ' value'] = my_dist['distance']['value']
         distance_list.append(restaurant_dists[restaurant.name + ' value'])

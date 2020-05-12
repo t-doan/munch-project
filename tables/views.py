@@ -103,6 +103,8 @@ def get_num_common_cuisines(customer, restaurant):
 
 def restaurantView(request, restaurant_id):
     context = load_restaurant_view(restaurant_id)
+    # 'num_of_items': getCartSize(request),
+    context['num_of_items'] = getCartSize(request)
     return render(request, 'tables/restaurant_view.html',context = context)
 
 def load_restaurant_view(restaurant_id):
@@ -130,7 +132,6 @@ def load_restaurant_view(restaurant_id):
     'cuisines_str':cuisines_str,
     'avg_stars': get_avg_stars(restaurant_id),
     'message':"",
-    'num_of_items': getCartSize(request),
     }
     return context
 
